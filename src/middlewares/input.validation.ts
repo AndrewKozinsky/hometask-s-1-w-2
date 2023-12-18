@@ -18,9 +18,9 @@ export function inputValidation(req: Request, res: Response, next: NextFunction)
 			errorsMessages: errorMessage,
 		}
 
-		res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+		res.status(HTTP_STATUSES.BAD_REQUEST_400).send(errors)
 		return
 	}
 
-	return next
+	next()
 }
