@@ -33,6 +33,7 @@ function getBlogsRouter(db: DBTypes.DB) {
 
 		if (!blog) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			return
 		}
 
 		res.status(HTTP_STATUSES.OK_200).send(blog)
@@ -48,6 +49,7 @@ function getBlogsRouter(db: DBTypes.DB) {
 
 			if (!updatedBlog) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+				return
 			}
 
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)

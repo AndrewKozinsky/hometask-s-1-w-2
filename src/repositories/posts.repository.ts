@@ -13,13 +13,15 @@ export const postsRepository = {
 	},
 
 	createPost(db: DBTypes.DB, dto: CreatePostDtoModel): CreatePostOutModel {
+		const blog = db.blogs.find((blog) => blog.id === dto.blogId)
+
 		const newPost: DBTypes.Post = {
 			id: new Date().toISOString(),
 			title: dto.title,
 			shortDescription: dto.shortDescription,
 			content: dto.content,
 			blogId: dto.blogId,
-			blogName: 'unknown',
+			blogName: blog!.name,
 		}
 
 		db.posts.push(newPost)

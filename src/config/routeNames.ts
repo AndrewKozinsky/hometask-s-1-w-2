@@ -3,11 +3,9 @@ const RouteNames = {
 	blog(id: string) {
 		return '/blogs/' + id
 	},
-	posts: {
-		root: '/posts',
-	},
+	posts: '/posts',
 	post(id: string) {
-		return '/post/' + id
+		return '/posts/' + id
 	},
 	testing: '/testing',
 	testingAllData: '/testing/all-data',

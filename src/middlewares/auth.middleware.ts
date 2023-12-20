@@ -14,7 +14,8 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 }
 
 function getCorrectAuthorizationHeader() {
-	const base64LoginAndPassword = new Buffer(
+	// Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from()
+	const base64LoginAndPassword = Buffer.from(
 		process.env.AUTH_LOGIN + ':' + process.env.AUTH_PASSWORD,
 	).toString('base64')
 

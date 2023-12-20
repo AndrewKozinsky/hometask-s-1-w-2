@@ -9,5 +9,5 @@ export const app = express()
 app.use(express.json())
 
 app.use(RouteNames.blogs, getBlogsRouter(db))
-app.use(RouteNames.posts.root, getPostsRouter(db))
+app.use(RouteNames.posts, getPostsRouter(db))
 app.use(RouteNames.testing, getTestRouter(db))
