@@ -62,6 +62,7 @@ function getBlogsRouter(db: DBTypes.DB) {
 
 		if (!isBlogDeleted) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			return
 		}
 
 		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)

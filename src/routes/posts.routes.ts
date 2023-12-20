@@ -33,6 +33,7 @@ function getPostsRouter(db: DBTypes.DB) {
 
 		if (!post) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			return
 		}
 
 		res.status(HTTP_STATUSES.OK_200).send(post)
@@ -48,6 +49,7 @@ function getPostsRouter(db: DBTypes.DB) {
 
 			if (!updatedPost) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+				return
 			}
 
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -60,6 +62,7 @@ function getPostsRouter(db: DBTypes.DB) {
 
 		if (!isPostDeleted) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			return
 		}
 
 		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
