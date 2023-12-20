@@ -1,0 +1,10 @@
+{
+	"version": 2,
+	"name": "hometask-s-1-week-2",
+	"builds": [
+		{ "src": "src/server.ts", "use": "@vercel/node" }
+	],
+	"routes": [
+		{ "src": "/(.*)", "dest": "src/server.ts" }
+	]
+}
