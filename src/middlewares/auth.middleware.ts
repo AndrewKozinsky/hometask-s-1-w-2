@@ -7,6 +7,7 @@ dotenv.config()
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
 	if (req.headers['authorization'] !== getCorrectAuthorizationHeader()) {
 		res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+		res.setHeader('My-Reason', process.env.AUTH_LOGIN!)
 		return
 	}
 
