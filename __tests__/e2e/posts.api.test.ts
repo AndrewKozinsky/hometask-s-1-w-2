@@ -163,6 +163,8 @@ describe('Deleting a post', () => {
 			.delete(RouteNames.post(createdPostId))
 			.set('authorization', authorizationValue)
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		await request(app).get(RouteNames.post(createdPostId)).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 })
 

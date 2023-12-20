@@ -52,7 +52,8 @@ export const blogsRepository = {
 			return false
 		}
 
-		db.blogs = db.blogs.splice(blogIdx, 1)
+		db.blogs.splice(blogIdx, 1)
+		debugger
 
 		return true
 	},

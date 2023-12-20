@@ -146,6 +146,8 @@ describe('Deleting a blog', () => {
 			.delete(RouteNames.blog(createdBlogId))
 			.set('authorization', authorizationValue)
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		await request(app).get(RouteNames.blog(createdBlogId)).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 })
 

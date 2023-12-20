@@ -56,7 +56,7 @@ export const postsRepository = {
 			return false
 		}
 
-		db.posts = db.posts.splice(postIdx, 1)
+		db.posts.splice(postIdx, 1)
 
 		return true
 	},
