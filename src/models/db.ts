@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 export namespace DBTypes {
 	export type DB = {
 		blogs: Blog[]
@@ -5,6 +7,7 @@ export namespace DBTypes {
 	}
 
 	export type Blog = {
+		// _id: ObjectId
 		id: string
 		name: string
 		description: string
@@ -12,6 +15,7 @@ export namespace DBTypes {
 	}
 
 	export type Post = {
+		// _id: ObjectId
 		id: string
 		title: string
 		shortDescription: string

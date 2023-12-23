@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
 import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../../src/models/blogs.model'
 
-const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
+export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
 
 beforeEach(async () => {
 	await request(app).delete(RouteNames.testingAllData).expect(HTTP_STATUSES.NO_CONTENT_204)
@@ -20,48 +20,47 @@ describe('Getting all blogs', () => {
 		await addBlogRequest()
 
 		const getBlogsRes = await request(app).get(RouteNames.blogs).expect(HTTP_STATUSES.OK_200)
-
 		expect(getBlogsRes.body.length).toBe(2)
 	})
 })
 
 describe('Getting a blog', () => {
 	it("should return a 404 if a blog doesn't exists", async () => {
-		await request(app).get(RouteNames.blog('999')).expect(HTTP_STATUSES.NOT_FOUNT_404)
+		const getBlogRes = await request(app)
+			.get(RouteNames.blog('999'))
+			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
 	it('should return an existing blog', async () => {
-		const createdVideoRes = await addBlogRequest()
-		const createdVideoId = createdVideoRes.body.id
+		const createdBlogRes = await addBlogRequest()
+		const createdBlogId = createdBlogRes.body.id
 
-		await request(app).get(RouteNames.blog(createdVideoId)).expect(HTTP_STATUSES.OK_200)
+		await request(app).get(RouteNames.blog(createdBlogId)).expect(HTTP_STATUSES.OK_200)
 	})
 })
 
 describe('Creating a blog', () => {
 	it('should forbid a request from an unauthorized user', async () => {
-		return request(app).put(RouteNames.blogs)
-	})
-
-	it('should forbid a request from an unauthorized user', async () => {
-		return request(app).post(RouteNames.blogs)
+		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
 	it('create a blog by wrong dto', async () => {
-		await addBlogRequest({ websiteUrl: 'samurai.it-incubator.io' }).expect(
-			HTTP_STATUSES.BAD_REQUEST_400,
-		)
+		const createdBlogRes = await addBlogRequest({ websiteUrl: 'samurai.it-incubator' })
+		expect(createdBlogRes.status).toBe(HTTP_STATUSES.BAD_REQUEST_400)
 	})
 
 	it('should create a blog by correct dto', async () => {
-		const createdBlogRes = await addBlogRequest().expect(HTTP_STATUSES.CREATED_201)
+		const createdBlogRes = await addBlogRequest()
+		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
 		expect(createdBlogRes.body.name).toEqual(createDtoAddBlog().name)
 		expect(createdBlogRes.body.description).toEqual(createDtoAddBlog().description)
 		expect(createdBlogRes.body.websiteUrl).toEqual(createDtoAddBlog().websiteUrl)
 
 		// Check if there are 2 blogs after adding another one
-		await addBlogRequest().expect(HTTP_STATUSES.CREATED_201)
+		const createdSecondBlogRes = await addBlogRequest()
+		expect(createdSecondBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
+
 		const allBlogsRes = await request(app).get(RouteNames.blogs)
 		expect(allBlogsRes.body.length).toBe(2)
 	})
@@ -69,7 +68,7 @@ describe('Creating a blog', () => {
 
 describe('Updating a blog', () => {
 	it('should forbid a request from an unauthorized user', async () => {
-		return request(app).put(RouteNames.blogs)
+		await request(app).put(RouteNames.blog('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
 	it('should not update a non existing blog', async () => {
@@ -106,7 +105,8 @@ describe('Updating a blog', () => {
 	})
 
 	it('should update a blog by correct dto', async () => {
-		const createdBlogRes = await addBlogRequest().expect(HTTP_STATUSES.CREATED_201)
+		const createdBlogRes = await addBlogRequest()
+		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdBlogId = createdBlogRes.body.id
 
 		const updateBlogDto: UpdateBlogDtoModel = {
@@ -128,7 +128,7 @@ describe('Updating a blog', () => {
 
 describe('Deleting a blog', () => {
 	it('should forbid a request from an unauthorized user', async () => {
-		return request(app).put(RouteNames.blogs)
+		return request(app).delete(RouteNames.blogs)
 	})
 
 	it('should not delete a non existing blog', async () => {
@@ -139,7 +139,8 @@ describe('Deleting a blog', () => {
 	})
 
 	it('should delete a blog', async () => {
-		const createdBlogRes = await addBlogRequest().expect(HTTP_STATUSES.CREATED_201)
+		const createdBlogRes = await addBlogRequest()
+		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdBlogId = createdBlogRes.body.id
 
 		await request(app)
@@ -151,7 +152,7 @@ describe('Deleting a blog', () => {
 	})
 })
 
-function addBlogRequest(blogDto: Partial<CreateBlogDtoModel> = {}) {
+async function addBlogRequest(blogDto: Partial<CreateBlogDtoModel> = {}) {
 	return request(app)
 		.post(RouteNames.blogs)
 		.send(createDtoAddBlog(blogDto))

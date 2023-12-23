@@ -24,30 +24,28 @@ export const contentValidation = body('content')
 	.isLength({ min: 1, max: 1000 })
 	.withMessage('Incorrect content')
 
-function getBlogIdValidation(db: DBTypes.DB) {
-	return body('blogId')
-		.isString()
-		.withMessage('BlogId must be a string')
-		.trim()
-		.isLength({ min: 1, max: 100 })
-		.custom((value) => {
-			const blog = blogsRepository.getBlog(db, value)
+export const blogIdValidation = body('blogId')
+	.isString()
+	.withMessage('BlogId must be a string')
+	.trim()
+	.isLength({ min: 1, max: 100 })
+	.custom(async (value) => {
+		const blog = await blogsRepository.getBlog(value)
 
-			if (!blog) {
-				throw new Error('Incorrect blogId')
-			}
+		if (!blog) {
+			throw new Error('Incorrect blogId')
+		}
 
-			return true
-		})
-		.withMessage('Incorrect blogId')
-}
+		return true
+	})
+	.withMessage('Incorrect blogId')
 
-export function postValidation(db: DBTypes.DB) {
+export function postValidation() {
 	return [
 		titleValidation,
 		shortDescriptionValidation,
 		contentValidation,
-		getBlogIdValidation(db),
+		blogIdValidation,
 		inputValidation,
 	]
 }

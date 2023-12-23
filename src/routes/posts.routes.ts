@@ -1,17 +1,16 @@
 import express, { Request, Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
 import { authMiddleware } from '../middlewares/auth.middleware'
-import { DBTypes } from '../models/db'
 import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/posts.model'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
 import { postsRepository } from '../repositories/posts.repository'
 import { postValidation } from '../validators/post.validator'
 
-function getPostsRouter(db: DBTypes.DB) {
+function getPostsRouter() {
 	const router = express.Router()
 
-	router.get('/', (req: Request, res: Response) => {
-		const posts = postsRepository.getPosts(db)
+	router.get('/', async (req: Request, res: Response) => {
+		const posts = await postsRepository.getPosts()
 
 		res.status(HTTP_STATUSES.OK_200).send(posts)
 	})
@@ -19,17 +18,17 @@ function getPostsRouter(db: DBTypes.DB) {
 	router.post(
 		'/',
 		authMiddleware,
-		postValidation(db),
-		(req: ReqWithBody<CreatePostDtoModel>, res: Response) => {
-			const createdPost = postsRepository.createPost(db, req.body)
+		postValidation(),
+		async (req: ReqWithBody<CreatePostDtoModel>, res: Response) => {
+			const createdPost = await postsRepository.createPost(req.body)
 
 			res.status(HTTP_STATUSES.CREATED_201).send(createdPost)
 		},
 	)
 
-	router.get('/:id', (req: ReqWithParams<{ id: string }>, res: Response) => {
+	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
 		const postId = req.params.id
-		const post = postsRepository.getPost(db, postId)
+		const post = await postsRepository.getPost(postId)
 
 		if (!post) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
@@ -42,10 +41,10 @@ function getPostsRouter(db: DBTypes.DB) {
 	router.put(
 		'/:id',
 		authMiddleware,
-		postValidation(db),
-		(req: ReqWithParamsAndBody<{ id: string }, UpdatePostDtoModel>, res: Response) => {
+		postValidation(),
+		async (req: ReqWithParamsAndBody<{ id: string }, UpdatePostDtoModel>, res: Response) => {
 			const postId = req.params.id
-			const updatedPost = postsRepository.updatePost(db, postId, req.body)
+			const updatedPost = await postsRepository.updatePost(postId, req.body)
 
 			if (!updatedPost) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
@@ -56,17 +55,21 @@ function getPostsRouter(db: DBTypes.DB) {
 		},
 	)
 
-	router.delete('/:id', authMiddleware, (req: ReqWithParams<{ id: string }>, res: Response) => {
-		const postId = req.params.id
-		const isPostDeleted = postsRepository.deletePost(db, postId)
+	router.delete(
+		'/:id',
+		authMiddleware,
+		async (req: ReqWithParams<{ id: string }>, res: Response) => {
+			const postId = req.params.id
+			const isPostDeleted = await postsRepository.deletePost(postId)
 
-		if (!isPostDeleted) {
-			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-			return
-		}
+			if (!isPostDeleted) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+				return
+			}
 
-		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-	})
+			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+		},
+	)
 
 	return router
 }

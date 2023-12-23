@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
 import {
 	CreatePostDtoModel,
@@ -6,14 +8,21 @@ import {
 	GetPostsOutModel,
 	UpdatePostDtoModel,
 } from '../models/posts.model'
+import { blogsRepository } from './blogs.repository'
+import { client } from './db'
 
 export const postsRepository = {
-	getPosts(db: DBTypes.DB): GetPostsOutModel {
-		return db.posts
+	async getPosts(): Promise<GetPostsOutModel> {
+		return await client
+			.db(process.env.MONGO_DB_NAME)
+			.collection<DBTypes.Post>(DbNames.posts)
+			.find({})
+			.toArray()
 	},
 
-	createPost(db: DBTypes.DB, dto: CreatePostDtoModel): CreatePostOutModel {
-		const blog = db.blogs.find((blog) => blog.id === dto.blogId)
+	async createPost(dto: CreatePostDtoModel): Promise<CreatePostOutModel> {
+		let blog = await blogsRepository.getBlog(dto.blogId)
+		blog = blog as DBTypes.Blog
 
 		const newPost: DBTypes.Post = {
 			id: new Date().toISOString(),
@@ -21,43 +30,44 @@ export const postsRepository = {
 			shortDescription: dto.shortDescription,
 			content: dto.content,
 			blogId: dto.blogId,
-			blogName: blog!.name,
+			blogName: blog.name,
 		}
 
-		db.posts.push(newPost)
-
+		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.posts).insertOne(newPost)
 		return newPost
 	},
 
-	getPost(db: DBTypes.DB, postId: string): undefined | GetPostOutModel {
-		return db.posts.find((post) => post.id === postId)
+	async getPost(postId: string): Promise<null | GetPostOutModel> {
+		return client
+			.db(process.env.MONGO_DB_NAME)
+			.collection<DBTypes.Post>(DbNames.posts)
+			.findOne({ id: postId })
 	},
 
-	updatePost(
-		db: DBTypes.DB,
+	async updatePost(
 		postId: string,
 		updatePostDto: UpdatePostDtoModel,
-	): null | DBTypes.Post {
-		const postIdx = db.posts.findIndex((post) => post.id === postId)
+	): Promise<null | DBTypes.Post> {
+		const result = await client
+			.db(process.env.MONGO_DB_NAME)
+			.collection<DBTypes.Post>(DbNames.posts)
+			.updateOne({ id: postId }, { $set: updatePostDto })
 
-		if (postIdx < 0) {
+		if (result.matchedCount === 0) {
 			return null
 		}
 
-		db.posts[postIdx] = Object.assign(db.posts[postIdx], updatePostDto)
+		const updatedBlog = await this.getPost(postId)
 
-		return db.posts[postIdx]
+		return updatedBlog ? updatedBlog : null
 	},
 
-	deletePost(db: DBTypes.DB, postId: string): boolean {
-		const postIdx = db.posts.findIndex((post) => post.id === postId)
+	async deletePost(postId: string): Promise<boolean> {
+		const result = await client
+			.db(process.env.MONGO_DB_NAME)
+			.collection(DbNames.posts)
+			.deleteOne({ id: postId })
 
-		if (postIdx < 0) {
-			return false
-		}
-
-		db.posts.splice(postIdx, 1)
-
-		return true
+		return result.deletedCount === 1
 	},
 }

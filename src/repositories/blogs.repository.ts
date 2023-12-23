@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+import DbNames from '../config/dbNames'
 import {
 	CreateBlogDtoModel,
 	CreateBlogOutModel,
@@ -6,13 +8,18 @@ import {
 	UpdateBlogDtoModel,
 } from '../models/blogs.model'
 import { DBTypes } from '../models/db'
+import { client } from './db'
 
 export const blogsRepository = {
-	getBlogs(db: DBTypes.DB): GetBlogsOutModel {
-		return db.blogs
+	async getBlogs(): Promise<GetBlogsOutModel> {
+		return client
+			.db(process.env.MONGO_DB_NAME)
+			.collection<DBTypes.Blog>(DbNames.blogs)
+			.find({})
+			.toArray()
 	},
 
-	createBlog(db: DBTypes.DB, dto: CreateBlogDtoModel): CreateBlogOutModel {
+	async createBlog(dto: CreateBlogDtoModel): Promise<CreateBlogOutModel> {
 		const newBlog: DBTypes.Blog = {
 			id: new Date().toISOString(),
 			name: dto.name,
@@ -20,41 +27,42 @@ export const blogsRepository = {
 			websiteUrl: dto.websiteUrl,
 		}
 
-		db.blogs.push(newBlog)
+		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.blogs).insertOne(newBlog)
 
 		return newBlog
 	},
 
-	getBlog(db: DBTypes.DB, blogId: string): undefined | GetBlogOutModel {
-		return db.blogs.find((blog) => blog.id === blogId)
+	async getBlog(blogId: string): Promise<null | GetBlogOutModel> {
+		return client
+			.db(process.env.MONGO_DB_NAME)
+			.collection<DBTypes.Blog>(DbNames.blogs)
+			.findOne({ id: blogId })
 	},
 
-	updateBlog(
-		db: DBTypes.DB,
+	async updateBlog(
 		blogId: string,
 		updateBlogDto: UpdateBlogDtoModel,
-	): null | DBTypes.Blog {
-		const blogIdx = db.blogs.findIndex((blog) => blog.id === blogId)
+	): Promise<null | DBTypes.Blog> {
+		const result = await client
+			.db(process.env.MONGO_DB_NAME)
+			.collection<DBTypes.Blog>(DbNames.blogs)
+			.updateOne({ id: blogId }, { $set: updateBlogDto })
 
-		if (blogIdx < 0) {
+		if (result.matchedCount === 0) {
 			return null
 		}
 
-		db.blogs[blogIdx] = Object.assign(db.blogs[blogIdx], updateBlogDto)
+		const updatedBlog = await this.getBlog(blogId)
 
-		return db.blogs[blogIdx]
+		return updatedBlog ? updatedBlog : null
 	},
 
-	deleteBlog(db: DBTypes.DB, blogId: string): boolean {
-		const blogIdx = db.blogs.findIndex((blog) => blog.id === blogId)
+	async deleteBlog(blogId: string): Promise<boolean> {
+		const result = await client
+			.db(process.env.MONGO_DB_NAME)
+			.collection(DbNames.blogs)
+			.deleteOne({ id: blogId })
 
-		if (blogIdx < 0) {
-			return false
-		}
-
-		db.blogs.splice(blogIdx, 1)
-		debugger
-
-		return true
+		return result.deletedCount === 1
 	},
 }

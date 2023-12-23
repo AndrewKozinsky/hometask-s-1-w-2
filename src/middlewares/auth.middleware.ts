@@ -17,6 +17,6 @@ function getCorrectAuthorizationHeader() {
 	const base64LoginAndPassword = Buffer.from(
 		process.env.AUTH_LOGIN + ':' + process.env.AUTH_PASSWORD,
 	).toString('base64')
-	console.log(base64LoginAndPassword)
+
 	return 'Basic ' + base64LoginAndPassword
 }

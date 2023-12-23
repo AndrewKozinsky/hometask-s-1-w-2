@@ -1,15 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "strict": true,
-    "noImplicitReturns": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-	"include": ["src/**/*", "__tests__/**/*"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+	"compilerOptions": {
+		"target": "es2016",
+		"module": "commonjs",
+		"outDir": "./dist",
+		"strict": true,
+		"noImplicitReturns": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"include": [
+		"src/**/*",
+		"__tests__/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"**/*.test.ts"
+	]
 }

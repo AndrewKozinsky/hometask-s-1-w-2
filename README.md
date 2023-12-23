@@ -1,6 +1,6 @@
 # Запуск Монги в Докере
 Запустить образ МонгоДБ в скрытом режиме на порту 27017. Имя контейнера будет test-mongo:
-```docker run -d -p 27017:27017 --name test-mongo mongo```
+```docker run -d -p 27017:27017 --name blog-mongo mongo```
 
 Команда для захода запущенный в контейнер через коммандную оболочку bash:
 ```docker exec -it test-mongo bash```
