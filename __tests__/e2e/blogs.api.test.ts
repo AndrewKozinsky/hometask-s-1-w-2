@@ -22,6 +22,14 @@ describe('Getting all blogs', () => {
 		const getBlogsRes = await request(app).get(RouteNames.blogs).expect(HTTP_STATUSES.OK_200)
 		expect(getBlogsRes.body.length).toBe(2)
 	})
+
+	it('should return an array of objects matching the scheme', async () => {
+		await addBlogRequest()
+
+		const getBlogsRes = await request(app).get(RouteNames.blogs)
+
+		checkBlogObj(getBlogsRes.body[0])
+	})
 })
 
 describe('Getting a blog', () => {
@@ -35,7 +43,9 @@ describe('Getting a blog', () => {
 		const createdBlogRes = await addBlogRequest()
 		const createdBlogId = createdBlogRes.body.id
 
-		await request(app).get(RouteNames.blog(createdBlogId)).expect(HTTP_STATUSES.OK_200)
+		const getBlogRes = await request(app).get(RouteNames.blog(createdBlogId))
+		expect(getBlogRes.status).toBe(HTTP_STATUSES.OK_200)
+		checkBlogObj(getBlogRes.body)
 	})
 })
 
@@ -171,4 +181,14 @@ function createDtoAddBlog(newBlogObj: Partial<CreateBlogDtoModel> = {}): CreateB
 		},
 		{ ...newBlogObj },
 	)
+}
+
+function checkBlogObj(blogObj: any) {
+	expect(typeof blogObj.id).toBe('string')
+	expect(typeof blogObj.name).toBe('string')
+	expect(typeof blogObj.description).toBe('string')
+	expect(blogObj.createdAt).toMatch(
+		/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
+	)
+	expect(typeof blogObj.websiteUrl).toBe('string')
 }

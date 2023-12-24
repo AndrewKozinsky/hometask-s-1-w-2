@@ -1,6 +1,6 @@
-import { ObjectId } from 'mongodb'
 import DbNames from '../config/dbNames'
 import {
+	BlogOutModel,
 	CreateBlogDtoModel,
 	CreateBlogOutModel,
 	GetBlogOutModel,
@@ -12,15 +12,17 @@ import { client } from './db'
 
 export const blogsRepository = {
 	async getBlogs(): Promise<GetBlogsOutModel> {
-		return client
+		const getBlogsRes = await client
 			.db(process.env.MONGO_DB_NAME)
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.find({})
 			.toArray()
+
+		return getBlogsRes.map(convertDbBlogToOutputBlog)
 	},
 
 	async createBlog(dto: CreateBlogDtoModel): Promise<CreateBlogOutModel> {
-		const newBlog: DBTypes.Blog = {
+		const newBlog: BlogOutModel = {
 			id: new Date().toISOString(),
 			name: dto.name,
 			description: dto.description,
@@ -44,7 +46,7 @@ export const blogsRepository = {
 	async updateBlog(
 		blogId: string,
 		updateBlogDto: UpdateBlogDtoModel,
-	): Promise<null | DBTypes.Blog> {
+	): Promise<null | BlogOutModel> {
 		const result = await client
 			.db(process.env.MONGO_DB_NAME)
 			.collection<DBTypes.Blog>(DbNames.blogs)
@@ -67,4 +69,15 @@ export const blogsRepository = {
 
 		return result.deletedCount === 1
 	},
+}
+
+function convertDbBlogToOutputBlog(DbBlog: DBTypes.Blog): BlogOutModel {
+	return {
+		id: DbBlog.id,
+		name: DbBlog.name,
+		description: DbBlog.description,
+		websiteUrl: DbBlog.websiteUrl,
+		createdAt: DbBlog.createdAt,
+		isMembership: DbBlog.isMembership,
+	}
 }

@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
 import { authMiddleware } from '../middlewares/auth.middleware'
-import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/blogs.model'
+import { BlogOutModel, CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/blogs.model'
 import { DBTypes } from '../models/db'
 import { blogsRepository } from '../repositories/blogs.repository'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
@@ -21,7 +21,7 @@ function getBlogsRouter() {
 		authMiddleware,
 		blogValidation(),
 		async (req: ReqWithBody<CreateBlogDtoModel>, res: Response) => {
-			const createdBlog: DBTypes.Blog = await blogsRepository.createBlog(req.body)
+			const createdBlog: BlogOutModel = await blogsRepository.createBlog(req.body)
 
 			res.status(HTTP_STATUSES.CREATED_201).send(createdBlog)
 		},

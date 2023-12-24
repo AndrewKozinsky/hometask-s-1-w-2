@@ -1,11 +1,12 @@
-import { ObjectId } from 'mongodb'
 import DbNames from '../config/dbNames'
+import { BlogOutModel } from '../models/blogs.model'
 import { DBTypes } from '../models/db'
 import {
 	CreatePostDtoModel,
 	CreatePostOutModel,
 	GetPostOutModel,
 	GetPostsOutModel,
+	PostOutModel,
 	UpdatePostDtoModel,
 } from '../models/posts.model'
 import { blogsRepository } from './blogs.repository'
@@ -13,18 +14,20 @@ import { client } from './db'
 
 export const postsRepository = {
 	async getPosts(): Promise<GetPostsOutModel> {
-		return await client
+		const getPostsRes = await client
 			.db(process.env.MONGO_DB_NAME)
 			.collection<DBTypes.Post>(DbNames.posts)
 			.find({})
 			.toArray()
+
+		return getPostsRes.map(convertDbPostToOutputPost)
 	},
 
 	async createPost(dto: CreatePostDtoModel): Promise<CreatePostOutModel> {
 		let blog = await blogsRepository.getBlog(dto.blogId)
 		blog = blog as DBTypes.Blog
 
-		const newPost: DBTypes.Post = {
+		const newPost: PostOutModel = {
 			id: new Date().toISOString(),
 			title: dto.title,
 			shortDescription: dto.shortDescription,
@@ -48,7 +51,7 @@ export const postsRepository = {
 	async updatePost(
 		postId: string,
 		updatePostDto: UpdatePostDtoModel,
-	): Promise<null | DBTypes.Post> {
+	): Promise<null | PostOutModel> {
 		const result = await client
 			.db(process.env.MONGO_DB_NAME)
 			.collection<DBTypes.Post>(DbNames.posts)
@@ -71,4 +74,16 @@ export const postsRepository = {
 
 		return result.deletedCount === 1
 	},
+}
+
+function convertDbPostToOutputPost(DbPost: DBTypes.Post): PostOutModel {
+	return {
+		id: DbPost.id,
+		title: DbPost.title,
+		shortDescription: DbPost.shortDescription,
+		content: DbPost.content,
+		blogId: DbPost.blogId,
+		blogName: DbPost.blogName,
+		createdAt: DbPost.createdAt,
+	}
 }
