@@ -6,7 +6,7 @@ export namespace DBTypes {
 		description: string
 		websiteUrl: string
 		createdAt: string
-		isMembership: true
+		isMembership: boolean
 	}
 
 	export type Post = {

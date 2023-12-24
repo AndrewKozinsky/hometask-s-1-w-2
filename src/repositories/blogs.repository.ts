@@ -26,7 +26,7 @@ export const blogsRepository = {
 			description: dto.description,
 			websiteUrl: dto.websiteUrl,
 			createdAt: new Date().toISOString(),
-			isMembership: true,
+			isMembership: false,
 		}
 
 		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.blogs).insertOne(newBlog)
