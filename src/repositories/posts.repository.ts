@@ -31,6 +31,7 @@ export const postsRepository = {
 			content: dto.content,
 			blogId: dto.blogId,
 			blogName: blog.name,
+			createdAt: new Date().toISOString(),
 		}
 
 		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.posts).insertOne(newPost)
