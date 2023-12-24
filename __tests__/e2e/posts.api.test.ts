@@ -27,6 +27,16 @@ describe('Getting all posts', () => {
 		expect(getPostsRes.status).toBe(HTTP_STATUSES.OK_200)
 		expect(getPostsRes.body.length).toBe(2)
 	})
+
+	it('should return an array of objects matching the scheme', async () => {
+		const createdBlogRes = await addBlogRequest()
+		const blogId = createdBlogRes.body.id
+
+		await addPostRequest(blogId)
+		const getPostsRes = await request(app).get(RouteNames.posts)
+
+		checkPostObj(getPostsRes.body[0])
+	})
 })
 
 describe('Getting a post', () => {
@@ -43,7 +53,10 @@ describe('Getting a post', () => {
 		const createdPostRes = await addPostRequest(blogId)
 		const createdPostId = createdPostRes.body.id
 
-		await request(app).get(RouteNames.post(createdPostId)).expect(HTTP_STATUSES.OK_200)
+		const getPostRes = await request(app).get(RouteNames.post(createdPostId))
+		expect(getPostRes.status).toBe(HTTP_STATUSES.OK_200)
+
+		checkPostObj(getPostRes.body)
 	})
 })
 
@@ -218,5 +231,18 @@ function createDtoAddPost(
 			blogId,
 		},
 		newPostObj,
+	)
+}
+
+function checkPostObj(postObj: any) {
+	expect(postObj._id).toBe(undefined)
+	expect(typeof postObj.id).toBe('string')
+	expect(typeof postObj.title).toBe('string')
+	expect(typeof postObj.shortDescription).toBe('string')
+	expect(typeof postObj.content).toBe('string')
+	expect(typeof postObj.blogId).toBe('string')
+	expect(typeof postObj.blogName).toBe('string')
+	expect(postObj.createdAt).toMatch(
+		/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
 	)
 }

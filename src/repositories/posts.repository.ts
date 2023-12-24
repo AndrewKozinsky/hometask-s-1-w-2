@@ -38,14 +38,19 @@ export const postsRepository = {
 		}
 
 		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.posts).insertOne(newPost)
-		return newPost
+
+		return convertDbPostToOutputPost(newPost as DBTypes.Post)
 	},
 
 	async getPost(postId: string): Promise<null | GetPostOutModel> {
-		return client
+		const getPostRes = await client
 			.db(process.env.MONGO_DB_NAME)
 			.collection<DBTypes.Post>(DbNames.posts)
 			.findOne({ id: postId })
+
+		if (!getPostRes) return null
+
+		return convertDbPostToOutputPost(getPostRes)
 	},
 
 	async updatePost(

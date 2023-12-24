@@ -33,14 +33,18 @@ export const blogsRepository = {
 
 		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.blogs).insertOne(newBlog)
 
-		return newBlog
+		return convertDbBlogToOutputBlog(newBlog as DBTypes.Blog)
 	},
 
 	async getBlog(blogId: string): Promise<null | GetBlogOutModel> {
-		return client
+		const getBlogRes = await client
 			.db(process.env.MONGO_DB_NAME)
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.findOne({ id: blogId })
+
+		if (!getBlogRes) return null
+
+		return convertDbBlogToOutputBlog(getBlogRes)
 	},
 
 	async updateBlog(

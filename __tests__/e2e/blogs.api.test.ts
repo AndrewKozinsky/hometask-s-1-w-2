@@ -184,6 +184,7 @@ function createDtoAddBlog(newBlogObj: Partial<CreateBlogDtoModel> = {}): CreateB
 }
 
 function checkBlogObj(blogObj: any) {
+	expect(typeof blogObj._id).toBe('undefined')
 	expect(typeof blogObj.id).toBe('string')
 	expect(typeof blogObj.name).toBe('string')
 	expect(typeof blogObj.description).toBe('string')
