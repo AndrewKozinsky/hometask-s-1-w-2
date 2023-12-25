@@ -17,3 +17,5 @@ export async function runDb() {
 		await client.close()
 	}
 }
+
+export const db = client.db(process.env.MONGO_DB_NAME)

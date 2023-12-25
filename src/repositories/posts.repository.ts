@@ -10,15 +10,11 @@ import {
 	UpdatePostDtoModel,
 } from '../models/posts.model'
 import { blogsRepository } from './blogs.repository'
-import { client } from './db'
+import { client, db } from './db'
 
 export const postsRepository = {
 	async getPosts(): Promise<GetPostsOutModel> {
-		const getPostsRes = await client
-			.db(process.env.MONGO_DB_NAME)
-			.collection<DBTypes.Post>(DbNames.posts)
-			.find({})
-			.toArray()
+		const getPostsRes = await db.collection<DBTypes.Post>(DbNames.posts).find({}).toArray()
 
 		return getPostsRes.map(convertDbPostToOutputPost)
 	},
@@ -37,16 +33,13 @@ export const postsRepository = {
 			createdAt: new Date().toISOString(),
 		}
 
-		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.posts).insertOne(newPost)
+		await db.collection(DbNames.posts).insertOne(newPost)
 
 		return convertDbPostToOutputPost(newPost as DBTypes.Post)
 	},
 
 	async getPost(postId: string): Promise<null | GetPostOutModel> {
-		const getPostRes = await client
-			.db(process.env.MONGO_DB_NAME)
-			.collection<DBTypes.Post>(DbNames.posts)
-			.findOne({ id: postId })
+		const getPostRes = await db.collection<DBTypes.Post>(DbNames.posts).findOne({ id: postId })
 
 		if (!getPostRes) return null
 
@@ -57,8 +50,7 @@ export const postsRepository = {
 		postId: string,
 		updatePostDto: UpdatePostDtoModel,
 	): Promise<null | PostOutModel> {
-		const result = await client
-			.db(process.env.MONGO_DB_NAME)
+		const result = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.updateOne({ id: postId }, { $set: updatePostDto })
 
@@ -72,10 +64,7 @@ export const postsRepository = {
 	},
 
 	async deletePost(postId: string): Promise<boolean> {
-		const result = await client
-			.db(process.env.MONGO_DB_NAME)
-			.collection(DbNames.posts)
-			.deleteOne({ id: postId })
+		const result = await db.collection(DbNames.posts).deleteOne({ id: postId })
 
 		return result.deletedCount === 1
 	},

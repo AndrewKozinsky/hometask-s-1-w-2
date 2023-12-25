@@ -8,15 +8,11 @@ import {
 	UpdateBlogDtoModel,
 } from '../models/blogs.model'
 import { DBTypes } from '../models/db'
-import { client } from './db'
+import { db } from './db'
 
 export const blogsRepository = {
 	async getBlogs(): Promise<GetBlogsOutModel> {
-		const getBlogsRes = await client
-			.db(process.env.MONGO_DB_NAME)
-			.collection<DBTypes.Blog>(DbNames.blogs)
-			.find({})
-			.toArray()
+		const getBlogsRes = await db.collection<DBTypes.Blog>(DbNames.blogs).find({}).toArray()
 
 		return getBlogsRes.map(convertDbBlogToOutputBlog)
 	},
@@ -31,16 +27,13 @@ export const blogsRepository = {
 			isMembership: false,
 		}
 
-		await client.db(process.env.MONGO_DB_NAME).collection(DbNames.blogs).insertOne(newBlog)
+		await db.collection(DbNames.blogs).insertOne(newBlog)
 
 		return convertDbBlogToOutputBlog(newBlog as DBTypes.Blog)
 	},
 
 	async getBlog(blogId: string): Promise<null | GetBlogOutModel> {
-		const getBlogRes = await client
-			.db(process.env.MONGO_DB_NAME)
-			.collection<DBTypes.Blog>(DbNames.blogs)
-			.findOne({ id: blogId })
+		const getBlogRes = await db.collection<DBTypes.Blog>(DbNames.blogs).findOne({ id: blogId })
 
 		if (!getBlogRes) return null
 
@@ -51,8 +44,7 @@ export const blogsRepository = {
 		blogId: string,
 		updateBlogDto: UpdateBlogDtoModel,
 	): Promise<null | BlogOutModel> {
-		const result = await client
-			.db(process.env.MONGO_DB_NAME)
+		const result = await db
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.updateOne({ id: blogId }, { $set: updateBlogDto })
 
@@ -66,10 +58,7 @@ export const blogsRepository = {
 	},
 
 	async deleteBlog(blogId: string): Promise<boolean> {
-		const result = await client
-			.db(process.env.MONGO_DB_NAME)
-			.collection(DbNames.blogs)
-			.deleteOne({ id: blogId })
+		const result = await db.collection(DbNames.blogs).deleteOne({ id: blogId })
 
 		return result.deletedCount === 1
 	},
