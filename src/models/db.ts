@@ -1,6 +1,6 @@
 export namespace DBTypes {
 	export type Blog = {
-		_id: string
+		// _id: string
 		id: string
 		name: string
 		description: string
@@ -10,7 +10,7 @@ export namespace DBTypes {
 	}
 
 	export type Post = {
-		_id: string
+		// _id: string
 		id: string
 		title: string
 		shortDescription: string

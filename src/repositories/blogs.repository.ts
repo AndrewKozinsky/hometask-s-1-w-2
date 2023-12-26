@@ -1,3 +1,4 @@
+import { WithId } from 'mongodb'
 import DbNames from '../config/dbNames'
 import {
 	BlogOutModel,
@@ -12,7 +13,7 @@ import { db } from './db'
 
 export const blogsRepository = {
 	async getBlogs(): Promise<GetBlogsOutModel> {
-		const getBlogsRes = await db.collection<DBTypes.Blog>(DbNames.blogs).find({}).toArray()
+		const getBlogsRes = await db.collection<BlogOutModel>(DbNames.blogs).find({}).toArray()
 
 		return getBlogsRes.map(convertDbBlogToOutputBlog)
 	},
@@ -29,7 +30,7 @@ export const blogsRepository = {
 
 		await db.collection(DbNames.blogs).insertOne(newBlog)
 
-		return convertDbBlogToOutputBlog(newBlog as DBTypes.Blog)
+		return convertDbBlogToOutputBlog(newBlog as WithId<DBTypes.Blog>)
 	},
 
 	async getBlog(blogId: string): Promise<null | GetBlogOutModel> {
@@ -64,7 +65,7 @@ export const blogsRepository = {
 	},
 }
 
-function convertDbBlogToOutputBlog(DbBlog: DBTypes.Blog): BlogOutModel {
+function convertDbBlogToOutputBlog(DbBlog: WithId<DBTypes.Blog>): BlogOutModel {
 	return {
 		id: DbBlog.id,
 		name: DbBlog.name,
