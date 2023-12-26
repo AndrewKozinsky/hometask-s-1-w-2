@@ -2,7 +2,8 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../../src/models/blogs.model'
+import { UpdateBlogDtoModel } from '../../src/models/blogs.model'
+import { addBlogRequest, createDtoAddBlog } from './common'
 
 export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
 
@@ -161,27 +162,6 @@ describe('Deleting a blog', () => {
 		await request(app).get(RouteNames.blog(createdBlogId)).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 })
-
-async function addBlogRequest(blogDto: Partial<CreateBlogDtoModel> = {}) {
-	return request(app)
-		.post(RouteNames.blogs)
-		.send(createDtoAddBlog(blogDto))
-		.set('Content-Type', 'application/json')
-		.set('Accept', 'application/json')
-		.set('authorization', authorizationValue)
-}
-
-function createDtoAddBlog(newBlogObj: Partial<CreateBlogDtoModel> = {}): CreateBlogDtoModel {
-	return Object.assign(
-		{
-			name: 'my name',
-			description: 'my description',
-			websiteUrl:
-				'https://9DKoTEgTwRIyvI8-tVDUU2STaq3OG.e0d6f1EB3XsujFbOW53q5woGXMrAc5zXUnQxWvxsTS6a3zLYZdUWDt-BnXLEs1',
-		},
-		{ ...newBlogObj },
-	)
-}
 
 function checkBlogObj(blogObj: any) {
 	expect(typeof blogObj._id).toBe('undefined')
