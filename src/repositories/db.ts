@@ -3,7 +3,6 @@ import { MongoClient } from 'mongodb'
 
 dotenv.config()
 
-// @ts-ignore
 export const client = new MongoClient(process.env.MONGO_URL)
 
 export async function runDb() {

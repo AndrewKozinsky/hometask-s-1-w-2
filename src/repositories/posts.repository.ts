@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import DbNames from '../config/dbNames'
 import { BlogOutModel } from '../models/blogs.model'
 import { DBTypes } from '../models/db'
@@ -13,54 +14,24 @@ import { blogsRepository } from './blogs.repository'
 import { client, db } from './db'
 
 export const postsRepository = {
-	async getPosts(): Promise<GetPostsOutModel> {
-		const getPostsRes = await db.collection<DBTypes.Post>(DbNames.posts).find({}).toArray()
-
-		return getPostsRes.map(convertDbPostToOutputPost)
+	async getPosts(): Promise<DBTypes.Post[]> {
+		return db.collection<DBTypes.Post>(DbNames.posts).find({}).toArray()
 	},
 
-	async createPost(dto: CreatePostDtoModel): Promise<CreatePostOutModel> {
-		let blog = await blogsRepository.getBlog(dto.blogId)
-		blog = blog as DBTypes.Blog
-
-		const newPost: PostOutModel = {
-			id: new Date().toISOString(),
-			title: dto.title,
-			shortDescription: dto.shortDescription,
-			content: dto.content,
-			blogId: dto.blogId,
-			blogName: blog.name,
-			createdAt: new Date().toISOString(),
-		}
-
-		await db.collection(DbNames.posts).insertOne(newPost)
-
-		return convertDbPostToOutputPost(newPost as DBTypes.Post)
+	async createPost(dto: CreatePostDtoModel) {
+		return db.collection(DbNames.posts).insertOne(dto)
 	},
 
-	async getPost(postId: string): Promise<null | GetPostOutModel> {
-		const getPostRes = await db.collection<DBTypes.Post>(DbNames.posts).findOne({ id: postId })
-
-		if (!getPostRes) return null
-
-		return convertDbPostToOutputPost(getPostRes)
+	async getPost(postId: string): Promise<null | DBTypes.Post> {
+		return db.collection<DBTypes.Post>(DbNames.posts).findOne({ _id: new ObjectId(postId) })
 	},
 
-	async updatePost(
-		postId: string,
-		updatePostDto: UpdatePostDtoModel,
-	): Promise<null | PostOutModel> {
-		const result = await db
+	async updatePost(postId: string, updatePostDto: UpdatePostDtoModel): Promise<boolean> {
+		const updatePostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.updateOne({ id: postId }, { $set: updatePostDto })
 
-		if (result.matchedCount === 0) {
-			return null
-		}
-
-		const updatedBlog = await this.getPost(postId)
-
-		return updatedBlog ? updatedBlog : null
+		return updatePostRes.matchedCount === 0
 	},
 
 	async deletePost(postId: string): Promise<boolean> {
@@ -68,16 +39,4 @@ export const postsRepository = {
 
 		return result.deletedCount === 1
 	},
-}
-
-function convertDbPostToOutputPost(DbPost: DBTypes.Post): PostOutModel {
-	return {
-		id: DbPost.id,
-		title: DbPost.title,
-		shortDescription: DbPost.shortDescription,
-		content: DbPost.content,
-		blogId: DbPost.blogId,
-		blogName: DbPost.blogName,
-		createdAt: DbPost.createdAt,
-	}
 }

@@ -9,14 +9,14 @@ export type BlogOutModel = {
 
 export type GetBlogsOutModel = BlogOutModel[]
 
+export type GetBlogOutModel = BlogOutModel
+
 export type CreateBlogDtoModel = {
 	name: string
 	description: string
 	websiteUrl: string
 }
 export type CreateBlogOutModel = BlogOutModel
-
-export type GetBlogOutModel = BlogOutModel
 
 export type UpdateBlogDtoModel = {
 	name: string
