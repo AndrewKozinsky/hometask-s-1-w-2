@@ -1,23 +1,17 @@
 import express, { Request, Response } from 'express'
-import { ObjectId } from 'mongodb'
 import { HTTP_STATUSES } from '../config/config'
 import { blogsService } from '../domain/blogs.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
-import {
-	BlogOutModel,
-	CreateBlogDtoModel,
-	GetBlogsOutModel,
-	UpdateBlogDtoModel,
-} from '../models/blogs.model'
-import { DBTypes } from '../models/db'
+import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/blogs.model'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
+import { blogsQueryRepository } from '../repositories/blogs.queryRepository'
 import { blogValidation } from '../validators/blog.validator'
 
 function getBlogsRouter() {
 	const router = express.Router()
 
 	router.get('/', async function (req: Request, res: Response) {
-		const blogs = await blogsService.getBlogs()
+		const blogs = await blogsQueryRepository.getBlogs()
 
 		res.status(HTTP_STATUSES.OK_200).send(blogs)
 	})
@@ -27,7 +21,8 @@ function getBlogsRouter() {
 		authMiddleware,
 		blogValidation(),
 		async function (req: ReqWithBody<CreateBlogDtoModel>, res: Response) {
-			const createdBlog = await blogsService.createBlog(req.body)
+			const createdBlogId = await blogsService.createBlog(req.body)
+			const createdBlog = await blogsQueryRepository.getBlog(createdBlogId)
 
 			res.status(HTTP_STATUSES.CREATED_201).send(createdBlog)
 		},
@@ -36,7 +31,7 @@ function getBlogsRouter() {
 	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
 		const blogId = req.params.id
 
-		const blog = await blogsService.getBlog(blogId)
+		const blog = await blogsQueryRepository.getBlog(blogId)
 
 		if (!blog) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
@@ -52,9 +47,9 @@ function getBlogsRouter() {
 		blogValidation(),
 		async (req: ReqWithParamsAndBody<{ id: string }, UpdateBlogDtoModel>, res: Response) => {
 			const blogId = req.params.id
-			const updatedBlog = await blogsService.updateBlog(blogId, req.body)
+			const isBlogUpdated = await blogsService.updateBlog(blogId, req.body)
 
-			if (!updatedBlog) {
+			if (!isBlogUpdated) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
 				return
 			}

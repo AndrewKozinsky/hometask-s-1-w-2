@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb'
 
 export namespace DBTypes {
 	export type Blog = {
-		_id: ObjectId
+		// _id: ObjectId
 		name: string
 		description: string
 		websiteUrl: string
@@ -11,7 +11,7 @@ export namespace DBTypes {
 	}
 
 	export type Post = {
-		_id: ObjectId
+		// _id: ObjectId
 		title: string
 		shortDescription: string
 		content: string

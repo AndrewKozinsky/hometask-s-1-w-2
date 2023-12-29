@@ -1,6 +1,7 @@
 import { body } from 'express-validator'
 import { inputValidation } from '../middlewares/input.validation'
 import { DBTypes } from '../models/db'
+import { blogsQueryRepository } from '../repositories/blogs.queryRepository'
 import { blogsRepository } from '../repositories/blogs.repository'
 
 export const titleValidation = body('title')
@@ -30,7 +31,7 @@ export const blogIdValidation = body('blogId')
 	.trim()
 	.isLength({ min: 1, max: 100 })
 	.custom(async (value) => {
-		const blog = await blogsRepository.getBlog(value)
+		const blog = await blogsRepository.getBlogById(value)
 
 		if (!blog) {
 			throw new Error('Incorrect blogId')

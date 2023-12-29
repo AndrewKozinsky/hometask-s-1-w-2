@@ -5,16 +5,14 @@ import { DBTypes } from '../models/db'
 import { db } from './db'
 
 export const blogsRepository = {
-	async getBlogs(): Promise<DBTypes.Blog[]> {
+	async getBlogs() {
 		return db.collection<BlogOutModel>(DbNames.blogs).find({}).toArray()
 	},
-
+	async getBlogById(blogId: string) {
+		return db.collection<DBTypes.Blog>(DbNames.blogs).findOne({ _id: new ObjectId(blogId) })
+	},
 	async createBlog(dto: BlogOutModel) {
 		return db.collection(DbNames.blogs).insertOne(dto)
-	},
-
-	async getBlog(blogId: string): Promise<null | DBTypes.Blog> {
-		return db.collection<DBTypes.Blog>(DbNames.blogs).findOne({ _id: new ObjectId(blogId) })
 	},
 
 	async updateBlog(blogId: string, updateBlogDto: UpdateBlogDtoModel): Promise<boolean> {

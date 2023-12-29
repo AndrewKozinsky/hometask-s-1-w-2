@@ -4,6 +4,7 @@ import { postsService } from '../domain/posts.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
 import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/posts.model'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
+import { postsQueryRepository } from '../repositories/posts.queryRepository'
 import { postsRepository } from '../repositories/posts.repository'
 import { postValidation } from '../validators/post.validator'
 
@@ -11,7 +12,7 @@ function getPostsRouter() {
 	const router = express.Router()
 
 	router.get('/', async (req: Request, res: Response) => {
-		const posts = await postsService.getPosts()
+		const posts = await postsQueryRepository.getPosts()
 
 		res.status(HTTP_STATUSES.OK_200).send(posts)
 	})
@@ -21,15 +22,17 @@ function getPostsRouter() {
 		authMiddleware,
 		postValidation(),
 		async (req: ReqWithBody<CreatePostDtoModel>, res: Response) => {
-			const createdPost = await postsService.createPost(req.body)
+			const createPostId = await postsService.createPost(req.body)
 
-			res.status(HTTP_STATUSES.CREATED_201).send(createdPost)
+			const getPostRes = await postsRepository.getPostById(createPostId.insertedId.toString())
+
+			res.status(HTTP_STATUSES.CREATED_201).send(getPostRes)
 		},
 	)
 
 	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
 		const postId = req.params.id
-		const post = await postsService.getPost(postId)
+		const post = await postsQueryRepository.getPost(postId)
 
 		if (!post) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
@@ -45,9 +48,9 @@ function getPostsRouter() {
 		postValidation(),
 		async (req: ReqWithParamsAndBody<{ id: string }, UpdatePostDtoModel>, res: Response) => {
 			const postId = req.params.id
-			const updatedPost = await postsService.updatePost(postId, req.body)
+			const isPostUpdated = await postsService.updatePost(postId, req.body)
 
-			if (!updatedPost) {
+			if (!isPostUpdated) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
 				return
 			}
