@@ -1,14 +1,9 @@
-import express, { Request, Response } from 'express'
+import express, { Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
 import DbNames from '../config/dbNames'
-import RouteNames from '../config/routeNames'
-import { authMiddleware } from '../middlewares/auth.middleware'
+import { ReqWithParams } from '../models/common'
 import { DBTypes } from '../models/db'
-import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/posts.model'
-import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
 import { client } from '../repositories/db'
-import { postsRepository } from '../repositories/posts.repository'
-import { postValidation } from '../validators/post.validator'
 
 function getTestRouter() {
 	const router = express.Router()

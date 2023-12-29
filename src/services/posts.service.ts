@@ -1,18 +1,6 @@
-import { ObjectId } from 'mongodb'
-import DbNames from '../config/dbNames'
-import { BlogOutModel } from '../models/blogs.model'
-import { DBTypes } from '../models/db'
-import {
-	CreatePostDtoModel,
-	CreatePostOutModel,
-	GetPostOutModel,
-	GetPostsOutModel,
-	PostOutModel,
-	UpdatePostDtoModel,
-} from '../models/posts.model'
-import { blogsQueryRepository } from '../repositories/blogs.queryRepository'
+import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/input/posts.input.model'
+import { PostOutModel } from '../models/output/posts.output.model'
 import { blogsRepository } from '../repositories/blogs.repository'
-import { client, db } from '../repositories/db'
 import { postsRepository } from '../repositories/posts.repository'
 
 export const postsService = {

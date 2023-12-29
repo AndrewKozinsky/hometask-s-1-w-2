@@ -1,12 +1,15 @@
-import { ObjectId } from 'mongodb'
+import { ObjectId, WithId } from 'mongodb'
 import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
-import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/posts.model'
+import { UpdatePostDtoModel } from '../models/input/posts.input.model'
+import { CreatePostOutModel } from '../models/output/posts.output.model'
+import { PostServiceModel } from '../models/service/posts.service.model'
 import { db } from './db'
 
 export const postsRepository = {
 	async getPosts() {
-		return await db.collection(DbNames.posts).find({}).toArray()
+		const getPostsRes = await db.collection<DBTypes.Post>(DbNames.posts).find({}).toArray()
+		return getPostsRes.map(this.mapDbPostToClientPost)
 	},
 
 	async getPostById(postId: string) {
@@ -14,12 +17,14 @@ export const postsRepository = {
 			return null
 		}
 
-		return await db
+		const getPostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.findOne({ _id: new ObjectId(postId) })
+
+		return getPostRes ? this.mapDbPostToClientPost(getPostRes) : null
 	},
 
-	async createPost(dto: CreatePostDtoModel) {
+	async createPost(dto: CreatePostOutModel) {
 		return db.collection(DbNames.posts).insertOne(dto)
 	},
 
@@ -35,5 +40,17 @@ export const postsRepository = {
 		const result = await db.collection(DbNames.posts).deleteOne({ id: postId })
 
 		return result.deletedCount === 1
+	},
+
+	mapDbPostToClientPost(DbPost: WithId<DBTypes.Post>): PostServiceModel {
+		return {
+			id: DbPost._id.toString(),
+			title: DbPost.title,
+			shortDescription: DbPost.shortDescription,
+			content: DbPost.content,
+			blogId: DbPost.blogId,
+			blogName: DbPost.blogName,
+			createdAt: DbPost.createdAt,
+		}
 	},
 }

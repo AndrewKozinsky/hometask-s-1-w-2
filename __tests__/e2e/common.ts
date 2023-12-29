@@ -1,8 +1,8 @@
 import request from 'supertest'
 import { app } from '../../src/app'
 import RouteNames from '../../src/config/routeNames'
-import { CreateBlogDtoModel } from '../../src/models/blogs.model'
-import { CreatePostDtoModel } from '../../src/models/posts.model'
+import { CreateBlogDtoModel } from '../../src/models/input/blogs.input.model'
+import { CreatePostDtoModel } from '../../src/models/input/posts.input.model'
 import { authorizationValue } from './blogs.api.test'
 
 export async function addBlogRequest(blogDto: Partial<CreateBlogDtoModel> = {}) {

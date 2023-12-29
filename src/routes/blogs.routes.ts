@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
-import { blogsService } from '../domain/blogs.service'
+import { blogsService } from '../services/blogs.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
-import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/blogs.model'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
+import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/input/blogs.input.model'
 import { blogsQueryRepository } from '../repositories/blogs.queryRepository'
 import { blogValidation } from '../validators/blog.validator'
 

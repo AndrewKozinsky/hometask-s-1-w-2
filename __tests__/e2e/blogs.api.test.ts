@@ -2,7 +2,7 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { UpdateBlogDtoModel } from '../../src/models/blogs.model'
+import { UpdateBlogDtoModel } from '../../src/models/input/blogs.input.model'
 import { addBlogRequest, createDtoAddBlog } from './common'
 
 export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'

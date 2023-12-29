@@ -1,25 +1,20 @@
 import { ObjectId, WithId } from 'mongodb'
 import DbNames from '../config/dbNames'
-import { BlogOutModel } from '../models/blogs.model'
 import { DBTypes } from '../models/db'
 import {
-	CreatePostDtoModel,
-	CreatePostOutModel,
 	GetPostOutModel,
 	GetPostsOutModel,
 	PostOutModel,
-	UpdatePostDtoModel,
-} from '../models/posts.model'
-import { blogsRepository } from './blogs.repository'
-import { client, db } from './db'
+} from '../models/output/posts.output.model'
+import { db } from './db'
 
 export const postsQueryRepository = {
-	async getPosts(): Promise<DBTypes.Post[]> {
+	async getPosts(): Promise<GetPostsOutModel> {
 		const getPostsRes = await db.collection<DBTypes.Post>(DbNames.posts).find({}).toArray()
 		return getPostsRes.map(this.mapDbPostToOutputPost)
 	},
 
-	async getPost(postId: string): Promise<null | DBTypes.Post> {
+	async getPost(postId: string): Promise<null | GetPostOutModel> {
 		if (!ObjectId.isValid(postId)) {
 			return null
 		}

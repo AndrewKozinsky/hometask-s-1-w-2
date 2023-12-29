@@ -1,17 +1,25 @@
-import { ObjectId } from 'mongodb'
+import { ObjectId, WithId } from 'mongodb'
 import DbNames from '../config/dbNames'
-import { BlogOutModel, UpdateBlogDtoModel } from '../models/blogs.model'
 import { DBTypes } from '../models/db'
+import { UpdateBlogDtoModel } from '../models/input/blogs.input.model'
+import { CreateBlogOutModel } from '../models/output/blogs.output.model'
+import { BlogServiceModel } from '../models/service/blogs.service.model'
 import { db } from './db'
 
 export const blogsRepository = {
 	async getBlogs() {
-		return db.collection<BlogOutModel>(DbNames.blogs).find({}).toArray()
+		const getBlogsRes = await db.collection<DBTypes.Blog>(DbNames.blogs).find({}).toArray()
+
+		return getBlogsRes.map(this.mapDbBlogToServiceBlog)
 	},
 	async getBlogById(blogId: string) {
-		return db.collection<DBTypes.Blog>(DbNames.blogs).findOne({ _id: new ObjectId(blogId) })
+		const getBlogRes = await db
+			.collection<DBTypes.Blog>(DbNames.blogs)
+			.findOne({ _id: new ObjectId(blogId) })
+
+		return getBlogRes ? this.mapDbBlogToServiceBlog(getBlogRes) : null
 	},
-	async createBlog(dto: BlogOutModel) {
+	async createBlog(dto: CreateBlogOutModel) {
 		return db.collection(DbNames.blogs).insertOne(dto)
 	},
 
@@ -27,5 +35,15 @@ export const blogsRepository = {
 		const result = await db.collection(DbNames.blogs).deleteOne({ _id: new ObjectId(blogId) })
 
 		return result.deletedCount === 1
+	},
+	mapDbBlogToServiceBlog(DbBlog: WithId<DBTypes.Blog>): BlogServiceModel {
+		return {
+			id: DbBlog._id.toString(),
+			name: DbBlog.name,
+			description: DbBlog.description,
+			websiteUrl: DbBlog.websiteUrl,
+			createdAt: DbBlog.createdAt,
+			isMembership: DbBlog.isMembership,
+		}
 	},
 }

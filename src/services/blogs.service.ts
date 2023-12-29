@@ -1,4 +1,5 @@
-import { BlogOutModel, CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/blogs.model'
+import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/input/blogs.input.model'
+import { BlogOutModel } from '../models/output/blogs.output.model'
 import { blogsRepository } from '../repositories/blogs.repository'
 
 export const blogsService = {
