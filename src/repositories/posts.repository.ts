@@ -29,6 +29,10 @@ export const postsRepository = {
 	},
 
 	async updatePost(postId: string, updatePostDto: UpdatePostDtoModel): Promise<boolean> {
+		if (!ObjectId.isValid(postId)) {
+			return false
+		}
+
 		const updatePostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.updateOne({ id: postId }, { $set: updatePostDto })
@@ -37,7 +41,11 @@ export const postsRepository = {
 	},
 
 	async deletePost(postId: string): Promise<boolean> {
-		const result = await db.collection(DbNames.posts).deleteOne({ id: postId })
+		if (!ObjectId.isValid(postId)) {
+			return false
+		}
+
+		const result = await db.collection(DbNames.posts).deleteOne({ _id: new ObjectId(postId) })
 
 		return result.deletedCount === 1
 	},

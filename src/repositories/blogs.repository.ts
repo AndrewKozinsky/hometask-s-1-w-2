@@ -13,6 +13,10 @@ export const blogsRepository = {
 		return getBlogsRes.map(this.mapDbBlogToServiceBlog)
 	},
 	async getBlogById(blogId: string) {
+		if (!ObjectId.isValid(blogId)) {
+			return null
+		}
+
 		const getBlogRes = await db
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.findOne({ _id: new ObjectId(blogId) })
@@ -24,6 +28,10 @@ export const blogsRepository = {
 	},
 
 	async updateBlog(blogId: string, updateBlogDto: UpdateBlogDtoModel): Promise<boolean> {
+		if (!ObjectId.isValid(blogId)) {
+			return false
+		}
+
 		const updateBlogRes = await db
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.updateOne({ id: blogId }, { $set: updateBlogDto })
@@ -32,10 +40,15 @@ export const blogsRepository = {
 	},
 
 	async deleteBlog(blogId: string): Promise<boolean> {
+		if (!ObjectId.isValid(blogId)) {
+			return false
+		}
+
 		const result = await db.collection(DbNames.blogs).deleteOne({ _id: new ObjectId(blogId) })
 
 		return result.deletedCount === 1
 	},
+
 	mapDbBlogToServiceBlog(DbBlog: WithId<DBTypes.Blog>): BlogServiceModel {
 		return {
 			id: DbBlog._id.toString(),

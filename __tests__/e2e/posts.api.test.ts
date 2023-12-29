@@ -2,7 +2,7 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { UpdatePostDtoModel } from '../../src/models/posts.model'
+import { UpdatePostDtoModel } from '../../src/models/input/posts.input.model'
 import { addBlogRequest, addPostRequest, createDtoAddPost } from './common'
 
 const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
@@ -40,7 +40,7 @@ describe('Getting all posts', () => {
 })
 
 describe('Getting a post', () => {
-	it("should return 404 if a post doesn't exists", async () => {
+	it('should return 404 if a post does not exists', async () => {
 		const getPostRes = await request(app).get(RouteNames.post('999'))
 
 		expect(getPostRes.status).toBe(HTTP_STATUSES.NOT_FOUNT_404)
