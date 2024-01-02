@@ -24,7 +24,7 @@ export const blogsRepository = {
 		return getBlogRes ? this.mapDbBlogToServiceBlog(getBlogRes) : null
 	},
 	async createBlog(dto: CreateBlogOutModel) {
-		return db.collection(DbNames.blogs).insertOne(dto)
+		return db.collection(DbNames.blogs).insertOne({ ...dto, isMembership: false })
 	},
 
 	async updateBlog(blogId: string, updateBlogDto: UpdateBlogDtoModel): Promise<boolean> {

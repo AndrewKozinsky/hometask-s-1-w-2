@@ -19,6 +19,7 @@ import {
 } from '../models/input/blogs.input.model'
 import { blogsQueryRepository } from '../repositories/blogs.queryRepository'
 import { blogValidation } from '../validators/blog.validator'
+import { createBlogPostsValidation } from '../validators/createBlogPost.validator'
 import { getBlogPostsValidation } from '../validators/getBlogPosts.validator'
 import { getBlogsValidation } from '../validators/getBlogs.validator'
 
@@ -28,7 +29,7 @@ function getBlogsRouter() {
 	// Returns blogs with paging
 	router.get(
 		'/',
-		// getBlogsValidation(),
+		getBlogsValidation(),
 		async function (req: ReqWithQuery<GetBlogsQueries>, res: Response) {
 			const blogs = await blogsQueryRepository.getBlogs(req.params)
 
@@ -74,7 +75,7 @@ function getBlogsRouter() {
 	router.post(
 		'/:id/posts',
 		authMiddleware,
-		blogValidation(),
+		createBlogPostsValidation(),
 		async function (
 			req: ReqWithParamsAndBody<{ id: string }, CreateBlogPostDtoModel>,
 			res: Response,
