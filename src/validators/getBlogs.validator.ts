@@ -1,27 +1,27 @@
-import { param } from 'express-validator'
+import { query } from 'express-validator'
 import { inputValidation } from '../middlewares/input.validation'
 
-export const searchNameTermValidation = param('searchNameTerm')
+export const searchNameTermValidation = query('searchNameTerm')
 	.optional()
 	.isString()
 	.withMessage('SearchNameTerm must be a string')
 
-export const sortByValidation = param('sortBy')
+export const sortByValidation = query('sortBy')
 	.optional()
 	.isString()
 	.withMessage('SortBy must be a string')
 
-export const sortDirectionValidation = param('sortDirection')
+export const sortDirectionValidation = query('sortDirection')
 	.optional()
 	.isIn(['desc', 'asc'])
 	.withMessage('SortBy must has desc value or asc')
 
-export const pageNumberValidation = param('pageNumber')
+export const pageNumberValidation = query('pageNumber')
 	.optional()
 	.isInt()
 	.withMessage('PageNumber must be a number')
 
-export const pageSizeValidation = param('pageSize')
+export const pageSizeValidation = query('pageSize')
 	.optional()
 	.isInt()
 	.withMessage('PageSize must be a number')

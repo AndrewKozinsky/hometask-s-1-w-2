@@ -3,6 +3,7 @@ import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
 import { UpdateBlogDtoModel } from '../../src/models/input/blogs.input.model'
+import { GetBlogsOutModel } from '../../src/models/output/blogs.output.model'
 import { addBlogRequest, createDtoAddBlog } from './common'
 
 export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
@@ -13,7 +14,15 @@ beforeEach(async () => {
 
 describe('Getting all blogs', () => {
 	it('should return an empty array of blogs', async () => {
-		await request(app).get(RouteNames.blogs).expect(HTTP_STATUSES.OK_200, [])
+		const successAnswer: GetBlogsOutModel = {
+			pagesCount: 0,
+			page: 1,
+			pageSize: 10,
+			totalCount: 0,
+			items: [],
+		}
+
+		await request(app).get(RouteNames.blogs).expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
 	/*it('should return an array with 2 items after creating 2 blogs', async () => {

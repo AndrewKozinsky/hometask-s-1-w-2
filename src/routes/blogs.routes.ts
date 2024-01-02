@@ -28,7 +28,7 @@ function getBlogsRouter() {
 	// Returns blogs with paging
 	router.get(
 		'/',
-		getBlogsValidation,
+		// getBlogsValidation(),
 		async function (req: ReqWithQuery<GetBlogsQueries>, res: Response) {
 			const blogs = await blogsQueryRepository.getBlogs(req.params)
 
@@ -52,7 +52,7 @@ function getBlogsRouter() {
 	// Returns all posts for specified blog
 	router.get(
 		'/:id/posts',
-		getBlogPostsValidation,
+		getBlogPostsValidation(),
 		async (
 			req: ReqWithParamsAndQueries<{ id: string }, GetBlogPostsQueries>,
 			res: Response,
