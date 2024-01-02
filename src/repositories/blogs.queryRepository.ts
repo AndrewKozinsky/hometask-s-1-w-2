@@ -1,18 +1,80 @@
-import { ObjectId, WithId } from 'mongodb'
+import { Filter, ObjectId, WithId } from 'mongodb'
 import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
+import { GetBlogPostsQueries, GetBlogsQueries } from '../models/input/blogs.input.model'
 import {
 	BlogOutModel,
 	GetBlogOutModel,
+	GetBlogPostsOutModel,
 	GetBlogsOutModel,
 } from '../models/output/blogs.output.model'
+import { PostOutModel } from '../models/output/posts.output.model'
 import { db } from './db'
+import { postsQueryRepository } from './posts.queryRepository'
 
 export const blogsQueryRepository = {
-	async getBlogs(): Promise<GetBlogsOutModel> {
-		const getBlogsRes = await db.collection<BlogOutModel>(DbNames.blogs).find({}).toArray()
+	async getBlogs(params: GetBlogsQueries): Promise<GetBlogsOutModel> {
+		const filter: Filter<BlogOutModel> = {}
 
-		return getBlogsRes.map(this.mapDbBlogToOutputBlog)
+		if (params.searchNameTerm) {
+			filter.name = { $regex: params.searchNameTerm, $options: 'i' }
+		}
+
+		const sortBy = params.sortBy ?? 'createdAt'
+		const sortDirection = params.sortDirection ?? 'desc'
+
+		const pageNumber = params.pageNumber ?? 1
+		const pageSize = params.pageSize ?? 10
+
+		const totalBlogsCount = await db.collection(DbNames.blogs).countDocuments(filter)
+		const pagesCount = Math.ceil(totalBlogsCount / pageSize)
+
+		const getBlogsRes = await db
+			.collection<BlogOutModel>(DbNames.blogs)
+			.find(filter)
+			.sort(sortBy, sortDirection)
+			.skip((pageNumber - 1) * pageSize)
+			.limit(pageSize)
+			.toArray()
+
+		return {
+			pagesCount,
+			page: pageNumber,
+			pageSize,
+			totalCount: totalBlogsCount,
+			items: getBlogsRes.map(this.mapDbBlogToOutputBlog),
+		}
+	},
+
+	async getBlogPosts(blogId: string, params: GetBlogPostsQueries): Promise<GetBlogPostsOutModel> {
+		const filter: Filter<PostOutModel> = {
+			blogId,
+		}
+
+		const sortBy = params.sortBy ?? 'createdAt'
+		const sortDirection = params.sortDirection ?? 'desc'
+
+		const pageNumber = params.pageNumber ?? 1
+		const pageSize = params.pageSize ?? 10
+
+		const totalBlogPostsCount = await db.collection(DbNames.posts).countDocuments(filter)
+		const pagesCount = Math.ceil(totalBlogPostsCount / pageSize)
+
+		const getBlogPostsRes = await db
+			.collection<PostOutModel>(DbNames.blogs)
+			.find(filter)
+			.sort(sortBy, sortDirection)
+			.skip((pageNumber - 1) * pageSize)
+			.limit(pageSize)
+			.toArray()
+
+		return {
+			pagesCount,
+			page: pageNumber,
+			pageSize,
+			totalCount: totalBlogPostsCount,
+			items: getBlogPostsRes.map(postsQueryRepository.mapDbPostToOutputPost),
+		}
 	},
 
 	async getBlog(blogId: string): Promise<null | GetBlogOutModel> {

@@ -1,6 +1,12 @@
-import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../models/input/blogs.input.model'
+import {
+	CreateBlogDtoModel,
+	CreateBlogPostDtoModel,
+	UpdateBlogDtoModel,
+} from '../models/input/blogs.input.model'
+import { CreatePostDtoModel } from '../models/input/posts.input.model'
 import { BlogOutModel } from '../models/output/blogs.output.model'
 import { blogsRepository } from '../repositories/blogs.repository'
+import { postsService } from './posts.service'
 
 export const blogsService = {
 	async createBlog(dto: CreateBlogDtoModel) {
@@ -15,6 +21,10 @@ export const blogsService = {
 
 		const createBlogRes = await blogsRepository.createBlog(newBlog)
 		return createBlogRes.insertedId.toString()
+	},
+	async createBlogPost(blogId: string, postDto: CreateBlogPostDtoModel) {
+		const newPostDto: CreatePostDtoModel = { blogId, ...postDto }
+		return postsService.createPost(newPostDto)
 	},
 
 	async updateBlog(blogId: string, updateBlogDto: UpdateBlogDtoModel) {

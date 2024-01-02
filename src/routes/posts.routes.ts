@@ -1,22 +1,33 @@
-import express, { Request, Response } from 'express'
+import express, { Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
 import { postsService } from '../services/posts.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
-import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/input/posts.input.model'
+import {
+	CreatePostDtoModel,
+	GetPostsParams,
+	UpdatePostDtoModel,
+} from '../models/input/posts.input.model'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
 import { postsRepository } from '../repositories/posts.repository'
+import { getPostsValidation } from '../validators/getPosts.validator'
 import { postValidation } from '../validators/post.validator'
 
 function getPostsRouter() {
 	const router = express.Router()
 
-	router.get('/', async (req: Request, res: Response) => {
-		const posts = await postsQueryRepository.getPosts()
+	// Returns all posts
+	router.get(
+		'/',
+		getPostsValidation,
+		async (req: ReqWithParams<GetPostsParams>, res: Response) => {
+			const posts = await postsQueryRepository.getPosts(req.params)
 
-		res.status(HTTP_STATUSES.OK_200).send(posts)
-	})
+			res.status(HTTP_STATUSES.OK_200).send(posts)
+		},
+	)
 
+	// Create new post
 	router.post(
 		'/',
 		authMiddleware,
@@ -30,6 +41,7 @@ function getPostsRouter() {
 		},
 	)
 
+	// Return post by id
 	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
 		const postId = req.params.id
 		const post = await postsQueryRepository.getPost(postId)
@@ -42,6 +54,7 @@ function getPostsRouter() {
 		res.status(HTTP_STATUSES.OK_200).send(post)
 	})
 
+	// Update existing post by id with InputModel
 	router.put(
 		'/:id',
 		authMiddleware,
@@ -59,6 +72,7 @@ function getPostsRouter() {
 		},
 	)
 
+	// Delete post specified by id
 	router.delete(
 		'/:id',
 		authMiddleware,
