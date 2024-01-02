@@ -1,4 +1,5 @@
 import express, { Response } from 'express'
+import { ObjectId } from 'mongodb'
 import { HTTP_STATUSES } from '../config/config'
 import { postsService } from '../services/posts.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
@@ -44,6 +45,11 @@ function getPostsRouter() {
 	// Return post by id
 	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
 		const postId = req.params.id
+
+		if (!ObjectId.isValid(postId)) {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+		}
+
 		const post = await postsQueryRepository.getPost(postId)
 
 		if (!post) {
@@ -61,6 +67,11 @@ function getPostsRouter() {
 		postValidation(),
 		async (req: ReqWithParamsAndBody<{ id: string }, UpdatePostDtoModel>, res: Response) => {
 			const postId = req.params.id
+
+			if (!ObjectId.isValid(postId)) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			}
+
 			const isPostUpdated = await postsService.updatePost(postId, req.body)
 
 			if (!isPostUpdated) {
@@ -78,6 +89,11 @@ function getPostsRouter() {
 		authMiddleware,
 		async (req: ReqWithParams<{ id: string }>, res: Response) => {
 			const postId = req.params.id
+
+			if (!ObjectId.isValid(postId)) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			}
+
 			const isPostDeleted = await postsService.deletePost(postId)
 
 			if (!isPostDeleted) {

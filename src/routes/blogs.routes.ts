@@ -1,4 +1,5 @@
 import express, { Response } from 'express'
+import { ObjectId } from 'mongodb'
 import { HTTP_STATUSES } from '../config/config'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
 import { blogsService } from '../services/blogs.service'
@@ -80,6 +81,13 @@ function getBlogsRouter() {
 			req: ReqWithParamsAndBody<{ id: string }, CreateBlogPostDtoModel>,
 			res: Response,
 		) {
+			const blogId = req.params.id
+
+			if (!ObjectId.isValid(blogId)) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+				return
+			}
+
 			const createPostRes = await blogsService.createBlogPost(req.params.id, req.body)
 			const createdPost = await postsQueryRepository.getPost(
 				createPostRes.insertedId.toString(),
@@ -92,6 +100,10 @@ function getBlogsRouter() {
 	// Returns blog by id
 	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
 		const blogId = req.params.id
+
+		if (!ObjectId.isValid(blogId)) {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+		}
 
 		const blog = await blogsQueryRepository.getBlog(blogId)
 
@@ -110,6 +122,11 @@ function getBlogsRouter() {
 		blogValidation(),
 		async (req: ReqWithParamsAndBody<{ id: string }, UpdateBlogDtoModel>, res: Response) => {
 			const blogId = req.params.id
+
+			if (!ObjectId.isValid(blogId)) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			}
+
 			const isBlogUpdated = await blogsService.updateBlog(blogId, req.body)
 
 			if (!isBlogUpdated) {
@@ -127,6 +144,11 @@ function getBlogsRouter() {
 		authMiddleware,
 		async (req: ReqWithParams<{ id: string }>, res: Response) => {
 			const blogId = req.params.id
+
+			if (!ObjectId.isValid(blogId)) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			}
+
 			const isBlogDeleted = await blogsService.deleteBlog(blogId)
 
 			if (!isBlogDeleted) {
