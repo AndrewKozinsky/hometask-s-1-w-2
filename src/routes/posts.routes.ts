@@ -3,10 +3,10 @@ import { ObjectId } from 'mongodb'
 import { HTTP_STATUSES } from '../config/config'
 import { postsService } from '../services/posts.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
-import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody } from '../models/common'
+import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody, ReqWithQuery } from '../models/common'
 import {
 	CreatePostDtoModel,
-	GetPostsParams,
+	GetPostsQueries,
 	UpdatePostDtoModel,
 } from '../models/input/posts.input.model'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
@@ -20,8 +20,8 @@ function getPostsRouter() {
 	// Returns all posts
 	router.get(
 		'/',
-		getPostsValidation,
-		async (req: ReqWithParams<GetPostsParams>, res: Response) => {
+		getPostsValidation(),
+		async (req: ReqWithQuery<GetPostsQueries>, res: Response) => {
 			const posts = await postsQueryRepository.getPosts(req.params)
 
 			res.status(HTTP_STATUSES.OK_200).send(posts)

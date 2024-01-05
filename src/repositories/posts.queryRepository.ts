@@ -1,9 +1,7 @@
-import { Filter, ObjectId, WithId } from 'mongodb'
+import { ObjectId, WithId } from 'mongodb'
 import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
-import { GetBlogsQueries } from '../models/input/blogs.input.model'
-import { GetPostsParams } from '../models/input/posts.input.model'
-import { BlogOutModel } from '../models/output/blogs.output.model'
+import { GetPostsQueries } from '../models/input/posts.input.model'
 import {
 	GetPostOutModel,
 	GetPostsOutModel,
@@ -12,12 +10,12 @@ import {
 import { db } from './db'
 
 export const postsQueryRepository = {
-	async getPosts(params: GetPostsParams): Promise<GetPostsOutModel> {
-		const sortBy = params.sortBy ?? 'createdAt'
-		const sortDirection = params.sortDirection ?? 'desc'
+	async getPosts(queries: GetPostsQueries): Promise<GetPostsOutModel> {
+		const sortBy = queries.sortBy ?? 'createdAt'
+		const sortDirection = queries.sortDirection ?? 'desc'
 
-		const pageNumber = params.pageNumber ?? 1
-		const pageSize = params.pageSize ?? 10
+		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
+		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
 		const totalPostsCount = await db.collection(DbNames.posts).countDocuments({})
 		const pagesCount = Math.ceil(totalPostsCount / pageSize)

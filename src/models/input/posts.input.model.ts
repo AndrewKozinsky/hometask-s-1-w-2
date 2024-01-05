@@ -12,7 +12,7 @@ export type UpdatePostDtoModel = {
 	blogId: string
 }
 
-export type GetPostsParams = {
+export type GetPostsQueries = {
 	// Default value : createdAt
 	sortBy?: string
 	// Default value: desc. Available values : asc, desc

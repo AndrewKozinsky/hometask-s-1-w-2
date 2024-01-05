@@ -13,18 +13,18 @@ import { db } from './db'
 import { postsQueryRepository } from './posts.queryRepository'
 
 export const blogsQueryRepository = {
-	async getBlogs(params: GetBlogsQueries): Promise<GetBlogsOutModel> {
+	async getBlogs(query: GetBlogsQueries): Promise<GetBlogsOutModel> {
 		const filter: Filter<BlogOutModel> = {}
 
-		if (params.searchNameTerm) {
-			filter.name = { $regex: params.searchNameTerm, $options: 'i' }
+		if (query.searchNameTerm) {
+			filter.name = { $regex: query.searchNameTerm, $options: 'i' }
 		}
 
-		const sortBy = params.sortBy ?? 'createdAt'
-		const sortDirection = params.sortDirection ?? 'desc'
+		const sortBy = query.sortBy ?? 'createdAt'
+		const sortDirection = query.sortDirection ?? 'desc'
 
-		const pageNumber = params.pageNumber ?? 1
-		const pageSize = params.pageSize ?? 10
+		const pageNumber = query.pageNumber ? +query.pageNumber : 1
+		const pageSize = query.pageSize ? +query.pageSize : 10
 
 		const totalBlogsCount = await db.collection(DbNames.blogs).countDocuments(filter)
 		const pagesCount = Math.ceil(totalBlogsCount / pageSize)

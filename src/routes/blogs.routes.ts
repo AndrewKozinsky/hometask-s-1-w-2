@@ -33,7 +33,7 @@ function getBlogsRouter() {
 		'/',
 		getBlogsValidation(),
 		async function (req: ReqWithQuery<GetBlogsQueries>, res: Response) {
-			const blogs = await blogsQueryRepository.getBlogs(req.params)
+			const blogs = await blogsQueryRepository.getBlogs(req.query)
 
 			res.status(HTTP_STATUSES.OK_200).send(blogs)
 		},
@@ -54,13 +54,13 @@ function getBlogsRouter() {
 
 	// Returns all posts for specified blog
 	router.get(
-		'/:id/posts',
+		'/:blogId/posts',
 		getBlogPostsValidation(),
 		async (
-			req: ReqWithParamsAndQueries<{ id: string }, GetBlogPostsQueries>,
+			req: ReqWithParamsAndQueries<{ blogId: string }, GetBlogPostsQueries>,
 			res: Response,
 		) => {
-			const blogId = req.params.id
+			const blogId = req.params.blogId
 
 			const blog = await blogsRepository.getBlogById(blogId)
 			if (!blog) {
@@ -81,28 +81,22 @@ function getBlogsRouter() {
 
 	// Create new post for specific blog
 	router.post(
-		'/:id/posts',
+		'/:blogId/posts',
 		authMiddleware,
 		createBlogPostsValidation(),
 		async function (
-			req: ReqWithParamsAndBody<{ id: string }, CreateBlogPostDtoModel>,
+			req: ReqWithParamsAndBody<{ blogId: string }, CreateBlogPostDtoModel>,
 			res: Response,
 		) {
-			const blogId = req.params.id
+			const blogId = req.params.blogId
+			const blog = await blogsRepository.getBlogById(blogId)
 
-			if (!ObjectId.isValid(blogId)) {
-				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-				return
-			}
-
-			const isBlogExists = await blogsRepository.getBlogById(req.params.id)
-
-			if (!isBlogExists) {
+			if (!blog) {
 				res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
 				return
 			}
 
-			const createPostRes = await blogsService.createBlogPost(req.params.id, req.body)
+			const createPostRes = await blogsService.createBlogPost(blogId, req.body)
 
 			const createdPost = await postsQueryRepository.getPost(
 				createPostRes.insertedId.toString(),
@@ -113,8 +107,8 @@ function getBlogsRouter() {
 	)
 
 	// Returns blog by id
-	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
-		const blogId = req.params.id
+	router.get('/:blogId', async (req: ReqWithParams<{ blogId: string }>, res: Response) => {
+		const blogId = req.params.blogId
 
 		if (!ObjectId.isValid(blogId)) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
@@ -132,11 +126,14 @@ function getBlogsRouter() {
 
 	// Update existing Blog by id with InputModel
 	router.put(
-		'/:id',
+		'/:blogId',
 		authMiddleware,
 		blogValidation(),
-		async (req: ReqWithParamsAndBody<{ id: string }, UpdateBlogDtoModel>, res: Response) => {
-			const blogId = req.params.id
+		async (
+			req: ReqWithParamsAndBody<{ blogId: string }, UpdateBlogDtoModel>,
+			res: Response,
+		) => {
+			const blogId = req.params.blogId
 
 			if (!ObjectId.isValid(blogId)) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
@@ -155,10 +152,10 @@ function getBlogsRouter() {
 
 	// Delete blog specified by id
 	router.delete(
-		'/:id',
+		'/:blogId',
 		authMiddleware,
-		async (req: ReqWithParams<{ id: string }>, res: Response) => {
-			const blogId = req.params.id
+		async (req: ReqWithParams<{ blogId: string }>, res: Response) => {
+			const blogId = req.params.blogId
 
 			if (!ObjectId.isValid(blogId)) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
