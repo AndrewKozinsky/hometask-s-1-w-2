@@ -52,9 +52,44 @@ describe('Getting all blogs', () => {
 
 		const getBlogsRes = await request(app).get(RouteNames.blogs + '?pageNumber=2&pageSize=2')
 
+		expect(getBlogsRes.body.page).toBe(2)
 		expect(getBlogsRes.body.pagesCount).toBe(4)
 		expect(getBlogsRes.body.totalCount).toBe(7)
-		// expect(getBlogsRes.body.items.length).toBe(7)
+		expect(getBlogsRes.body.items.length).toBe(2)
+	})
+})
+
+describe('Creating a blog', () => {
+	it('should forbid a request from an unauthorized user', async () => {
+		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
+	})
+
+	it('create a blog by wrong dto', async () => {
+		const createdBlogRes = await addBlogRequest({ websiteUrl: 'samurai.it-incubator' })
+		expect(createdBlogRes.status).toBe(HTTP_STATUSES.BAD_REQUEST_400)
+
+		expect({}.toString.call(createdBlogRes.body.errorsMessages)).toBe('[object Array]')
+		expect(createdBlogRes.body.errorsMessages.length).toBe(1)
+		expect(createdBlogRes.body.errorsMessages[0].field).toBe('websiteUrl')
+	})
+
+	it('should create a blog by correct dto', async () => {
+		const createdBlogRes = await addBlogRequest()
+		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
+
+		expect(typeof createdBlogRes.body.id).toBe('string')
+		expect(createdBlogRes.body.name).toEqual(createDtoAddBlog().name)
+		expect(createdBlogRes.body.description).toEqual(createDtoAddBlog().description)
+		expect(createdBlogRes.body.websiteUrl).toEqual(createDtoAddBlog().websiteUrl)
+		expect(typeof createdBlogRes.body.createdAt).toBe('string')
+		expect(createdBlogRes.body.isMembership).toBe(false)
+
+		// Check if there are 2 blogs after adding another one
+		const createdSecondBlogRes = await addBlogRequest()
+		expect(createdSecondBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
+
+		const allBlogsRes = await request(app).get(RouteNames.blogs)
+		expect(allBlogsRes.body.items.length).toBe(2)
 	})
 })
 
@@ -72,33 +107,6 @@ describe('Getting all blogs', () => {
 		const getBlogRes = await request(app).get(RouteNames.blog(createdBlogId))
 		expect(getBlogRes.status).toBe(HTTP_STATUSES.OK_200)
 		checkBlogObj(getBlogRes.body)
-	})
-})*/
-
-/*describe('Creating a blog', () => {
-	it('should forbid a request from an unauthorized user', async () => {
-		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
-	})
-
-	it('create a blog by wrong dto', async () => {
-		const createdBlogRes = await addBlogRequest({ websiteUrl: 'samurai.it-incubator' })
-		expect(createdBlogRes.status).toBe(HTTP_STATUSES.BAD_REQUEST_400)
-	})
-
-	it('should create a blog by correct dto', async () => {
-		const createdBlogRes = await addBlogRequest()
-		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
-
-		expect(createdBlogRes.body.name).toEqual(createDtoAddBlog().name)
-		expect(createdBlogRes.body.description).toEqual(createDtoAddBlog().description)
-		expect(createdBlogRes.body.websiteUrl).toEqual(createDtoAddBlog().websiteUrl)
-
-		// Check if there are 2 blogs after adding another one
-		const createdSecondBlogRes = await addBlogRequest()
-		expect(createdSecondBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
-
-		const allBlogsRes = await request(app).get(RouteNames.blogs)
-		expect(allBlogsRes.body.length).toBe(2)
 	})
 })*/
 

@@ -46,16 +46,19 @@ export const blogsQueryRepository = {
 		}
 	},
 
-	async getBlogPosts(blogId: string, params: GetBlogPostsQueries): Promise<GetBlogPostsOutModel> {
+	async getBlogPosts(
+		blogId: string,
+		queries: GetBlogPostsQueries,
+	): Promise<GetBlogPostsOutModel> {
 		const filter: Filter<PostOutModel> = {
 			blogId,
 		}
 
-		const sortBy = params.sortBy ?? 'createdAt'
-		const sortDirection = params.sortDirection ?? 'desc'
+		const sortBy = queries.sortBy ?? 'createdAt'
+		const sortDirection = queries.sortDirection ?? 'desc'
 
-		const pageNumber = params.pageNumber ?? 1
-		const pageSize = params.pageSize ?? 10
+		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
+		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
 		const totalBlogPostsCount = await db.collection(DbNames.posts).countDocuments(filter)
 		const pagesCount = Math.ceil(totalBlogPostsCount / pageSize)
