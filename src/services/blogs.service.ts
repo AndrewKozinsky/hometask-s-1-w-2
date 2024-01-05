@@ -4,13 +4,13 @@ import {
 	UpdateBlogDtoModel,
 } from '../models/input/blogs.input.model'
 import { CreatePostDtoModel } from '../models/input/posts.input.model'
-import { BlogOutModel } from '../models/output/blogs.output.model'
+import { BlogOutModel, CreateBlogOutModel } from '../models/output/blogs.output.model'
 import { blogsRepository } from '../repositories/blogs.repository'
 import { postsService } from './posts.service'
 
 export const blogsService = {
 	async createBlog(dto: CreateBlogDtoModel) {
-		const newBlog: BlogOutModel = {
+		const newBlog: CreateBlogOutModel = {
 			id: new Date().toISOString(),
 			name: dto.name,
 			description: dto.description,

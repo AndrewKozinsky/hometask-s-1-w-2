@@ -61,7 +61,7 @@ export const blogsQueryRepository = {
 		const pagesCount = Math.ceil(totalBlogPostsCount / pageSize)
 
 		const getBlogPostsRes = await db
-			.collection<PostOutModel>(DbNames.blogs)
+			.collection<PostOutModel>(DbNames.posts)
 			.find(filter)
 			.sort(sortBy, sortDirection)
 			.skip((pageNumber - 1) * pageSize)

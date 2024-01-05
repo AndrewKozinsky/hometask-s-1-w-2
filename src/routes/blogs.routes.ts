@@ -1,6 +1,7 @@
 import express, { Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { HTTP_STATUSES } from '../config/config'
+import { blogsRepository } from '../repositories/blogs.repository'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
 import { blogsService } from '../services/blogs.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
@@ -61,6 +62,12 @@ function getBlogsRouter() {
 		) => {
 			const blogId = req.params.id
 
+			const blog = await blogsRepository.getBlogById(blogId)
+			if (!blog) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+				return
+			}
+
 			const posts = await blogsQueryRepository.getBlogPosts(blogId, req.query)
 
 			if (!posts) {
@@ -88,7 +95,15 @@ function getBlogsRouter() {
 				return
 			}
 
+			const isBlogExists = await blogsRepository.getBlogById(req.params.id)
+
+			if (!isBlogExists) {
+				res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+				return
+			}
+
 			const createPostRes = await blogsService.createBlogPost(req.params.id, req.body)
+
 			const createdPost = await postsQueryRepository.getPost(
 				createPostRes.insertedId.toString(),
 			)
