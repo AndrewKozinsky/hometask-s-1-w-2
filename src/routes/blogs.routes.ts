@@ -110,12 +110,7 @@ function getBlogsRouter() {
 	router.get('/:blogId', async (req: ReqWithParams<{ blogId: string }>, res: Response) => {
 		const blogId = req.params.blogId
 
-		if (!ObjectId.isValid(blogId)) {
-			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-		}
-
 		const blog = await blogsQueryRepository.getBlog(blogId)
-
 		if (!blog) {
 			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
 			return
@@ -135,10 +130,6 @@ function getBlogsRouter() {
 		) => {
 			const blogId = req.params.blogId
 
-			if (!ObjectId.isValid(blogId)) {
-				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-			}
-
 			const isBlogUpdated = await blogsService.updateBlog(blogId, req.body)
 
 			if (!isBlogUpdated) {
@@ -156,10 +147,6 @@ function getBlogsRouter() {
 		authMiddleware,
 		async (req: ReqWithParams<{ blogId: string }>, res: Response) => {
 			const blogId = req.params.blogId
-
-			if (!ObjectId.isValid(blogId)) {
-				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-			}
 
 			const isBlogDeleted = await blogsService.deleteBlog(blogId)
 

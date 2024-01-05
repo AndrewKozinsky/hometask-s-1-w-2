@@ -197,16 +197,3 @@ describe('Getting all posts', () => {
 		await request(app).get(RouteNames.post(createdPostId)).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 })*/
-
-/*function checkPostObj(postObj: any) {
-	expect(postObj._id).toBe(undefined)
-	expect(typeof postObj.id).toBe('string')
-	expect(typeof postObj.title).toBe('string')
-	expect(typeof postObj.shortDescription).toBe('string')
-	expect(typeof postObj.content).toBe('string')
-	expect(typeof postObj.blogId).toBe('string')
-	expect(typeof postObj.blogName).toBe('string')
-	expect(postObj.createdAt).toMatch(
-		/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
-	)
-}*/
