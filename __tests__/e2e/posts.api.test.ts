@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
 import { UpdatePostDtoModel } from '../../src/models/input/posts.input.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
-import { addBlogRequest, addPostRequest, createDtoAddPost } from './common'
+import { addBlogRequest, addPostRequest, checkPostObj, createDtoAddPost } from './common'
 
 const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
 
@@ -13,7 +13,7 @@ beforeEach(async () => {
 })
 
 describe('Getting all posts', () => {
-	it('should return an empty array of posts', async () => {
+	it('should return an abject with property items contains an empty array', async () => {
 		const successAnswer: GetPostsOutModel = {
 			pagesCount: 0,
 			page: 1,
@@ -25,27 +25,45 @@ describe('Getting all posts', () => {
 		await request(app).get(RouteNames.posts).expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
-	/*it('should return an array with 2 items after creating 2 posts', async () => {
+	it('should return an object with property items contains array with 2 items after creating 2 posts', async () => {
 		const createdBlogRes = await addBlogRequest()
 		const blogId = createdBlogRes.body.id
 
 		await addPostRequest(blogId)
 		await addPostRequest(blogId)
 
-		const getPostsRes = await request(app).get(RouteNames.posts)
-		expect(getPostsRes.status).toBe(HTTP_STATUSES.OK_200)
-		expect(getPostsRes.body.length).toBe(2)
-	})*/
+		const getPostsRes = await request(app).get(RouteNames.posts).expect(HTTP_STATUSES.OK_200)
 
-	/*it('should return an array of objects matching the scheme', async () => {
+		console.log(getPostsRes.body)
+		expect(getPostsRes.body.pagesCount).toBe(1)
+		expect(getPostsRes.body.page).toBe(1)
+		expect(getPostsRes.body.pageSize).toBe(10)
+		expect(getPostsRes.body.totalCount).toBe(2)
+		expect(getPostsRes.body.items.length).toBe(2)
+
+		checkPostObj(getPostsRes.body.items[0])
+		checkPostObj(getPostsRes.body.items[1])
+	})
+
+	it('should return an array of objects matching the scheme', async () => {
 		const createdBlogRes = await addBlogRequest()
 		const blogId = createdBlogRes.body.id
 
 		await addPostRequest(blogId)
-		const getPostsRes = await request(app).get(RouteNames.posts)
+		await addPostRequest(blogId)
+		await addPostRequest(blogId)
+		await addPostRequest(blogId)
+		await addPostRequest(blogId)
+		await addPostRequest(blogId)
+		await addPostRequest(blogId)
 
-		checkPostObj(getPostsRes.body[0])
-	})*/
+		const getPostsRes = await request(app).get(RouteNames.posts + '?pageNumber=2&pageSize=2')
+
+		expect(getPostsRes.body.page).toBe(2)
+		expect(getPostsRes.body.pagesCount).toBe(4)
+		expect(getPostsRes.body.totalCount).toBe(7)
+		expect(getPostsRes.body.items.length).toBe(2)
+	})
 })
 
 /*describe('Getting a post', () => {

@@ -89,10 +89,11 @@ function getBlogsRouter() {
 			res: Response,
 		) {
 			const blogId = req.params.blogId
+
 			const blog = await blogsRepository.getBlogById(blogId)
 
 			if (!blog) {
-				res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
 				return
 			}
 

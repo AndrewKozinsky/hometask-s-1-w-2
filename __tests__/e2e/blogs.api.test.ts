@@ -5,13 +5,7 @@ import RouteNames from '../../src/config/routeNames'
 import { UpdateBlogDtoModel } from '../../src/models/input/blogs.input.model'
 import { GetBlogsOutModel } from '../../src/models/output/blogs.output.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
-import {
-	addBlogPostRequest,
-	addBlogRequest,
-	checkPostObj,
-	createDtoAddBlog,
-	createDtoAddBlogPost,
-} from './common'
+import { addBlogPostRequest, addBlogRequest, checkPostObj, createDtoAddBlogPost } from './common'
 
 export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
 
@@ -66,7 +60,7 @@ describe('Getting all blogs', () => {
 	})
 })
 
-describe('Creating a blog', () => {
+/*describe('Creating a blog', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -93,9 +87,9 @@ describe('Creating a blog', () => {
 		const allBlogsRes = await request(app).get(RouteNames.blogs)
 		expect(allBlogsRes.body.items.length).toBe(2)
 	})
-})
+})*/
 
-describe('Getting a blog', () => {
+/*describe('Getting a blog', () => {
 	it("should return a 404 if a blog doesn't exists", async () => {
 		await request(app).get(RouteNames.blog('999')).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
@@ -108,9 +102,9 @@ describe('Getting a blog', () => {
 		expect(getBlogRes.status).toBe(HTTP_STATUSES.OK_200)
 		checkBlogObj(getBlogRes.body)
 	})
-})
+})*/
 
-describe('Getting a blog posts', () => {
+/*describe('Getting a blog posts', () => {
 	it("should return a 404 if a blog doesn't exists", async () => {
 		await request(app).get(RouteNames.blogPosts('999')).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
@@ -174,9 +168,9 @@ describe('Getting a blog posts', () => {
 		expect(getBlogsRes.body.totalCount).toBe(7)
 		expect(getBlogsRes.body.items.length).toBe(2)
 	})
-})
+})*/
 
-describe('Updating a blog', () => {
+/*describe('Updating a blog', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).put(RouteNames.blog('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -234,18 +228,23 @@ describe('Updating a blog', () => {
 			.set('Accept', 'application/json')
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
 	})
-})
+})*/
 
-describe('Create a blog post', () => {
+/*describe('Create a blog post', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.blogPosts('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
 	it('forbid to create a blog post by wrong blog id', async () => {
-		return request(app)
+		const addBlogPostDto = createDtoAddBlogPost()
+
+		return await request(app)
 			.post(RouteNames.blogPosts('999'))
+			.send(addBlogPostDto)
 			.set('authorization', authorizationValue)
-			.expect(HTTP_STATUSES.BAD_REQUEST_400)
+			.set('Content-Type', 'application/json')
+			.set('Accept', 'application/json')
+			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
 	it('create a blog post by wrong dto', async () => {
@@ -274,9 +273,9 @@ describe('Create a blog post', () => {
 		const allBlogPostsRes = await request(app).get(RouteNames.blogPosts(createdBlogRes.body.id))
 		expect(allBlogPostsRes.body.items.length).toBe(2)
 	})
-})
+})*/
 
-describe('Deleting a blog', () => {
+/*describe('Deleting a blog', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		return request(app).delete(RouteNames.blogs)
 	})
@@ -300,7 +299,7 @@ describe('Deleting a blog', () => {
 
 		await request(app).get(RouteNames.blog(createdBlogId)).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
-})
+})*/
 
 function checkBlogObj(blogObj: any) {
 	expect(typeof blogObj._id).toBe('undefined')

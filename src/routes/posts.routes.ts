@@ -22,7 +22,7 @@ function getPostsRouter() {
 		'/',
 		getPostsValidation(),
 		async (req: ReqWithQuery<GetPostsQueries>, res: Response) => {
-			const posts = await postsQueryRepository.getPosts(req.params)
+			const posts = await postsQueryRepository.getPosts(req.query)
 
 			res.status(HTTP_STATUSES.OK_200).send(posts)
 		},
