@@ -34,9 +34,9 @@ export const blogsRepository = {
 
 		const updateBlogRes = await db
 			.collection<DBTypes.Blog>(DbNames.blogs)
-			.updateOne({ id: blogId }, { $set: updateBlogDto })
+			.updateOne({ _id: new ObjectId(blogId) }, { $set: updateBlogDto })
 
-		return updateBlogRes.matchedCount === 0
+		return updateBlogRes.modifiedCount === 1
 	},
 
 	async deleteBlog(blogId: string): Promise<boolean> {

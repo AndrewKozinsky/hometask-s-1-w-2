@@ -35,9 +35,9 @@ export const postsRepository = {
 
 		const updatePostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
-			.updateOne({ id: postId }, { $set: updatePostDto })
+			.updateOne({ _id: new ObjectId(postId) }, { $set: updatePostDto })
 
-		return updatePostRes.matchedCount === 0
+		return updatePostRes.modifiedCount === 1
 	},
 
 	async deletePost(postId: string): Promise<boolean> {

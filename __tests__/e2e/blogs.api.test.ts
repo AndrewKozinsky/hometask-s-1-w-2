@@ -1,8 +1,9 @@
+import exp from 'node:constants'
 import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { UpdateBlogDtoModel } from '../../src/models/input/blogs.input.model'
+import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../../src/models/input/blogs.input.model'
 import { GetBlogsOutModel } from '../../src/models/output/blogs.output.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
 import {
@@ -206,7 +207,12 @@ describe('Updating a blog', () => {
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdBlogId = createdBlogRes.body.id
 
-		const updateBlogDto = createDtoAddBlog()
+		const updateBlogDto: CreateBlogDtoModel = {
+			name: 'my UPDATED name',
+			description: 'my UPDATED description',
+			websiteUrl:
+				'https://9DKoTEgTwRIyvI8-tVDUU2STaq3OG.e0d6f1EB3XsujFbOW53q5woGXMrAc5zXUnQxWvxsTS6a3zLYZdUWDt-',
+		}
 
 		await request(app)
 			.put(RouteNames.blog(createdBlogId))
@@ -215,6 +221,13 @@ describe('Updating a blog', () => {
 			.set('Content-Type', 'application/json')
 			.set('Accept', 'application/json')
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		const getBlogRes = await request(app).get(RouteNames.blog(createdBlogId))
+
+		expect(getBlogRes.status).toBe(HTTP_STATUSES.OK_200)
+		expect(getBlogRes.body.name).toBe(updateBlogDto.name)
+		expect(getBlogRes.body.description).toBe(updateBlogDto.description)
+		expect(getBlogRes.body.websiteUrl).toBe(updateBlogDto.websiteUrl)
 	})
 })
 

@@ -2,7 +2,7 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { UpdatePostDtoModel } from '../../src/models/input/posts.input.model'
+import { CreatePostDtoModel, UpdatePostDtoModel } from '../../src/models/input/posts.input.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
 import { addBlogRequest, addPostRequest, checkPostObj, createDtoAddPost } from './common'
 
@@ -158,7 +158,12 @@ describe('Updating a post', () => {
 		expect(createdPostRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdPostId = createdPostRes.body.id
 
-		const updatePostDto = createDtoAddPost(blogId)
+		const updatePostDto: CreatePostDtoModel = {
+			title: 'UPDATED title',
+			shortDescription: 'UPDATED shortDescription',
+			content: 'UPDATED content',
+			blogId,
+		}
 
 		await request(app)
 			.put(RouteNames.post(createdPostId))
@@ -167,6 +172,13 @@ describe('Updating a post', () => {
 			.set('Content-Type', 'application/json')
 			.set('Accept', 'application/json')
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		const getPostRes = await request(app).get(RouteNames.post(createdPostId))
+
+		expect(getPostRes.status).toBe(HTTP_STATUSES.OK_200)
+		expect(getPostRes.body.title).toBe(updatePostDto.title)
+		expect(getPostRes.body.shortDescription).toBe(updatePostDto.shortDescription)
+		expect(getPostRes.body.content).toBe(updatePostDto.content)
 	})
 })
 
