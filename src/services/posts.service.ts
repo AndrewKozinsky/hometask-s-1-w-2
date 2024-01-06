@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/input/posts.input.model'
 import { PostOutModel } from '../models/output/posts.output.model'
 import { blogsRepository } from '../repositories/blogs.repository'

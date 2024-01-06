@@ -46,10 +46,6 @@ function getPostsRouter() {
 	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
 		const postId = req.params.id
 
-		if (!ObjectId.isValid(postId)) {
-			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-		}
-
 		const post = await postsQueryRepository.getPost(postId)
 
 		if (!post) {
@@ -68,10 +64,6 @@ function getPostsRouter() {
 		async (req: ReqWithParamsAndBody<{ id: string }, UpdatePostDtoModel>, res: Response) => {
 			const postId = req.params.id
 
-			if (!ObjectId.isValid(postId)) {
-				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-			}
-
 			const isPostUpdated = await postsService.updatePost(postId, req.body)
 
 			if (!isPostUpdated) {
@@ -89,10 +81,6 @@ function getPostsRouter() {
 		authMiddleware,
 		async (req: ReqWithParams<{ id: string }>, res: Response) => {
 			const postId = req.params.id
-
-			if (!ObjectId.isValid(postId)) {
-				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-			}
 
 			const isPostDeleted = await postsService.deletePost(postId)
 
