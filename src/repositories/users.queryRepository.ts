@@ -11,14 +11,19 @@ import { db } from './db'
 
 export const usersQueryRepository = {
 	async getUsers(queries: GetUsersQueries): Promise<GetUsersOutModel> {
-		const filter: Filter<DBTypes.User> = {}
+		const filter: Filter<DBTypes.User> = {
+			$or: [
+				{ $regex: queries.searchLoginTerm, $options: 'i' },
+				{ $regex: queries.searchEmailTerm, $options: 'i' },
+			],
+		}
 
-		if (queries.searchLoginTerm) {
+		/*if (queries.searchLoginTerm) {
 			filter.login = { $regex: queries.searchLoginTerm, $options: 'i' }
 		}
 		if (queries.searchEmailTerm) {
 			filter.email = { $regex: queries.searchEmailTerm, $options: 'i' }
-		}
+		}*/
 
 		const sortBy = queries.sortBy ?? 'createdAt'
 		const sortDirection = queries.sortDirection ?? 'desc'
