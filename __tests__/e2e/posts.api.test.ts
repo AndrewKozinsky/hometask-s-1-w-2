@@ -2,18 +2,22 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { CreatePostDtoModel, UpdatePostDtoModel } from '../../src/models/input/posts.input.model'
+import { CreatePostDtoModel } from '../../src/models/input/posts.input.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
-import { addBlogRequest, addPostRequest, checkPostObj, createDtoAddPost } from './common'
-
-const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
+import {
+	addBlogRequest,
+	addPostRequest,
+	authorizationValue,
+	checkPostObj,
+	clearAllDB,
+} from './common'
 
 beforeEach(async () => {
-	await request(app).delete(RouteNames.testingAllData).expect(HTTP_STATUSES.NO_CONTENT_204)
+	await clearAllDB()
 })
 
 describe('Getting all posts', () => {
-	it('should return an abject with property items contains an empty array', async () => {
+	it('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetPostsOutModel = {
 			pagesCount: 0,
 			page: 1,

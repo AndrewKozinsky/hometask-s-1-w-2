@@ -9,6 +9,4 @@ export type UserOutModel = {
 
 export type GetUsersOutModel = ItemsOutModel<UserOutModel>
 
-// export type CreateUserOutModel = UserOutModel
-
 export type GetUserOutModel = UserOutModel

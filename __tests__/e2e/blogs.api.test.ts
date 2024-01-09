@@ -1,4 +1,3 @@
-import exp from 'node:constants'
 import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
@@ -9,19 +8,18 @@ import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
 import {
 	addBlogPostRequest,
 	addBlogRequest,
+	authorizationValue,
 	checkPostObj,
-	createDtoAddBlog,
+	clearAllDB,
 	createDtoAddBlogPost,
 } from './common'
 
-export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
-
 beforeEach(async () => {
-	await request(app).delete(RouteNames.testingAllData).expect(HTTP_STATUSES.NO_CONTENT_204)
+	await clearAllDB()
 })
 
 describe('Getting all blogs', () => {
-	it('should return an abject with property items contains an empty array', async () => {
+	it('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetBlogsOutModel = {
 			pagesCount: 0,
 			page: 1,
@@ -116,7 +114,7 @@ describe('Getting a blog posts', () => {
 		await request(app).get(RouteNames.blogPosts('999')).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should return an abject with property items contains an empty array', async () => {
+	it('should return an object with property items contains an empty array', async () => {
 		const createdBlogRes = await addBlogRequest()
 		const blogId = createdBlogRes.body.id
 

@@ -11,7 +11,7 @@ app.use(express.json())
 
 app.use(RouteNames.blogs, getBlogsRouter())
 app.use(RouteNames.posts, getPostsRouter())
-app.use(RouteNames.testing, getUsersRouter())
+app.use(RouteNames.users, getUsersRouter())
 app.use(RouteNames.auth, getAuthRouter())
 app.use(RouteNames.testing, getTestRouter())
 

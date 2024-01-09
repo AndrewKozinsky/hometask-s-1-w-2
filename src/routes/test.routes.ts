@@ -1,14 +1,13 @@
-import express, { Response } from 'express'
+import express, { Request, Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
 import DbNames from '../config/dbNames'
-import { ReqWithParams } from '../models/common'
 import { DBTypes } from '../models/db'
 import { client } from '../repositories/db'
 
 function getTestRouter() {
 	const router = express.Router()
 
-	router.delete('/all-data', async (req: ReqWithParams<{ id: string }>, res: Response) => {
+	router.delete('/all-data', async (req: Request, res: Response) => {
 		await Promise.all([
 			client
 				.db(process.env.MONGO_DB_NAME)
@@ -20,7 +19,7 @@ function getTestRouter() {
 				.deleteMany({}),
 			client
 				.db(process.env.MONGO_DB_NAME)
-				.collection<DBTypes.Blog>(DbNames.users)
+				.collection<DBTypes.User>(DbNames.users)
 				.deleteMany({}),
 		])
 

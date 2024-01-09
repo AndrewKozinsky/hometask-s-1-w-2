@@ -4,12 +4,13 @@ import { LoginDtoModel } from '../models/input/auth.input.model'
 import { ReqWithBody } from '../models/common'
 import { usersRepository } from '../repositories/users.repository'
 import { authLoginValidation } from '../validators/authLogin.validator'
+import { getUsersValidation } from '../validators/getUsers.validator'
 
 function getAuthRouter() {
 	const router = express.Router()
 
-	// Returns all users
-	router.get(
+	// User login
+	router.post(
 		'/login',
 		authLoginValidation(),
 		async (req: ReqWithBody<LoginDtoModel>, res: Response) => {

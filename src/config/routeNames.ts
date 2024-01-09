@@ -14,9 +14,8 @@ const RouteNames = {
 	user(id: string) {
 		return '/users/' + id
 	},
-	auth() {
-		return '/auth'
-	},
+	auth: '/auth',
+	authLogin: '/auth/login',
 	testing: '/testing',
 	testingAllData: '/testing/all-data',
 }

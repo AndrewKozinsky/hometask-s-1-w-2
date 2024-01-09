@@ -28,7 +28,7 @@ export const usersRepository = {
 			return null
 		}
 
-		const isPasswordMath = bcrypt.compare(loginDto.password, getUserRes.password)
+		const isPasswordMath = await bcrypt.compare(loginDto.password, getUserRes.password)
 
 		if (!isPasswordMath) {
 			return null

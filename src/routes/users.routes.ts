@@ -28,10 +28,10 @@ function getUsersRouter() {
 		authMiddleware,
 		userValidation(),
 		async (req: ReqWithBody<CreateUserDtoModel>, res: Response) => {
-			const createUserId = await usersService.createUser(req.body)
+			const createdUserId = await usersService.createUser(req.body)
 
 			const getPostRes = await usersQueryRepository.getUser(
-				createUserId.insertedId.toString(),
+				createdUserId.insertedId.toString(),
 			)
 
 			res.status(HTTP_STATUSES.CREATED_201).send(getPostRes)
