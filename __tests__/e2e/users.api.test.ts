@@ -77,6 +77,7 @@ describe('Getting all users', () => {
 		await addUserRequest({ login: 'in-one-1', email: 'email-1@email.ru' }) //
 		await addUserRequest({ login: 'in-one-2', email: 'email-3@email.com' }) // --
 		await addUserRequest({ login: 'in-one-3', email: 'email-4@email.com' }) // --
+		await addUserRequest({ login: 'in-one-4', email: 'email-5@email.com' }) // --
 
 		const getUsersRes = await request(app)
 			.get(
@@ -86,8 +87,8 @@ describe('Getting all users', () => {
 			.set('authorization', authorizationValue)
 
 		expect(getUsersRes.body.page).toBe(2)
-		expect(getUsersRes.body.pagesCount).toBe(2)
-		expect(getUsersRes.body.totalCount).toBe(4)
+		expect(getUsersRes.body.pagesCount).toBe(3)
+		expect(getUsersRes.body.totalCount).toBe(5)
 		expect(getUsersRes.body.items.length).toBe(2)
 	})
 })
