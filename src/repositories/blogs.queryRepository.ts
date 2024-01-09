@@ -14,7 +14,7 @@ import { postsQueryRepository } from './posts.queryRepository'
 
 export const blogsQueryRepository = {
 	async getBlogs(query: GetBlogsQueries): Promise<GetBlogsOutModel> {
-		const filter: Filter<BlogOutModel> = {}
+		const filter: Filter<DBTypes.Blog> = {}
 
 		if (query.searchNameTerm) {
 			filter.name = { $regex: query.searchNameTerm, $options: 'i' }

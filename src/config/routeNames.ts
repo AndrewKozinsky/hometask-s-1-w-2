@@ -10,6 +10,13 @@ const RouteNames = {
 	post(id: string) {
 		return '/posts/' + id
 	},
+	users: '/users',
+	user(id: string) {
+		return '/users/' + id
+	},
+	auth() {
+		return '/auth'
+	},
 	testing: '/testing',
 	testingAllData: '/testing/all-data',
 }

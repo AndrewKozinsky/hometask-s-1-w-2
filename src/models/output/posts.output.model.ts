@@ -1,3 +1,5 @@
+import { ItemsOutModel } from './common'
+
 export type PostOutModel = {
 	id: string
 	title: string
@@ -8,18 +10,7 @@ export type PostOutModel = {
 	createdAt: string
 }
 
-export type GetPostsOutModel = {
-	// Общее количество страниц заметок
-	pagesCount: number
-	// Номер текущей страницы с выводом заметок
-	page: number
-	// Сколько заметок на странице с выводом заметок
-	pageSize: number
-	// Общее количество заметок
-	totalCount: number
-	// Заметки на указанной странице
-	items: PostOutModel[]
-}
+export type GetPostsOutModel = ItemsOutModel<PostOutModel>
 
 export type CreatePostOutModel = PostOutModel
 

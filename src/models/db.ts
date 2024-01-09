@@ -19,4 +19,12 @@ export namespace DBTypes {
 		blogName: string
 		createdAt: string
 	}
+
+	export type User = {
+		// _id: ObjectId
+		login: string
+		email: string
+		password: string
+		createdAt: string
+	}
 }

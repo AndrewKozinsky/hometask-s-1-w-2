@@ -1,5 +1,4 @@
 import express, { Response } from 'express'
-import { ObjectId } from 'mongodb'
 import { HTTP_STATUSES } from '../config/config'
 import { blogsRepository } from '../repositories/blogs.repository'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'

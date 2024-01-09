@@ -18,6 +18,10 @@ function getTestRouter() {
 				.db(process.env.MONGO_DB_NAME)
 				.collection<DBTypes.Blog>(DbNames.posts)
 				.deleteMany({}),
+			client
+				.db(process.env.MONGO_DB_NAME)
+				.collection<DBTypes.Blog>(DbNames.users)
+				.deleteMany({}),
 		])
 
 		res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
