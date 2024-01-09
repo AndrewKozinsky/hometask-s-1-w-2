@@ -2,16 +2,7 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { GetUsersOutModel } from '../../src/models/output/users.output.model'
-import {
-	addUserRequest,
-	authorizationValue,
-	checkPostObj,
-	checkUserObj,
-	clearAllDB,
-	createDtoAddUser,
-} from './common'
-import exp = require('node:constants')
+import { addUserRequest, clearAllDB } from './common'
 
 beforeEach(async () => {
 	await clearAllDB()
