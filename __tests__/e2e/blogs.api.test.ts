@@ -2,7 +2,7 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { CreateBlogDtoModel, UpdateBlogDtoModel } from '../../src/models/input/blogs.input.model'
+import { CreateBlogDtoModel } from '../../src/models/input/blogs.input.model'
 import { GetBlogsOutModel } from '../../src/models/output/blogs.output.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
 import {

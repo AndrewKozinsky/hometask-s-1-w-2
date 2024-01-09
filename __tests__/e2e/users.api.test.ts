@@ -3,13 +3,7 @@ import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
 import { GetUsersOutModel } from '../../src/models/output/users.output.model'
-import {
-	addUserRequest,
-	authorizationValue,
-	checkPostObj,
-	checkUserObj,
-	clearAllDB,
-} from './common'
+import { addUserRequest, authorizationValue, checkUserObj, clearAllDB } from './common'
 
 beforeEach(async () => {
 	await clearAllDB()
@@ -72,6 +66,30 @@ describe('Getting all users', () => {
 		expect(getUsersRes.body.totalCount).toBe(7)
 		expect(getUsersRes.body.items.length).toBe(2)
 	})
+
+	it('should return filtered an array of objects', async () => {
+		await addUserRequest({ login: 'in-one-1', email: 'email-1@email.com' }) // --
+		await addUserRequest({ login: 'in-two-1', email: 'email-1@email.com' })
+		await addUserRequest({ login: 'in-one-1', email: 'email-1@email.com' }) // --
+		await addUserRequest({ login: 'in-two-1', email: 'email-1@email.com' })
+		await addUserRequest({ login: 'in-one-1', email: 'email-1@email.jp' }) //
+		await addUserRequest({ login: 'in-three-1', email: 'email-1@email.us' })
+		await addUserRequest({ login: 'in-one-1', email: 'email-1@email.ru' }) //
+		await addUserRequest({ login: 'in-one-2', email: 'email-3@email.com' }) // --
+		await addUserRequest({ login: 'in-one-3', email: 'email-4@email.com' }) // --
+
+		const getUsersRes = await request(app)
+			.get(
+				RouteNames.users +
+					'?pageNumber=2&pageSize=2&searchLoginTerm=one&searchEmailTerm=.com',
+			)
+			.set('authorization', authorizationValue)
+
+		expect(getUsersRes.body.page).toBe(2)
+		expect(getUsersRes.body.pagesCount).toBe(2)
+		expect(getUsersRes.body.totalCount).toBe(4)
+		expect(getUsersRes.body.items.length).toBe(2)
+	})
 })
 
 describe('Creating an user', () => {
@@ -80,7 +98,7 @@ describe('Creating an user', () => {
 	})
 
 	it('should not create an user by wrong dto', async () => {
-		const createdUserRes = await addUserRequest({ login: '' })
+		const createdUserRes = await addUserRequest({ login: 'lo' })
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.BAD_REQUEST_400)
 
 		expect({}.toString.call(createdUserRes.body.errorsMessages)).toBe('[object Array]')
@@ -88,7 +106,7 @@ describe('Creating an user', () => {
 		expect(createdUserRes.body.errorsMessages[0].field).toBe('login')
 	})
 
-	it('should create an usert by correct dto', async () => {
+	it('should create an user by correct dto', async () => {
 		const createdUserRes = await addUserRequest()
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 

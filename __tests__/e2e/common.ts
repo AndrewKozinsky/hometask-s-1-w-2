@@ -112,8 +112,8 @@ export async function addUserRequest(userDto: Partial<CreateUserDtoModel> = {}) 
 export function createDtoAddUser(newUserObj: Partial<CreateUserDtoModel> = {}): CreateUserDtoModel {
 	return Object.assign(
 		{
-			login: 'my login',
-			password: 'my password',
+			login: 'my-login',
+			password: 'my-1assword',
 			email: 'email@email.ru',
 		},
 		newUserObj,
@@ -123,8 +123,9 @@ export function createDtoAddUser(newUserObj: Partial<CreateUserDtoModel> = {}): 
 export function checkUserObj(userObj: any) {
 	expect(userObj._id).toBe(undefined)
 	expect(typeof userObj.id).toBe('string')
-	expect(typeof userObj.login).toBe('string')
+	expect(userObj.login).toMatch(/^[a-zA-Z0-9_-]*$/)
 	expect(typeof userObj.email).toBe('string')
+	expect(userObj.email).toMatch(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
 	expect(userObj.createdAt).toMatch(
 		/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
 	)

@@ -26,7 +26,8 @@ export const usersQueryRepository = {
 		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
 		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
-		const totalUsersCount = await db.collection(DbNames.users).countDocuments({})
+		const totalUsersCount = await db.collection(DbNames.users).countDocuments(filter)
+
 		const pagesCount = Math.ceil(totalUsersCount / pageSize)
 
 		const getUsersRes = await db
