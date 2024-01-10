@@ -13,8 +13,8 @@ export const usersQueryRepository = {
 	async getUsers(queries: GetUsersQueries): Promise<GetUsersOutModel> {
 		const filter: Filter<DBTypes.User> = {
 			$or: [
-				{ $regex: queries.searchLoginTerm, $options: 'i' },
-				{ $regex: queries.searchEmailTerm, $options: 'i' },
+				{ login: { $regex: queries.searchLoginTerm ?? '', $options: 'i' } },
+				{ email: { $regex: queries.searchEmailTerm ?? '', $options: 'i' } },
 			],
 		}
 

@@ -7,7 +7,7 @@
     "watch": "tsc --watch",
     "dev": "nodemon --inspect src/server.ts",
     "start": "yarn watch & yarn dev",
-    "test": "jest --runInBand --forceExit"
+    "test": "jest --runInBand --forceExit --detectOpenHandlers"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

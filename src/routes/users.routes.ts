@@ -30,11 +30,9 @@ function getUsersRouter() {
 		async (req: ReqWithBody<CreateUserDtoModel>, res: Response) => {
 			const createdUserId = await usersService.createUser(req.body)
 
-			const getPostRes = await usersQueryRepository.getUser(
-				createdUserId.insertedId.toString(),
-			)
+			const getUserRes = await usersQueryRepository.getUser(createdUserId)
 
-			res.status(HTTP_STATUSES.CREATED_201).send(getPostRes)
+			res.status(HTTP_STATUSES.CREATED_201).send(getUserRes)
 		},
 	)
 

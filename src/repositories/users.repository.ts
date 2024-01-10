@@ -38,7 +38,8 @@ export const usersRepository = {
 	},
 
 	async createUser(dto: DBTypes.User) {
-		return db.collection(DbNames.users).insertOne(dto)
+		const userRes = await db.collection(DbNames.users).insertOne(dto)
+		return userRes.insertedId.toString()
 	},
 
 	async deleteUser(userId: string): Promise<boolean> {
