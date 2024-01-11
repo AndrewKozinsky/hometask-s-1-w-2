@@ -18,13 +18,6 @@ export const usersQueryRepository = {
 			],
 		}
 
-		/*if (queries.searchLoginTerm) {
-			filter.login = { $regex: queries.searchLoginTerm, $options: 'i' }
-		}
-		if (queries.searchEmailTerm) {
-			filter.email = { $regex: queries.searchEmailTerm, $options: 'i' }
-		}*/
-
 		const sortBy = queries.sortBy ?? 'createdAt'
 		const sortDirection = queries.sortDirection ?? 'desc'
 
