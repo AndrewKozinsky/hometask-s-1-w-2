@@ -7,7 +7,7 @@ import {
 	GetPostsOutModel,
 	PostOutModel,
 } from '../models/output/posts.output.model'
-import { dbService } from '../db/dbService'
+import { db, dbService } from '../db/dbService'
 
 export const postsQueryRepository = {
 	async getPosts(queries: GetPostsQueries): Promise<GetPostsOutModel> {
@@ -17,10 +17,10 @@ export const postsQueryRepository = {
 		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
 		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
-		const totalPostsCount = await dbService.db.collection(DbNames.posts).countDocuments({})
+		const totalPostsCount = await db.collection(DbNames.posts).countDocuments({})
 		const pagesCount = Math.ceil(totalPostsCount / pageSize)
 
-		const getPostsRes = await dbService.db
+		const getPostsRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.find({})
 			.sort(sortBy, sortDirection)
@@ -42,7 +42,7 @@ export const postsQueryRepository = {
 			return null
 		}
 
-		const getPostRes = await dbService.db
+		const getPostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.findOne({ _id: new ObjectId(postId) })
 

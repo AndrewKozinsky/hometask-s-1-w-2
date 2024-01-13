@@ -4,14 +4,11 @@ import { DBTypes } from '../models/db'
 import { UpdatePostDtoModel } from '../models/input/posts.input.model'
 import { CreatePostOutModel } from '../models/output/posts.output.model'
 import { PostServiceModel } from '../models/service/posts.service.model'
-import { dbService } from '../db/dbService'
+import { db, dbService } from '../db/dbService'
 
 export const postsRepository = {
 	async getPosts() {
-		const getPostsRes = await dbService.db
-			.collection<DBTypes.Post>(DbNames.posts)
-			.find({})
-			.toArray()
+		const getPostsRes = await db.collection<DBTypes.Post>(DbNames.posts).find({}).toArray()
 		return getPostsRes.map(this.mapDbPostToClientPost)
 	},
 
@@ -20,7 +17,7 @@ export const postsRepository = {
 			return null
 		}
 
-		const getPostRes = await dbService.db
+		const getPostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.findOne({ _id: new ObjectId(postId) })
 
@@ -28,7 +25,7 @@ export const postsRepository = {
 	},
 
 	async createPost(dto: CreatePostOutModel) {
-		const createdPostRes = await dbService.db.collection(DbNames.posts).insertOne(dto)
+		const createdPostRes = await db.collection(DbNames.posts).insertOne(dto)
 		return createdPostRes.insertedId.toString()
 	},
 
@@ -37,7 +34,7 @@ export const postsRepository = {
 			return false
 		}
 
-		const updatePostRes = await dbService.db
+		const updatePostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.updateOne({ _id: new ObjectId(postId) }, { $set: updatePostDto })
 
@@ -49,9 +46,7 @@ export const postsRepository = {
 			return false
 		}
 
-		const result = await dbService.db
-			.collection(DbNames.posts)
-			.deleteOne({ _id: new ObjectId(postId) })
+		const result = await db.collection(DbNames.posts).deleteOne({ _id: new ObjectId(postId) })
 
 		return result.deletedCount === 1
 	},

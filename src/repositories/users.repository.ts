@@ -4,7 +4,7 @@ import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
 import { LoginDtoModel } from '../models/input/auth.input.model'
 import { UserServiceModel } from '../models/service/users.service.model'
-import { dbService } from '../db/dbService'
+import { db, dbService } from '../db/dbService'
 
 export const usersRepository = {
 	async getUserById(userId: string) {
@@ -12,7 +12,7 @@ export const usersRepository = {
 			return null
 		}
 
-		const getUserRes = await dbService.db
+		const getUserRes = await db
 			.collection<DBTypes.User>(DbNames.users)
 			.findOne({ _id: new ObjectId(userId) })
 
@@ -20,7 +20,7 @@ export const usersRepository = {
 	},
 
 	async getUserByLoginAndPassword(loginDto: LoginDtoModel) {
-		const getUserRes = await dbService.db
+		const getUserRes = await db
 			.collection<DBTypes.User>(DbNames.users)
 			.findOne({ $or: [{ login: loginDto.loginOrEmail }, { email: loginDto.loginOrEmail }] })
 
@@ -38,7 +38,7 @@ export const usersRepository = {
 	},
 
 	async createUser(dto: DBTypes.User) {
-		const userRes = await dbService.db.collection(DbNames.users).insertOne(dto)
+		const userRes = await db.collection(DbNames.users).insertOne(dto)
 		return userRes.insertedId.toString()
 	},
 
@@ -47,9 +47,7 @@ export const usersRepository = {
 			return false
 		}
 
-		const result = await dbService.db
-			.collection(DbNames.users)
-			.deleteOne({ _id: new ObjectId(userId) })
+		const result = await db.collection(DbNames.users).deleteOne({ _id: new ObjectId(userId) })
 
 		return result.deletedCount === 1
 	},

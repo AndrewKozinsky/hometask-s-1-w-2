@@ -4,6 +4,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 
 dotenv.config()
 
+// @ts-ignore
+export const client = new MongoClient(process.env.MONGO_URL)
+export const db = client.db(process.env.MONGO_DB_NAME)
+
 class DbService {
 	client: MongoClient
 
@@ -17,15 +21,11 @@ class DbService {
 		process.env.DB_TYPE = 'test'
 	}
 
-	get db() {
-		return this.client.db(process.env.MONGO_DB_NAME)
-	}
-
 	async runDb() {
 		try {
-			await this.client.connect()
+			await client.connect()
 			// Проверка, что соединение произошло успешно сделав запрос на несуществующую БД products.
-			await this.client.db('products').command({ ping: 1 })
+			await client.db('products').command({ ping: 1 })
 			console.log('Connected to DB 🦁')
 		} catch {
 			await this.close()
@@ -43,10 +43,10 @@ class DbService {
 				throw new Error('Wrong environment')
 			}
 
-			const collections = await this.db.listCollections().toArray()
+			const collections = await db.listCollections().toArray()
 
 			for (const collection of collections) {
-				await this.db.collection(collection.name).deleteMany({})
+				await db.collection(collection.name).deleteMany({})
 			}
 
 			return true

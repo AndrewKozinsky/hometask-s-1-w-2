@@ -20,7 +20,7 @@ describe('Getting all posts', () => {
 	it('123', async () => {
 		expect(2).toBe(2)
 	})
-	/*it('should return an object with property items contains an empty array', async () => {
+	it('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetPostsOutModel = {
 			pagesCount: 0,
 			page: 1,
@@ -30,8 +30,8 @@ describe('Getting all posts', () => {
 		}
 
 		await request(app).get(RouteNames.posts).expect(HTTP_STATUSES.OK_200, successAnswer)
-	})*/
-	/*it('should return an object with property items contains array with 2 items after creating 2 posts', async () => {
+	})
+	it('should return an object with property items contains array with 2 items after creating 2 posts', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -48,8 +48,8 @@ describe('Getting all posts', () => {
 
 		checkPostObj(getPostsRes.body.items[0])
 		checkPostObj(getPostsRes.body.items[1])
-	})*/
-	/*it('should return an array of objects matching the scheme', async () => {
+	})
+	it('should return an array of objects matching the scheme', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -67,10 +67,10 @@ describe('Getting all posts', () => {
 		expect(getPostsRes.body.pagesCount).toBe(4)
 		expect(getPostsRes.body.totalCount).toBe(7)
 		expect(getPostsRes.body.items.length).toBe(2)
-	})*/
+	})
 })
 
-/*describe('Creating a post', () => {
+describe('Creating a post', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.posts).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -103,9 +103,9 @@ describe('Getting all posts', () => {
 		const allPostsRes = await request(app).get(RouteNames.posts)
 		expect(allPostsRes.body.items.length).toBe(2)
 	})
-})*/
+})
 
-/*describe('Getting a post', () => {
+describe('Getting a post', () => {
 	it('should return 404 if a post does not exists', async () => {
 		const getPostRes = await request(app).get(RouteNames.post('999'))
 
@@ -125,9 +125,9 @@ describe('Getting all posts', () => {
 
 		checkPostObj(getPostRes.body)
 	})
-})*/
+})
 
-/*describe('Updating a post', () => {
+describe('Updating a post', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).put(RouteNames.post('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -185,9 +185,9 @@ describe('Getting all posts', () => {
 		expect(getPostRes.body.shortDescription).toBe(updatePostDto.shortDescription)
 		expect(getPostRes.body.content).toBe(updatePostDto.content)
 	})
-})*/
+})
 
-/*describe('Deleting a post', () => {
+describe('Deleting a post', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		return request(app).put(RouteNames.posts)
 	})
@@ -214,4 +214,4 @@ describe('Getting all posts', () => {
 
 		await request(app).get(RouteNames.post(createdPostId)).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
-})*/
+})

@@ -19,11 +19,11 @@ describe('Getting all users', () => {
 	it('123', async () => {
 		expect(2).toBe(2)
 	})
-	/*it('should forbid a request from an unauthorized user', async () => {
+	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).get(RouteNames.users).expect(HTTP_STATUSES.UNAUTHORIZED_401)
-	})*/
+	})
 
-	/*it('should return an object with property items contains an empty array', async () => {
+	it('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetUsersOutModel = {
 			pagesCount: 0,
 			page: 1,
@@ -36,9 +36,9 @@ describe('Getting all users', () => {
 			.get(RouteNames.users)
 			.set('authorization', authorizationValue)
 			.expect(HTTP_STATUSES.OK_200, successAnswer)
-	})*/
+	})
 
-	/*it('should return an object with property items contains array with 2 items after creating 2 users', async () => {
+	it('should return an object with property items contains array with 2 items after creating 2 users', async () => {
 		await addUserRequest(app)
 		await addUserRequest(app)
 
@@ -55,9 +55,9 @@ describe('Getting all users', () => {
 
 		checkUserObj(getUsersRes.body.items[0])
 		checkUserObj(getUsersRes.body.items[1])
-	})*/
+	})
 
-	/*it('should return an array of objects matching the scheme', async () => {
+	it('should return an array of objects matching the scheme', async () => {
 		await addUserRequest(app)
 		await addUserRequest(app)
 		await addUserRequest(app)
@@ -74,9 +74,9 @@ describe('Getting all users', () => {
 		expect(getUsersRes.body.pagesCount).toBe(4)
 		expect(getUsersRes.body.totalCount).toBe(7)
 		expect(getUsersRes.body.items.length).toBe(2)
-	})*/
+	})
 
-	/*it('should return filtered an array of objects', async () => {
+	it('should return filtered an array of objects', async () => {
 		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
 		await addUserRequest(app, { login: 'in-two-1', email: 'email-1@email.com' }) //
 		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
@@ -99,10 +99,10 @@ describe('Getting all users', () => {
 		expect(getUsersRes.body.pagesCount).toBe(5)
 		expect(getUsersRes.body.totalCount).toBe(9)
 		expect(getUsersRes.body.items.length).toBe(2)
-	})*/
+	})
 })
 
-/*describe('Creating an user', () => {
+describe('Creating an user', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.users).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -131,9 +131,9 @@ describe('Getting all users', () => {
 			.set('authorization', authorizationValue)
 		expect(allUsersRes.body.items.length).toBe(2)
 	})
-})*/
+})
 
-/*describe('Deleting an user', () => {
+describe('Deleting an user', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		return request(app).put(RouteNames.users)
 	})
@@ -160,4 +160,4 @@ describe('Getting all users', () => {
 			.set('authorization', authorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
-})*/
+})
