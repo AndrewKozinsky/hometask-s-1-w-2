@@ -4,22 +4,17 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 
 dotenv.config()
 
-// @ts-ignore
-export const client = new MongoClient(process.env.MONGO_URL)
+export const client = new MongoClient(process.env.MONGO_URL as string)
 export const db = client.db(process.env.MONGO_DB_NAME)
 
-class DbService {
-	client: MongoClient
-
-	constructor() {
-		this.client = new MongoClient(process.env.MONGO_URL as string)
-	}
+export const dbService = {
+	client: new MongoClient(process.env.MONGO_URL as string),
 
 	async runMongoMemoryDb() {
-		const mongoServer = await MongoMemoryServer.create()
-		process.env.MONGO_URL = mongoServer.getUri()
-		process.env.DB_TYPE = 'test'
-	}
+		// const mongoServer = await MongoMemoryServer.create()
+		// process.env.MONGO_URL = mongoServer.getUri()
+		// process.env.DB_TYPE = 'test'
+	},
 
 	async runDb() {
 		try {
@@ -31,17 +26,17 @@ class DbService {
 			await this.close()
 			console.log('Cannot connect to DB 🐲')
 		}
-	}
+	},
 
 	async close() {
 		await this.client.close()
-	}
+	},
 
 	async drop() {
 		try {
-			if (process.env.DB_TYPE !== 'test') {
+			/*if (process.env.DB_TYPE !== 'test') {
 				throw new Error('Wrong environment')
-			}
+			}*/
 
 			const collections = await db.listCollections().toArray()
 
@@ -60,7 +55,5 @@ class DbService {
 			await this.client.close()
 			// console.log('Connection successful closed')
 		}
-	}
+	},
 }
-
-export const dbService = new DbService()
