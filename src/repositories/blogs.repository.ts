@@ -4,11 +4,14 @@ import { DBTypes } from '../models/db'
 import { UpdateBlogDtoModel } from '../models/input/blogs.input.model'
 import { CreateBlogOutModel } from '../models/output/blogs.output.model'
 import { BlogServiceModel } from '../models/service/blogs.service.model'
-import { db } from './db'
+import { dbService } from '../db/dbService'
 
 export const blogsRepository = {
 	async getBlogs() {
-		const getBlogsRes = await db.collection<DBTypes.Blog>(DbNames.blogs).find({}).toArray()
+		const getBlogsRes = await dbService.db
+			.collection<DBTypes.Blog>(DbNames.blogs)
+			.find({})
+			.toArray()
 
 		return getBlogsRes.map(this.mapDbBlogToServiceBlog)
 	},
@@ -17,14 +20,18 @@ export const blogsRepository = {
 			return null
 		}
 
-		const getBlogRes = await db
+		const getBlogRes = await dbService.db
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.findOne({ _id: new ObjectId(blogId) })
 
 		return getBlogRes ? this.mapDbBlogToServiceBlog(getBlogRes) : null
 	},
 	async createBlog(dto: CreateBlogOutModel) {
-		return db.collection(DbNames.blogs).insertOne({ ...dto, isMembership: false })
+		const createBlogRes = await dbService.db
+			.collection(DbNames.blogs)
+			.insertOne({ ...dto, isMembership: false })
+
+		return createBlogRes.insertedId.toString()
 	},
 
 	async updateBlog(blogId: string, updateBlogDto: UpdateBlogDtoModel): Promise<boolean> {
@@ -32,7 +39,7 @@ export const blogsRepository = {
 			return false
 		}
 
-		const updateBlogRes = await db
+		const updateBlogRes = await dbService.db
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.updateOne({ _id: new ObjectId(blogId) }, { $set: updateBlogDto })
 
@@ -44,7 +51,9 @@ export const blogsRepository = {
 			return false
 		}
 
-		const result = await db.collection(DbNames.blogs).deleteOne({ _id: new ObjectId(blogId) })
+		const result = await dbService.db
+			.collection(DbNames.blogs)
+			.deleteOne({ _id: new ObjectId(blogId) })
 
 		return result.deletedCount === 1
 	},

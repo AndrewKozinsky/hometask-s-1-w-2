@@ -1,13 +1,17 @@
-import { ObjectId } from 'mongodb'
 import { app } from './app'
 import { config } from './config/config'
-import { runDb } from './repositories/db'
+import { dbService } from './db/dbService'
 
 async function startApp() {
-	await runDb()
-	app.listen(config.port, () => {
-		console.log(`App started in ${config.port} port 🔥`)
-	})
+	try {
+		await dbService.runDb()
+
+		app.listen(config.port, () => {
+			console.log(`App started in ${config.port} port 🔥`)
+		})
+	} catch (err: unknown) {
+		console.log('ERROR in startApp()')
+	}
 }
 
 startApp()

@@ -19,8 +19,7 @@ export const blogsService = {
 			isMembership: false,
 		}
 
-		const createBlogRes = await blogsRepository.createBlog(newBlog)
-		return createBlogRes.insertedId.toString()
+		return await blogsRepository.createBlog(newBlog)
 	},
 	async createBlogPost(blogId: string, postDto: CreateBlogPostDtoModel) {
 		const newPostDto: CreatePostDtoModel = { blogId, ...postDto }

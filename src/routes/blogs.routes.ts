@@ -96,11 +96,9 @@ function getBlogsRouter() {
 				return
 			}
 
-			const createPostRes = await blogsService.createBlogPost(blogId, req.body)
+			const createPostInsertedId = await blogsService.createBlogPost(blogId, req.body)
 
-			const createdPost = await postsQueryRepository.getPost(
-				createPostRes.insertedId.toString(),
-			)
+			const createdPost = await postsQueryRepository.getPost(createPostInsertedId)
 
 			res.status(HTTP_STATUSES.CREATED_201).send(createdPost)
 		},

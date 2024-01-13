@@ -1,12 +1,12 @@
+import { hashService } from '../adapters/hash.adapter'
 import { DBTypes } from '../models/db'
 import { CreateUserDtoModel } from '../models/input/users.input.model'
 import { usersRepository } from '../repositories/users.repository'
-import bcrypt from 'bcrypt'
 
 export const usersService = {
 	async createUser(dto: CreateUserDtoModel) {
-		const passwordSalt = await bcrypt.genSalt()
-		const passwordHash = await this._generateHash(dto.password, passwordSalt)
+		const passwordSalt = await hashService.generateSalt()
+		const passwordHash = await hashService.generateHash(dto.password, passwordSalt)
 
 		const newUserDto: DBTypes.User = {
 			login: dto.login,
@@ -20,9 +20,5 @@ export const usersService = {
 
 	async deleteUser(userId: string): Promise<boolean> {
 		return usersRepository.deleteUser(userId)
-	},
-
-	async _generateHash(str: string, salt: string) {
-		return bcrypt.hash(str, salt)
 	},
 }

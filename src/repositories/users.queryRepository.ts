@@ -7,7 +7,7 @@ import {
 	GetUsersOutModel,
 	UserOutModel,
 } from '../models/output/users.output.model'
-import { db } from './db'
+import { dbService } from '../db/dbService'
 
 export const usersQueryRepository = {
 	async getUsers(queries: GetUsersQueries): Promise<GetUsersOutModel> {
@@ -24,11 +24,11 @@ export const usersQueryRepository = {
 		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
 		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
-		const totalUsersCount = await db.collection(DbNames.users).countDocuments(filter)
+		const totalUsersCount = await dbService.db.collection(DbNames.users).countDocuments(filter)
 
 		const pagesCount = Math.ceil(totalUsersCount / pageSize)
 
-		const getUsersRes = await db
+		const getUsersRes = await dbService.db
 			.collection<DBTypes.User>(DbNames.users)
 			.find(filter)
 			.sort(sortBy, sortDirection)
@@ -50,7 +50,7 @@ export const usersQueryRepository = {
 			return null
 		}
 
-		const getUserRes = await db
+		const getUserRes = await dbService.db
 			.collection<DBTypes.User>(DbNames.users)
 			.findOne({ _id: new ObjectId(postId) })
 

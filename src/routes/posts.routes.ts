@@ -36,9 +36,7 @@ function getPostsRouter() {
 		async (req: ReqWithBody<CreatePostDtoModel>, res: Response) => {
 			const createPostId = await postsService.createPost(req.body)
 
-			const getPostRes = await postsQueryRepository.getPost(
-				createPostId.insertedId.toString(),
-			)
+			const getPostRes = await postsQueryRepository.getPost(createPostId)
 
 			res.status(HTTP_STATUSES.CREATED_201).send(getPostRes)
 		},

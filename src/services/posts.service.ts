@@ -17,7 +17,7 @@ export const postsService = {
 			createdAt: new Date().toISOString(),
 		}
 
-		return postsRepository.createPost(newPostDto)
+		return await postsRepository.createPost(newPostDto)
 	},
 
 	async updatePost(postId: string, updatePostDto: UpdatePostDtoModel) {

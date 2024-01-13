@@ -9,7 +9,7 @@ import {
 	GetBlogsOutModel,
 } from '../models/output/blogs.output.model'
 import { PostOutModel } from '../models/output/posts.output.model'
-import { db } from './db'
+import { dbService } from '../db/dbService'
 import { postsQueryRepository } from './posts.queryRepository'
 
 export const blogsQueryRepository = {
@@ -26,10 +26,10 @@ export const blogsQueryRepository = {
 		const pageNumber = query.pageNumber ? +query.pageNumber : 1
 		const pageSize = query.pageSize ? +query.pageSize : 10
 
-		const totalBlogsCount = await db.collection(DbNames.blogs).countDocuments(filter)
+		const totalBlogsCount = await dbService.db.collection(DbNames.blogs).countDocuments(filter)
 		const pagesCount = Math.ceil(totalBlogsCount / pageSize)
 
-		const getBlogsRes = await db
+		const getBlogsRes = await dbService.db
 			.collection<BlogOutModel>(DbNames.blogs)
 			.find(filter)
 			.sort(sortBy, sortDirection)
@@ -60,10 +60,12 @@ export const blogsQueryRepository = {
 		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
 		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
-		const totalBlogPostsCount = await db.collection(DbNames.posts).countDocuments(filter)
+		const totalBlogPostsCount = await dbService.db
+			.collection(DbNames.posts)
+			.countDocuments(filter)
 		const pagesCount = Math.ceil(totalBlogPostsCount / pageSize)
 
-		const getBlogPostsRes = await db
+		const getBlogPostsRes = await dbService.db
 			.collection<PostOutModel>(DbNames.posts)
 			.find(filter)
 			.sort(sortBy, sortDirection)
@@ -85,7 +87,7 @@ export const blogsQueryRepository = {
 			return null
 		}
 
-		const getBlogRes = await db
+		const getBlogRes = await dbService.db
 			.collection<DBTypes.Blog>(DbNames.blogs)
 			.findOne({ _id: new ObjectId(blogId) })
 

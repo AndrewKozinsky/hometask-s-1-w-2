@@ -1,21 +1,20 @@
+import dotenv from 'dotenv'
+import { Express } from 'express'
 import request from 'supertest'
-import { app } from '../../src/app'
-import { HTTP_STATUSES } from '../../src/config/config'
-import RouteNames from '../../src/config/routeNames'
+import { HTTP_STATUSES } from '../../../src/config/config'
+import RouteNames from '../../../src/config/routeNames'
 import {
 	CreateBlogDtoModel,
 	CreateBlogPostDtoModel,
-} from '../../src/models/input/blogs.input.model'
-import { CreatePostDtoModel } from '../../src/models/input/posts.input.model'
-import { CreateUserDtoModel } from '../../src/models/input/users.input.model'
+} from '../../../src/models/input/blogs.input.model'
+import { CreatePostDtoModel } from '../../../src/models/input/posts.input.model'
+import { CreateUserDtoModel } from '../../../src/models/input/users.input.model'
+
+dotenv.config()
 
 export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
 
-export async function clearAllDB() {
-	await request(app).delete(RouteNames.testingAllData).expect(HTTP_STATUSES.NO_CONTENT_204)
-}
-
-export async function addBlogRequest(blogDto: Partial<CreateBlogDtoModel> = {}) {
+export async function addBlogRequest(app: Express, blogDto: Partial<CreateBlogDtoModel> = {}) {
 	return request(app)
 		.post(RouteNames.blogs)
 		.send(createDtoAddBlog(blogDto))
@@ -25,6 +24,7 @@ export async function addBlogRequest(blogDto: Partial<CreateBlogDtoModel> = {}) 
 }
 
 export async function addBlogPostRequest(
+	app: Express,
 	blogId: string,
 	postDto: Partial<CreateBlogPostDtoModel> = {},
 ) {
@@ -50,7 +50,11 @@ export function createDtoAddBlog(newBlogObj: Partial<CreateBlogDtoModel> = {}): 
 	)
 }
 
-export async function addPostRequest(blogId: string, postDto: Partial<CreatePostDtoModel> = {}) {
+export async function addPostRequest(
+	app: Express,
+	blogId: string,
+	postDto: Partial<CreatePostDtoModel> = {},
+) {
 	return request(app)
 		.post(RouteNames.posts)
 		.send(createDtoAddPost(blogId, postDto))
@@ -100,7 +104,7 @@ export function checkPostObj(postObj: any) {
 	)
 }
 
-export async function addUserRequest(userDto: Partial<CreateUserDtoModel> = {}) {
+export async function addUserRequest(app: Express, userDto: Partial<CreateUserDtoModel> = {}) {
 	return request(app)
 		.post(RouteNames.users)
 		.send(createDtoAddUser(userDto))
