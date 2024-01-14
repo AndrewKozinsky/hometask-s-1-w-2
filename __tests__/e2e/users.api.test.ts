@@ -15,6 +15,10 @@ beforeEach(async () => {
 	await clearAllDB(app)
 })
 
+afterAll(async function () {
+	await dbService.close()
+})
+
 describe('Getting all users', () => {
 	it('123', async () => {
 		expect(2).toBe(2)
