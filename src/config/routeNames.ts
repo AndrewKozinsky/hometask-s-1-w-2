@@ -16,6 +16,10 @@ const RouteNames = {
 	},
 	auth: '/auth',
 	authLogin: '/auth/login',
+	comments: '/comments',
+	comment(id: string) {
+		return '/comments/' + id
+	},
 	testing: '/testing',
 	testingAllData: '/testing/all-data',
 }

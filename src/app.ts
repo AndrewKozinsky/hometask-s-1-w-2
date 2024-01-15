@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import RouteNames from './config/routeNames'
 import getAuthRouter from './routes/auth.routes'
 import getBlogsRouter from './routes/blogs.routes'
+import getCommentsRouter from './routes/comments.routes'
 import getPostsRouter from './routes/posts.routes'
 import getTestRouter from './routes/test.routes'
 import getUsersRouter from './routes/users.routes'
@@ -13,6 +14,7 @@ app.use(RouteNames.blogs, getBlogsRouter())
 app.use(RouteNames.posts, getPostsRouter())
 app.use(RouteNames.users, getUsersRouter())
 app.use(RouteNames.auth, getAuthRouter())
+app.use(RouteNames.comments, getCommentsRouter())
 app.use(RouteNames.testing, getTestRouter())
 
 /*app.use((err: Error, req: Request, res: Response) => {

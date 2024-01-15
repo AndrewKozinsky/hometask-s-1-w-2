@@ -1,5 +1,6 @@
-import express, { Response } from 'express'
+import express, { Request, Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
+import { authMiddleware } from '../middlewares/auth.middleware'
 import { LoginDtoModel } from '../models/input/auth.input.model'
 import { ReqWithBody } from '../models/common'
 import { authService } from '../services/auth.service'
@@ -25,6 +26,18 @@ function getAuthRouter() {
 			res.status(HTTP_STATUSES.OK_200).send(token)
 		},
 	)
+
+	// Get information about current user
+	router.get('/me', authMiddleware, async (req: Request, res: Response) => {
+		const user = await authService.getCurrentUser(req)
+
+		if (!user) {
+			res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+			return
+		}
+
+		res.status(HTTP_STATUSES.OK_200).send(user)
+	})
 
 	return router
 }

@@ -4,7 +4,7 @@ import { DBTypes } from '../models/db'
 import { UpdatePostDtoModel } from '../models/input/posts.input.model'
 import { CreatePostOutModel } from '../models/output/posts.output.model'
 import { PostServiceModel } from '../models/service/posts.service.model'
-import { db, dbService } from '../db/dbService'
+import { db } from '../db/dbService'
 
 export const postsRepository = {
 	async getPosts() {

@@ -27,4 +27,14 @@ export namespace DBTypes {
 		password: string
 		createdAt: string
 	}
+
+	export type Comment = {
+		// _id: ObjectId
+		content: string
+		commentatorInfo: {
+			userId: string
+			userLogin: string
+		}
+		createdAt: string
+	}
 }

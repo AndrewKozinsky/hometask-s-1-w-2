@@ -16,7 +16,9 @@ export const usersRepository = {
 			.collection<DBTypes.User>(DbNames.users)
 			.findOne({ _id: new ObjectId(userId) })
 
-		return getUserRes
+		if (!getUserRes) return null
+
+		return this.mapDbUserToServiceUser(getUserRes)
 	},
 
 	async getUserByLoginAndPassword(loginDto: LoginDtoModel) {
