@@ -7,7 +7,7 @@ declare global {
 			AUTH_PASSWORD: string
 			MONGO_URL: string
 			MONGO_DB_NAME: string
-			DB_TYPE: 'dev' | 'test'
+			JWT_SECRET: 'dev' | 'test'
 		}
 	}
 }

@@ -3,6 +3,7 @@ import { HTTP_STATUSES } from '../config/config'
 import { LoginDtoModel } from '../models/input/auth.input.model'
 import { ReqWithBody } from '../models/common'
 import { authService } from '../services/auth.service'
+import { jwtService } from '../application/jwt.service'
 import { authLoginValidation } from '../validators/authLogin.validator'
 
 function getAuthRouter() {
@@ -13,14 +14,15 @@ function getAuthRouter() {
 		'/login',
 		authLoginValidation(),
 		async (req: ReqWithBody<LoginDtoModel>, res: Response) => {
-			const user = await authService.getUserByLoginAndPassword(req.body)
+			const user = await authService.getUserByLoginOrEmailAndPassword(req.body)
 
 			if (!user) {
 				res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 				return
 			}
 
-			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+			const token = jwtService.createJWT(user)
+			res.status(HTTP_STATUSES.OK_200).send(token)
 		},
 	)
 
