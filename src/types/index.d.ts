@@ -1,4 +1,4 @@
-export {}
+import { UserServiceModel } from '../models/service/users.service.model'
 
 declare global {
 	namespace NodeJS {
@@ -10,4 +10,12 @@ declare global {
 			JWT_SECRET: 'dev' | 'test'
 		}
 	}
+
+	namespace Express {
+		export interface Request {
+			user: null | UserServiceModel
+		}
+	}
 }
+
+export {}

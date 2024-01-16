@@ -14,13 +14,12 @@ export const commentsService = {
 		commentId: string,
 		updateCommentDto: UpdateCommentDtoModel,
 	): Promise<'notOwner' | boolean> {
+		if (!req.user) return false
+
 		const comment = await commentsRepository.getComment(commentId)
 		if (!comment) return false
 
-		const user = await authService.getCurrentUser(req)
-		if (!user) return false
-
-		if (comment.commentatorInfo.userId !== user.userId) {
+		if (comment.commentatorInfo.userId !== req.user.id) {
 			return 'notOwner'
 		}
 
@@ -28,13 +27,12 @@ export const commentsService = {
 	},
 
 	async deleteComment(req: Request, commentId: string): Promise<'notOwner' | boolean> {
+		if (!req.user) return false
+
 		const comment = await commentsRepository.getComment(commentId)
 		if (!comment) return false
 
-		const user = await authService.getCurrentUser(req)
-		if (!user) return false
-
-		if (comment.commentatorInfo.userId !== user.userId) {
+		if (comment.commentatorInfo.userId !== req.user.id) {
 			return 'notOwner'
 		}
 

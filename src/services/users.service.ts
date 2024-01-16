@@ -4,6 +4,9 @@ import { CreateUserDtoModel } from '../models/input/users.input.model'
 import { usersRepository } from '../repositories/users.repository'
 
 export const usersService = {
+	async getUser(userId: string) {
+		return usersRepository.getUserById(userId)
+	},
 	async createUser(dto: CreateUserDtoModel) {
 		const passwordSalt = await hashService.generateSalt()
 		const passwordHash = await hashService.generateHash(dto.password, passwordSalt)

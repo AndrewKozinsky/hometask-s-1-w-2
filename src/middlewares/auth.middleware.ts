@@ -1,22 +1,25 @@
 import { Request, Response, NextFunction } from 'express'
+import { jwtService } from '../application/jwt.service'
 import { HTTP_STATUSES } from '../config/config'
-import dotenv from 'dotenv'
+import { usersService } from '../services/users.service'
 
-dotenv.config()
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
+	const authorizationHeader = req.headers['authorization']
 
-export function authMiddleware(req: Request, res: Response, next: NextFunction) {
-	if (req.headers['authorization'] !== getCorrectAuthorizationHeader()) {
+	if (!authorizationHeader) {
 		res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 		return
 	}
 
-	next()
-}
+	const token = authorizationHeader.split(' ')[1]
 
-function getCorrectAuthorizationHeader() {
-	const base64LoginAndPassword = Buffer.from(
-		process.env.AUTH_LOGIN + ':' + process.env.AUTH_PASSWORD,
-	).toString('base64')
+	const userId = jwtService.getUserIdByToken(token)
 
-	return 'Basic ' + base64LoginAndPassword
+	if (userId) {
+		req.user = await usersService.getUser(userId)
+		next()
+		return
+	}
+
+	res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 }

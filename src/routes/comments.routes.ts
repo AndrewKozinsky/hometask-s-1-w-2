@@ -4,7 +4,7 @@ import { UpdateCommentDtoModel } from '../models/input/comments.input.model'
 import { commentsQueryRepository } from '../repositories/comments.queryRepository'
 import { commentsService } from '../services/comments.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
-import { ReqWithParams, ReqWithParamsAndBody, ReqWithQuery } from '../models/common'
+import { ReqWithParams, ReqWithParamsAndBody } from '../models/common'
 import { updateCommentValidation } from '../validators/updateComment.validator'
 
 function getCommentsRouter() {

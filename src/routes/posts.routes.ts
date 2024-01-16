@@ -1,5 +1,4 @@
 import express, { Response } from 'express'
-import { ObjectId } from 'mongodb'
 import { HTTP_STATUSES } from '../config/config'
 import { postsService } from '../services/posts.service'
 import { authMiddleware } from '../middlewares/auth.middleware'
