@@ -9,3 +9,5 @@ export type CommentOutModel = {
 }
 
 export type GetCommentOutModel = CommentOutModel
+
+export type GetPostCommentsOutModel = CommentOutModel

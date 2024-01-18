@@ -1,7 +1,8 @@
 import express, { Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
+import { adminAuthMiddleware } from '../middlewares/adminAuth.middleware'
 import { CreateUserDtoModel, GetUsersQueries } from '../models/input/users.input.model'
-import { authMiddleware } from '../middlewares/auth.middleware'
+import { userAuthMiddleware } from '../middlewares/userAuth.middleware'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody, ReqWithQuery } from '../models/common'
 import { usersQueryRepository } from '../repositories/users.queryRepository'
 import { usersService } from '../services/users.service'
@@ -14,7 +15,7 @@ function getUsersRouter() {
 	// Returns all users
 	router.get(
 		'/',
-		authMiddleware,
+		adminAuthMiddleware,
 		getUsersValidation(),
 		async (req: ReqWithQuery<GetUsersQueries>, res: Response) => {
 			const users = await usersQueryRepository.getUsers(req.query)
@@ -25,7 +26,7 @@ function getUsersRouter() {
 	// Create new user
 	router.post(
 		'/',
-		authMiddleware,
+		adminAuthMiddleware,
 		userValidation(),
 		async (req: ReqWithBody<CreateUserDtoModel>, res: Response) => {
 			const createdUserId = await usersService.createUser(req.body)
@@ -39,9 +40,9 @@ function getUsersRouter() {
 	// Delete user specified by id
 	router.delete(
 		'/:id',
-		authMiddleware,
+		adminAuthMiddleware,
 		async (req: ReqWithParams<{ id: string }>, res: Response) => {
-			const userId = req.params.id
+			const userId = req.params.postId
 
 			const isUserDeleted = await usersService.deleteUser(userId)
 

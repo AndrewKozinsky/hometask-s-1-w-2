@@ -3,7 +3,7 @@ import { jwtService } from '../application/jwt.service'
 import { HTTP_STATUSES } from '../config/config'
 import { usersService } from '../services/users.service'
 
-export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function userAuthMiddleware(req: Request, res: Response, next: NextFunction) {
 	const authorizationHeader = req.headers['authorization']
 
 	if (!authorizationHeader) {

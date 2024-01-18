@@ -7,6 +7,7 @@ import { clearAllDB } from './utils/db'
 import { addUserRequest } from './utils/utils'
 
 beforeAll(async () => {
+	await dbService.runDb()
 	await dbService.runMongoMemoryDb()
 })
 

@@ -1,9 +1,10 @@
 import express, { Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
+import { adminAuthMiddleware } from '../middlewares/adminAuth.middleware'
 import { blogsRepository } from '../repositories/blogs.repository'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
 import { blogsService } from '../services/blogs.service'
-import { authMiddleware } from '../middlewares/auth.middleware'
+import { userAuthMiddleware } from '../middlewares/userAuth.middleware'
 import {
 	ReqWithBody,
 	ReqWithParams,
@@ -41,7 +42,7 @@ function getBlogsRouter() {
 	// Create new blog
 	router.post(
 		'/',
-		authMiddleware,
+		adminAuthMiddleware,
 		blogValidation(),
 		async function (req: ReqWithBody<CreateBlogDtoModel>, res: Response) {
 			const createdBlogId = await blogsService.createBlog(req.body)
@@ -81,7 +82,7 @@ function getBlogsRouter() {
 	// Create new post for specific blog
 	router.post(
 		'/:blogId/posts',
-		authMiddleware,
+		adminAuthMiddleware,
 		createBlogPostsValidation(),
 		async function (
 			req: ReqWithParamsAndBody<{ blogId: string }, CreateBlogPostDtoModel>,
@@ -120,7 +121,7 @@ function getBlogsRouter() {
 	// Update existing Blog by id with InputModel
 	router.put(
 		'/:blogId',
-		authMiddleware,
+		adminAuthMiddleware,
 		blogValidation(),
 		async (
 			req: ReqWithParamsAndBody<{ blogId: string }, UpdateBlogDtoModel>,
@@ -142,7 +143,7 @@ function getBlogsRouter() {
 	// Delete blog specified by id
 	router.delete(
 		'/:blogId',
-		authMiddleware,
+		adminAuthMiddleware,
 		async (req: ReqWithParams<{ blogId: string }>, res: Response) => {
 			const blogId = req.params.blogId
 

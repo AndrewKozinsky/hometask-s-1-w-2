@@ -1,7 +1,9 @@
 import express, { Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
+import { adminAuthMiddleware } from '../middlewares/adminAuth.middleware'
+import { commentsQueryRepository } from '../repositories/comments.queryRepository'
 import { postsService } from '../services/posts.service'
-import { authMiddleware } from '../middlewares/auth.middleware'
+import { userAuthMiddleware } from '../middlewares/userAuth.middleware'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody, ReqWithQuery } from '../models/common'
 import {
 	CreatePostDtoModel,
@@ -9,7 +11,6 @@ import {
 	UpdatePostDtoModel,
 } from '../models/input/posts.input.model'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
-import { postsRepository } from '../repositories/posts.repository'
 import { getPostsValidation } from '../validators/getPosts.validator'
 import { postValidation } from '../validators/post.validator'
 
@@ -30,7 +31,7 @@ function getPostsRouter() {
 	// Create new post
 	router.post(
 		'/',
-		authMiddleware,
+		adminAuthMiddleware,
 		postValidation(),
 		async (req: ReqWithBody<CreatePostDtoModel>, res: Response) => {
 			const createPostId = await postsService.createPost(req.body)
@@ -42,8 +43,8 @@ function getPostsRouter() {
 	)
 
 	// Return post by id
-	router.get('/:id', async (req: ReqWithParams<{ id: string }>, res: Response) => {
-		const postId = req.params.id
+	router.get('/:postId', async (req: ReqWithParams<{ postId: string }>, res: Response) => {
+		const postId = req.params.postId
 
 		const post = await postsQueryRepository.getPost(postId)
 
@@ -57,11 +58,14 @@ function getPostsRouter() {
 
 	// Update existing post by id with InputModel
 	router.put(
-		'/:id',
-		authMiddleware,
+		'/:postId',
+		adminAuthMiddleware,
 		postValidation(),
-		async (req: ReqWithParamsAndBody<{ id: string }, UpdatePostDtoModel>, res: Response) => {
-			const postId = req.params.id
+		async (
+			req: ReqWithParamsAndBody<{ postId: string }, UpdatePostDtoModel>,
+			res: Response,
+		) => {
+			const postId = req.params.postId
 
 			const isPostUpdated = await postsService.updatePost(postId, req.body)
 
@@ -76,10 +80,10 @@ function getPostsRouter() {
 
 	// Delete post specified by id
 	router.delete(
-		'/:id',
-		authMiddleware,
-		async (req: ReqWithParams<{ id: string }>, res: Response) => {
-			const postId = req.params.id
+		'/:postId',
+		adminAuthMiddleware,
+		async (req: ReqWithParams<{ postId: string }>, res: Response) => {
+			const postId = req.params.postId
 
 			const isPostDeleted = await postsService.deletePost(postId)
 
@@ -89,6 +93,34 @@ function getPostsRouter() {
 			}
 
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+		},
+	)
+
+	// Returns comments for specified post
+	router.get(
+		'/:postId/comments',
+		async (req: ReqWithParams<{ postId: string }>, res: Response) => {
+			const postId = req.params.postId
+			const post = await commentsQueryRepository.getPostComments(postId)
+			if (!post) {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+				return
+			}
+			res.status(HTTP_STATUSES.OK_200).send(post)
+		},
+	)
+
+	// Create new comment
+	router.post(
+		'/:postId/comments',
+		async (req: ReqWithParams<{ postId: string }>, res: Response) => {
+			// const postId = req.params.postId
+			// const post = await postsQueryRepository.getPost(postId)
+			/*if (!post) {
+			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+			return
+		}*/
+			// res.status(HTTP_STATUSES.OK_200).send(post)
 		},
 	)
 
