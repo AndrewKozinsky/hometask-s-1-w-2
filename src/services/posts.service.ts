@@ -1,6 +1,13 @@
-import { CreatePostDtoModel, UpdatePostDtoModel } from '../models/input/posts.input.model'
+import { ObjectId } from 'mongodb'
+import {
+	CreatePostCommentDtoModel,
+	CreatePostDtoModel,
+	UpdatePostDtoModel,
+} from '../models/input/posts.input.model'
 import { PostOutModel } from '../models/output/posts.output.model'
+import { UserServiceModel } from '../models/service/users.service.model'
 import { blogsRepository } from '../repositories/blogs.repository'
+import { commentsRepository } from '../repositories/comments.repository'
 import { postsRepository } from '../repositories/posts.repository'
 
 export const postsService = {
@@ -26,5 +33,20 @@ export const postsService = {
 
 	async deletePost(postId: string): Promise<boolean> {
 		return postsRepository.deletePost(postId)
+	},
+
+	async createPostComment(
+		postId: string,
+		commentDto: CreatePostCommentDtoModel,
+		user: UserServiceModel,
+	): Promise<'postNotExist' | string> {
+		if (!ObjectId.isValid(postId)) {
+			return 'postNotExist'
+		}
+
+		const post = await postsRepository.getPostById(postId)
+		if (!post) return 'postNotExist'
+
+		return await commentsRepository.createPostComment(user, postId, commentDto)
 	},
 }

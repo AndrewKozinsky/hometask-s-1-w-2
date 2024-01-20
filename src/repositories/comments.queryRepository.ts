@@ -1,12 +1,16 @@
 import { ObjectId, WithId } from 'mongodb'
 import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
+import { GetBlogsQueries } from '../models/input/blogs.input.model'
+import { GetPostCommentsQueries } from '../models/input/posts.input.model'
+import { CreateBlogOutModel } from '../models/output/blogs.output.model'
 import {
 	CommentOutModel,
 	GetCommentOutModel,
 	GetPostCommentsOutModel,
 } from '../models/output/comments.output.model'
 import { db } from '../db/dbService'
+import { CreatePostOutModel } from '../models/output/posts.output.model'
 
 export const commentsQueryRepository = {
 	async getComment(commentId: string): Promise<null | GetCommentOutModel> {
@@ -20,17 +24,46 @@ export const commentsQueryRepository = {
 
 		return getCommentRes ? this.mapDbCommentToOutputComment(getCommentRes) : null
 	},
-	async getPostComments(postId: string): Promise<null | GetPostCommentsOutModel> {
+	async getPostComments(
+		postId: string,
+		queries: GetPostCommentsQueries,
+	): Promise<null | GetPostCommentsOutModel> {
+		const sortBy = queries.sortBy ?? 'createdAt'
+		const sortDirection = queries.sortDirection ?? 'desc'
+
+		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
+		const pageSize = queries.pageSize ? +queries.pageSize : 10
+
 		if (!ObjectId.isValid(postId)) {
-			return null
+			return {
+				pagesCount: 0,
+				page: pageNumber,
+				pageSize,
+				totalCount: 0,
+				items: [],
+			}
 		}
 
-		/*const getCommentRes = await db
-			.collection<DBTypes.Comment>(DbNames.comments)
-			.find({ po: new ObjectId(commentId) })*/
+		const totalPostCommentsCount = await db
+			.collection(DbNames.comments)
+			.countDocuments({ postId })
+		const pagesCount = Math.ceil(totalPostCommentsCount / pageSize)
 
-		// return getCommentRes ? this.mapDbCommentToOutputComment(getCommentRes) : null
-		return {} as GetPostCommentsOutModel
+		const getPostCommentsRes = await db
+			.collection<DBTypes.Comment>(DbNames.comments)
+			.find({ postId })
+			.sort(sortBy, sortDirection)
+			.skip((pageNumber - 1) * pageSize)
+			.limit(pageSize)
+			.toArray()
+
+		return {
+			pagesCount,
+			page: pageNumber,
+			pageSize,
+			totalCount: totalPostCommentsCount,
+			items: getPostCommentsRes.map(this.mapDbCommentToOutputComment),
+		}
 	},
 
 	mapDbCommentToOutputComment(DbComment: WithId<DBTypes.Comment>): CommentOutModel {

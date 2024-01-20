@@ -1,3 +1,5 @@
+import { ItemsOutModel } from './common'
+
 export type CommentOutModel = {
 	id: string
 	content: string
@@ -10,4 +12,4 @@ export type CommentOutModel = {
 
 export type GetCommentOutModel = CommentOutModel
 
-export type GetPostCommentsOutModel = CommentOutModel
+export type GetPostCommentsOutModel = ItemsOutModel<CommentOutModel>

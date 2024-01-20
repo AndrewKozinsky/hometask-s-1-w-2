@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb'
-
 export namespace DBTypes {
 	export type Blog = {
 		// _id: ObjectId
@@ -30,6 +28,7 @@ export namespace DBTypes {
 
 	export type Comment = {
 		// _id: ObjectId
+		postId: string
 		content: string
 		commentatorInfo: {
 			userId: string

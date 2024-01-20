@@ -2,15 +2,25 @@ import express, { Response } from 'express'
 import { HTTP_STATUSES } from '../config/config'
 import { adminAuthMiddleware } from '../middlewares/adminAuth.middleware'
 import { commentsQueryRepository } from '../repositories/comments.queryRepository'
+import { commentsRepository } from '../repositories/comments.repository'
 import { postsService } from '../services/posts.service'
 import { userAuthMiddleware } from '../middlewares/userAuth.middleware'
-import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody, ReqWithQuery } from '../models/common'
 import {
+	ReqWithBody,
+	ReqWithParams,
+	ReqWithParamsAndBody,
+	ReqWithParamsAndQueries,
+	ReqWithQuery,
+} from '../models/common'
+import {
+	CreatePostCommentDtoModel,
 	CreatePostDtoModel,
+	GetPostCommentsQueries,
 	GetPostsQueries,
 	UpdatePostDtoModel,
 } from '../models/input/posts.input.model'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
+import { getPostCommentsValidation } from '../validators/getPostComments.validator'
 import { getPostsValidation } from '../validators/getPosts.validator'
 import { postValidation } from '../validators/post.validator'
 
@@ -99,28 +109,46 @@ function getPostsRouter() {
 	// Returns comments for specified post
 	router.get(
 		'/:postId/comments',
-		async (req: ReqWithParams<{ postId: string }>, res: Response) => {
+		getPostCommentsValidation(),
+		async (
+			req: ReqWithParamsAndQueries<{ postId: string }, GetPostCommentsQueries>,
+			res: Response,
+		) => {
 			const postId = req.params.postId
-			const post = await commentsQueryRepository.getPostComments(postId)
-			if (!post) {
+			const postComments = await commentsQueryRepository.getPostComments(postId, req.query)
+
+			if (!postComments) {
 				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
 				return
 			}
-			res.status(HTTP_STATUSES.OK_200).send(post)
+			res.status(HTTP_STATUSES.OK_200).send(postComments)
 		},
 	)
 
 	// Create new comment
 	router.post(
 		'/:postId/comments',
-		async (req: ReqWithParams<{ postId: string }>, res: Response) => {
-			// const postId = req.params.postId
-			// const post = await postsQueryRepository.getPost(postId)
-			/*if (!post) {
-			res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
-			return
-		}*/
-			// res.status(HTTP_STATUSES.OK_200).send(post)
+		userAuthMiddleware,
+		async (
+			req: ReqWithParamsAndBody<{ postId: string }, CreatePostCommentDtoModel>,
+			res: Response,
+		) => {
+			const postId = req.params.postId
+
+			const createdCommentId = await postsService.createPostComment(
+				postId,
+				req.body,
+				req.user!,
+			)
+
+			if (createdCommentId === 'postNotExist') {
+				res.sendStatus(HTTP_STATUSES.NOT_FOUNT_404)
+				return
+			}
+
+			const getCommentRes = await commentsQueryRepository.getComment(createdCommentId)
+
+			res.status(HTTP_STATUSES.CREATED_201).send(getCommentRes)
 		},
 	)
 
