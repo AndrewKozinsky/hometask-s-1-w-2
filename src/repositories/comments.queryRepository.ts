@@ -24,26 +24,37 @@ export const commentsQueryRepository = {
 
 		return getCommentRes ? this.mapDbCommentToOutputComment(getCommentRes) : null
 	},
-	async getPostComments(
-		postId: string,
-		queries: GetPostCommentsQueries,
-	): Promise<null | GetPostCommentsOutModel> {
+	async getPostComments(postId: string, queries: GetPostCommentsQueries) {
+		const sortBy = queries.sortBy ?? 'createdAt'
+		const sortDirection = queries.sortDirection ?? 'desc'
+
+		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
+		const pageSize = queries.pageSize ? +queries.pageSize : 10
+
+		const emptyData = {
+			pagesCount: 0,
+			page: pageNumber,
+			pageSize,
+			totalCount: 0,
+			items: [],
+		}
+
 		if (!ObjectId.isValid(postId)) {
-			return null
+			return {
+				status: 'postNotValid',
+				data: emptyData,
+			}
 		}
 
 		const getPostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.findOne({ _id: new ObjectId(postId) })
 		if (!getPostRes) {
-			return null
+			return {
+				status: 'postNotFound',
+				data: emptyData,
+			}
 		}
-
-		const sortBy = queries.sortBy ?? 'createdAt'
-		const sortDirection = queries.sortDirection ?? 'desc'
-
-		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
-		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
 		const totalPostCommentsCount = await db
 			.collection(DbNames.comments)
@@ -59,11 +70,14 @@ export const commentsQueryRepository = {
 			.toArray()
 
 		return {
-			pagesCount,
-			page: pageNumber,
-			pageSize,
-			totalCount: totalPostCommentsCount,
-			items: getPostCommentsRes.map(this.mapDbCommentToOutputComment),
+			status: 'success',
+			data: {
+				pagesCount,
+				page: pageNumber,
+				pageSize,
+				totalCount: totalPostCommentsCount,
+				items: getPostCommentsRes.map(this.mapDbCommentToOutputComment),
+			},
 		}
 	},
 
