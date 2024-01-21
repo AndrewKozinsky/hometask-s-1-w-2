@@ -28,21 +28,20 @@ export const commentsQueryRepository = {
 		postId: string,
 		queries: GetPostCommentsQueries,
 	): Promise<null | GetPostCommentsOutModel> {
+		if (!ObjectId.isValid(postId)) {
+			return null
+		}
+
+		const getPostRes = await db.collection<DBTypes.Post>(DbNames.posts).findOne({ postId })
+		if (!getPostRes) {
+			return null
+		}
+
 		const sortBy = queries.sortBy ?? 'createdAt'
 		const sortDirection = queries.sortDirection ?? 'desc'
 
 		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
 		const pageSize = queries.pageSize ? +queries.pageSize : 10
-
-		if (!ObjectId.isValid(postId)) {
-			return {
-				pagesCount: 0,
-				page: pageNumber,
-				pageSize,
-				totalCount: 0,
-				items: [],
-			}
-		}
 
 		const totalPostCommentsCount = await db
 			.collection(DbNames.comments)
