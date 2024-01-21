@@ -32,7 +32,9 @@ export const commentsQueryRepository = {
 			return null
 		}
 
-		const getPostRes = await db.collection<DBTypes.Post>(DbNames.posts).findOne({ postId })
+		const getPostRes = await db
+			.collection<DBTypes.Post>(DbNames.posts)
+			.findOne({ _id: new ObjectId(postId) })
 		if (!getPostRes) {
 			return null
 		}
