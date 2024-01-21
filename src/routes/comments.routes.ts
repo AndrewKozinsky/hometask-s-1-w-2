@@ -26,7 +26,7 @@ function getCommentsRouter() {
 
 	// Update existing comment by id with InputModel
 	router.put(
-		'/:id',
+		'/:commentId',
 		userAuthMiddleware,
 		updateCommentValidation(),
 		async (
@@ -36,7 +36,7 @@ function getCommentsRouter() {
 			const commentId = req.params.commentId
 
 			const updateCommentStatus = await commentsService.updateComment(
-				req,
+				req.user!,
 				commentId,
 				req.body,
 			)
@@ -57,12 +57,12 @@ function getCommentsRouter() {
 
 	// Delete comment specified by id
 	router.delete(
-		'/:id',
+		'/:commentId',
 		userAuthMiddleware,
 		async (req: ReqWithParams<{ commentId: string }>, res: Response) => {
 			const commentId = req.params.commentId
 
-			const deleteCommentStatus = await commentsService.deleteComment(req, commentId)
+			const deleteCommentStatus = await commentsService.deleteComment(req.user!, commentId)
 
 			if (deleteCommentStatus === 'notOwner') {
 				res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)

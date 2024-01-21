@@ -2,30 +2,19 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { dbService } from '../../src/db/dbService'
 import { CreateBlogDtoModel } from '../../src/models/input/blogs.input.model'
 import { GetBlogsOutModel } from '../../src/models/output/blogs.output.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
-import { clearAllDB } from './utils/db'
+import { resetDbEveryTest } from './common'
 import {
 	addBlogPostRequest,
 	addBlogRequest,
-	authorizationValue,
+	adminAuthorizationValue,
 	checkPostObj,
 	createDtoAddBlogPost,
 } from './utils/utils'
 
-beforeAll(async () => {
-	await dbService.runMongoMemoryDb()
-})
-
-beforeEach(async () => {
-	await clearAllDB(app)
-})
-
-afterAll(async function () {
-	await dbService.close()
-})
+resetDbEveryTest()
 
 describe('Getting all blogs', () => {
 	it('123', async () => {
@@ -195,7 +184,7 @@ describe('Updating a blog', () => {
 	it('should not update a non existing blog', async () => {
 		await request(app)
 			.post(RouteNames.blog('999'))
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
@@ -206,7 +195,7 @@ describe('Updating a blog', () => {
 		await request(app)
 			.put(RouteNames.blog(createdBlogId))
 			.send({})
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.set('Content-Type', 'application/json')
 			.set('Accept', 'application/json')
 			.expect(HTTP_STATUSES.BAD_REQUEST_400)
@@ -227,7 +216,7 @@ describe('Updating a blog', () => {
 		await request(app)
 			.put(RouteNames.blog(createdBlogId))
 			.send(updateBlogDto)
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.set('Content-Type', 'application/json')
 			.set('Accept', 'application/json')
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
@@ -252,7 +241,7 @@ describe('Create a blog post', () => {
 		return await request(app)
 			.post(RouteNames.blogPosts('999'))
 			.send(addBlogPostDto)
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.set('Content-Type', 'application/json')
 			.set('Accept', 'application/json')
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
@@ -294,7 +283,7 @@ describe('Deleting a blog', () => {
 	it('should not delete a non existing blog', async () => {
 		await request(app)
 			.delete(RouteNames.blog('999'))
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
@@ -305,7 +294,7 @@ describe('Deleting a blog', () => {
 
 		await request(app)
 			.delete(RouteNames.blog(createdBlogId))
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
 
 		await request(app).get(RouteNames.blog(createdBlogId)).expect(HTTP_STATUSES.NOT_FOUNT_404)

@@ -1,7 +1,7 @@
 const DbNames = {
 	blogs: 'blogs',
 	posts: 'posts',
-	users: 'posts',
+	users: 'users',
 	comments: 'comments',
 }
 

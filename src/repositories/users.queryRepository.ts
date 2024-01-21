@@ -45,14 +45,14 @@ export const usersQueryRepository = {
 		}
 	},
 
-	async getUser(postId: string): Promise<null | GetUserOutModel> {
-		if (!ObjectId.isValid(postId)) {
+	async getUser(userId: string): Promise<null | GetUserOutModel> {
+		if (!ObjectId.isValid(userId)) {
 			return null
 		}
 
 		const getUserRes = await db
 			.collection<DBTypes.User>(DbNames.users)
-			.findOne({ _id: new ObjectId(postId) })
+			.findOne({ _id: new ObjectId(userId) })
 
 		return getUserRes ? this.mapDbUserToOutputUser(getUserRes) : null
 	},

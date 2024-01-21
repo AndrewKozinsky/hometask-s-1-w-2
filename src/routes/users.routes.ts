@@ -39,10 +39,10 @@ function getUsersRouter() {
 
 	// Delete user specified by id
 	router.delete(
-		'/:id',
+		'/:userId',
 		adminAuthMiddleware,
-		async (req: ReqWithParams<{ id: string }>, res: Response) => {
-			const userId = req.params.postId
+		async (req: ReqWithParams<{ userId: string }>, res: Response) => {
+			const userId = req.params.userId
 
 			const isUserDeleted = await usersService.deleteUser(userId)
 

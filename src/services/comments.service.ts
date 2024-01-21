@@ -1,6 +1,6 @@
-import { Request } from 'express'
 import { UpdateCommentDtoModel } from '../models/input/comments.input.model'
 import { CommentServiceModel } from '../models/service/comments.service.model'
+import { UserServiceModel } from '../models/service/users.service.model'
 import { commentsRepository } from '../repositories/comments.repository'
 import { authService } from './auth.service'
 
@@ -10,29 +10,25 @@ export const commentsService = {
 	},
 
 	async updateComment(
-		req: Request,
+		user: UserServiceModel,
 		commentId: string,
 		updateCommentDto: UpdateCommentDtoModel,
 	): Promise<'notOwner' | boolean> {
-		if (!req.user) return false
-
 		const comment = await commentsRepository.getComment(commentId)
 		if (!comment) return false
 
-		if (comment.commentatorInfo.userId !== req.user.id) {
+		if (comment.commentatorInfo.userId !== user.id) {
 			return 'notOwner'
 		}
 
 		return commentsRepository.updateComment(commentId, updateCommentDto)
 	},
 
-	async deleteComment(req: Request, commentId: string): Promise<'notOwner' | boolean> {
-		if (!req.user) return false
-
+	async deleteComment(user: UserServiceModel, commentId: string): Promise<'notOwner' | boolean> {
 		const comment = await commentsRepository.getComment(commentId)
 		if (!comment) return false
 
-		if (comment.commentatorInfo.userId !== req.user.id) {
+		if (comment.commentatorInfo.userId !== user.id) {
 			return 'notOwner'
 		}
 

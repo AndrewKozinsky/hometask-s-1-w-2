@@ -2,6 +2,7 @@ import { Request } from 'express'
 import { jwtService } from '../application/jwt.service'
 import { LoginDtoModel } from '../models/input/auth.input.model'
 import { MeOutModel } from '../models/output/auth.output.model'
+import { UserServiceModel } from '../models/service/users.service.model'
 import { usersRepository } from '../repositories/users.repository'
 
 export const authService = {
@@ -9,20 +10,7 @@ export const authService = {
 		return usersRepository.getUserByLoginAndPassword(dto)
 	},
 
-	async getCurrentUser(req: Request): Promise<null | MeOutModel> {
-		const authorizationHeader = req.headers.authorization
-		if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-			return null
-		}
-
-		const token = authorizationHeader.split(' ')[1]
-
-		const userId = await jwtService.getUserIdByToken(token)
-		if (!userId) return null
-
-		const user = await usersRepository.getUserById(userId)
-		if (!user) return null
-
+	getCurrentUser(user: UserServiceModel): MeOutModel {
 		return {
 			userId: user.id,
 			email: user.email,

@@ -20,6 +20,7 @@ import {
 	UpdatePostDtoModel,
 } from '../models/input/posts.input.model'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
+import { createPostCommentValidation } from '../validators/createPostComment.validator'
 import { getPostCommentsValidation } from '../validators/getPostComments.validator'
 import { getPostsValidation } from '../validators/getPosts.validator'
 import { postValidation } from '../validators/post.validator'
@@ -129,6 +130,7 @@ function getPostsRouter() {
 	router.post(
 		'/:postId/comments',
 		userAuthMiddleware,
+		createPostCommentValidation(),
 		async (
 			req: ReqWithParamsAndBody<{ postId: string }, CreatePostCommentDtoModel>,
 			res: Response,

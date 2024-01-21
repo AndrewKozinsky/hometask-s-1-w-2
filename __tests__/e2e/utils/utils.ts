@@ -1,18 +1,25 @@
 import dotenv from 'dotenv'
 import { Express } from 'express'
 import request from 'supertest'
+import { app } from '../../../src/app'
 import { HTTP_STATUSES } from '../../../src/config/config'
 import RouteNames from '../../../src/config/routeNames'
 import {
 	CreateBlogDtoModel,
 	CreateBlogPostDtoModel,
 } from '../../../src/models/input/blogs.input.model'
-import { CreatePostDtoModel } from '../../../src/models/input/posts.input.model'
+import {
+	CreatePostCommentDtoModel,
+	CreatePostDtoModel,
+} from '../../../src/models/input/posts.input.model'
 import { CreateUserDtoModel } from '../../../src/models/input/users.input.model'
 
 dotenv.config()
 
-export const authorizationValue = 'Basic YWRtaW46cXdlcnR5'
+export const adminAuthorizationValue = 'Basic YWRtaW46cXdlcnR5'
+export const userLogin = 'my-login'
+export const userEmail = 'mail@email.com'
+export const userPassword = 'password'
 
 export async function addBlogRequest(app: Express, blogDto: Partial<CreateBlogDtoModel> = {}) {
 	return request(app)
@@ -20,7 +27,7 @@ export async function addBlogRequest(app: Express, blogDto: Partial<CreateBlogDt
 		.send(createDtoAddBlog(blogDto))
 		.set('Content-Type', 'application/json')
 		.set('Accept', 'application/json')
-		.set('authorization', authorizationValue)
+		.set('authorization', adminAuthorizationValue)
 }
 
 export async function addBlogPostRequest(
@@ -35,7 +42,7 @@ export async function addBlogPostRequest(
 		.send(addBlogPostDto)
 		.set('Content-Type', 'application/json')
 		.set('Accept', 'application/json')
-		.set('authorization', authorizationValue)
+		.set('authorization', adminAuthorizationValue)
 }
 
 export function createDtoAddBlog(newBlogObj: Partial<CreateBlogDtoModel> = {}): CreateBlogDtoModel {
@@ -57,10 +64,10 @@ export async function addPostRequest(
 ) {
 	return request(app)
 		.post(RouteNames.posts)
+		.set('authorization', adminAuthorizationValue)
 		.send(createDtoAddPost(blogId, postDto))
 		.set('Content-Type', 'application/json')
 		.set('Accept', 'application/json')
-		.set('authorization', authorizationValue)
 }
 
 export function createDtoAddPost(
@@ -110,15 +117,15 @@ export async function addUserRequest(app: Express, userDto: Partial<CreateUserDt
 		.send(createDtoAddUser(userDto))
 		.set('Content-Type', 'application/json')
 		.set('Accept', 'application/json')
-		.set('authorization', authorizationValue)
+		.set('authorization', adminAuthorizationValue)
 }
 
 export function createDtoAddUser(newUserObj: Partial<CreateUserDtoModel> = {}): CreateUserDtoModel {
 	return Object.assign(
 		{
-			login: 'my-login',
-			password: 'my-1assword',
-			email: 'email@email.ru',
+			login: userLogin,
+			password: userPassword,
+			email: userEmail,
 		},
 		newUserObj,
 	)
@@ -131,6 +138,51 @@ export function checkUserObj(userObj: any) {
 	expect(typeof userObj.email).toBe('string')
 	expect(userObj.email).toMatch(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
 	expect(userObj.createdAt).toMatch(
+		/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
+	)
+}
+
+export function loginRequest(app: Express, loginOrEmail: string, password: string) {
+	return request(app).post(RouteNames.authLogin).send({ loginOrEmail, password })
+}
+
+export async function addPostCommentRequest(
+	app: Express,
+	userAuthorizationToken: string,
+	postId: string,
+	commentDto: Partial<CreatePostCommentDtoModel> = {},
+) {
+	return request(app)
+		.post(RouteNames.postComments(postId))
+		.send(createDtoAddPostComment(commentDto))
+		.set('Content-Type', 'application/json')
+		.set('Accept', 'application/json')
+		.set('authorization', 'Bearer ' + userAuthorizationToken)
+}
+
+export function createDtoAddPostComment(
+	newCommentObj: Partial<CreatePostCommentDtoModel> = {},
+): CreatePostCommentDtoModel {
+	return Object.assign(
+		{
+			content: 'new content min 20 characters',
+		},
+		newCommentObj,
+	)
+}
+
+export function checkCommentObj(commentObj: any, userId: string, userLogin: string) {
+	expect(commentObj).toEqual({
+		id: commentObj.id,
+		content: commentObj.content,
+		commentatorInfo: {
+			userId,
+			userLogin,
+		},
+		createdAt: expect.any(String),
+	})
+
+	expect(commentObj.createdAt).toMatch(
 		/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
 	)
 }

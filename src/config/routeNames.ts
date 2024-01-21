@@ -7,8 +7,11 @@ const RouteNames = {
 		return '/blogs/' + blogId + '/posts'
 	},
 	posts: '/posts',
-	post(id: string) {
-		return '/posts/' + id
+	post(postId: string) {
+		return '/posts/' + postId
+	},
+	postComments(postId: string) {
+		return '/posts/' + postId + '/comments'
 	},
 	users: '/users',
 	user(id: string) {
@@ -16,9 +19,10 @@ const RouteNames = {
 	},
 	auth: '/auth',
 	authLogin: '/auth/login',
+	authMe: '/auth/me',
 	comments: '/comments',
-	comment(id: string) {
-		return '/comments/' + id
+	comment(commentId: string) {
+		return '/comments/' + commentId
 	},
 	testing: '/testing',
 	testingAllData: '/testing/all-data',

@@ -2,27 +2,17 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { dbService } from '../../src/db/dbService'
 import { GetUsersOutModel } from '../../src/models/output/users.output.model'
-import { clearAllDB } from './utils/db'
-import { addUserRequest, authorizationValue, checkUserObj } from './utils/utils'
+import { resetDbEveryTest } from './common'
+import { addUserRequest, adminAuthorizationValue, checkUserObj } from './utils/utils'
 
-beforeAll(async () => {
-	await dbService.runMongoMemoryDb()
-})
+resetDbEveryTest()
 
-beforeEach(async () => {
-	await clearAllDB(app)
-})
-
-afterAll(async function () {
-	await dbService.close()
+it('123', () => {
+	expect(2).toBe(2)
 })
 
 describe('Getting all users', () => {
-	it('123', async () => {
-		expect(2).toBe(2)
-	})
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).get(RouteNames.users).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -38,7 +28,7 @@ describe('Getting all users', () => {
 
 		await request(app)
 			.get(RouteNames.users)
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
@@ -48,7 +38,7 @@ describe('Getting all users', () => {
 
 		const getUsersRes = await request(app)
 			.get(RouteNames.users)
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.OK_200)
 
 		expect(getUsersRes.body.pagesCount).toBe(1)
@@ -61,7 +51,7 @@ describe('Getting all users', () => {
 		checkUserObj(getUsersRes.body.items[1])
 	})
 
-	it('should return an array of objects matching the scheme', async () => {
+	it('should return an array of objects matching the queries scheme', async () => {
 		await addUserRequest(app)
 		await addUserRequest(app)
 		await addUserRequest(app)
@@ -72,7 +62,7 @@ describe('Getting all users', () => {
 
 		const getUsersRes = await request(app)
 			.get(RouteNames.users + '?pageNumber=2&pageSize=2')
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 
 		expect(getUsersRes.body.page).toBe(2)
 		expect(getUsersRes.body.pagesCount).toBe(4)
@@ -97,7 +87,7 @@ describe('Getting all users', () => {
 				RouteNames.users +
 					'?pageNumber=2&pageSize=2&searchLoginTerm=one&searchEmailTerm=.com',
 			)
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 
 		expect(getUsersRes.body.page).toBe(2)
 		expect(getUsersRes.body.pagesCount).toBe(5)
@@ -132,7 +122,7 @@ describe('Creating an user', () => {
 
 		const allUsersRes = await request(app)
 			.get(RouteNames.users)
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 		expect(allUsersRes.body.items.length).toBe(2)
 	})
 })
@@ -145,7 +135,7 @@ describe('Deleting an user', () => {
 	it('should not delete a non existing user', async () => {
 		await request(app)
 			.delete(RouteNames.user('999'))
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
@@ -156,12 +146,12 @@ describe('Deleting an user', () => {
 
 		await request(app)
 			.delete(RouteNames.user(createdUserId))
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
 
 		await request(app)
 			.get(RouteNames.user(createdUserId))
-			.set('authorization', authorizationValue)
+			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 })
