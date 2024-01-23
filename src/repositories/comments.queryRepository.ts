@@ -49,6 +49,7 @@ export const commentsQueryRepository = {
 		const getPostRes = await db
 			.collection<DBTypes.Post>(DbNames.posts)
 			.findOne({ _id: new ObjectId(postId) })
+
 		if (!getPostRes) {
 			return {
 				status: 'postNotFound',
