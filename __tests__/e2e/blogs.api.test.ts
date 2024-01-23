@@ -16,10 +16,11 @@ import {
 
 resetDbEveryTest()
 
+it('123', async () => {
+	expect(2).toBe(2)
+})
+
 describe('Getting all blogs', () => {
-	it('123', async () => {
-		expect(2).toBe(2)
-	})
 	it('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetBlogsOutModel = {
 			pagesCount: 0,

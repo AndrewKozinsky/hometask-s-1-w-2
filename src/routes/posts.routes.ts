@@ -119,7 +119,7 @@ function getPostsRouter() {
 			const postComments = await commentsQueryRepository.getPostComments(postId, req.query)
 
 			if (postComments.status === 'postNotValid' || postComments.status === 'postNotFound') {
-				res.status(HTTP_STATUSES.NOT_FOUNT_404).send(postComments.data)
+				res.status(HTTP_STATUSES.NOT_FOUNT_404)
 				return
 			}
 

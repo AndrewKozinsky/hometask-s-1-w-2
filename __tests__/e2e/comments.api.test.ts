@@ -16,6 +16,10 @@ import {
 
 resetDbEveryTest()
 
+it('123', async () => {
+	expect(2).toBe(2)
+})
+
 describe('Getting a comment', () => {
 	it('should return 404 if a comment does not exists', async () => {
 		const getCommentRes = await request(app).get(RouteNames.comment('999'))

@@ -31,18 +31,18 @@ export const commentsQueryRepository = {
 		const pageNumber = queries.pageNumber ? +queries.pageNumber : 1
 		const pageSize = queries.pageSize ? +queries.pageSize : 10
 
-		const emptyData = {
+		// Delete later
+		/*const emptyData = {
 			pagesCount: 0,
 			page: pageNumber,
 			pageSize,
 			totalCount: 0,
 			items: [],
-		}
+		}*/
 
 		if (!ObjectId.isValid(postId)) {
 			return {
 				status: 'postNotValid',
-				data: emptyData,
 			}
 		}
 
@@ -52,7 +52,6 @@ export const commentsQueryRepository = {
 		if (!getPostRes) {
 			return {
 				status: 'postNotFound',
-				data: emptyData,
 			}
 		}
 

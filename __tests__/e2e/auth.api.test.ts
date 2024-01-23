@@ -9,10 +9,11 @@ import { addUserRequest, adminAuthorizationValue, loginRequest } from './utils/u
 
 resetDbEveryTest()
 
+it('123', async () => {
+	expect(2).toBe(2)
+})
+
 describe('Login user', () => {
-	it('123', async () => {
-		expect(2).toBe(2)
-	})
 	it('should return 400 if to pass wrong dto', async () => {
 		await request(app)
 			.post(RouteNames.authLogin)
