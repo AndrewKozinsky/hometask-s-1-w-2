@@ -14,8 +14,7 @@ export const blogIdValidation = param('postId')
 	.isString()
 	.withMessage('PostId must be a string')
 	.trim()
-	.isLength({ min: 1, max: 100 })
-	.custom(async (value) => {
+/*.custom(async (value) => {
 		const post = await postsRepository.getPostById(value)
 
 		if (!post) {
@@ -24,7 +23,7 @@ export const blogIdValidation = param('postId')
 
 		return true
 	})
-	.withMessage('Incorrect postId')
+	.withMessage('Incorrect postId')*/
 
 export function createPostCommentValidation() {
 	return [contentValidation, blogIdValidation, inputValidation]
