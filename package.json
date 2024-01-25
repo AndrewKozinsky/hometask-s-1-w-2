@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "date-fns": "^3.3.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.3.0"
+    "mongodb": "^6.3.0",
+    "nodemailer": "^6.9.8",
+    "sendpulse-api": "^1.1.6",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -23,6 +27,7 @@
     "@types/jest": "^29.5.11",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.10.5",
+    "@types/nodemailer": "^6.4.14",
     "@types/supertest": "^2.0.16",
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.56.0",

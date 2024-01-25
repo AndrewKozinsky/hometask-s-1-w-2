@@ -2,7 +2,7 @@ import { ObjectId, WithId } from 'mongodb'
 import { hashService } from '../adapters/hash.adapter'
 import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
-import { LoginDtoModel } from '../models/input/auth.input.model'
+import { AuthLoginDtoModel } from '../models/input/authLogin.input.model'
 import { UserServiceModel } from '../models/service/users.service.model'
 import { db, dbService } from '../db/dbService'
 
@@ -21,7 +21,7 @@ export const usersRepository = {
 		return this.mapDbUserToServiceUser(getUserRes)
 	},
 
-	async getUserByLoginAndPassword(loginDto: LoginDtoModel) {
+	async getUserByLoginAndPassword(loginDto: AuthLoginDtoModel) {
 		const getUserRes = await db
 			.collection<DBTypes.User>(DbNames.users)
 			.findOne({ $or: [{ login: loginDto.loginOrEmail }, { email: loginDto.loginOrEmail }] })
@@ -30,7 +30,10 @@ export const usersRepository = {
 			return null
 		}
 
-		const isPasswordMath = await hashService.compare(loginDto.password, getUserRes.password)
+		const isPasswordMath = await hashService.compare(
+			loginDto.password,
+			getUserRes.account.password,
+		)
 
 		if (!isPasswordMath) {
 			return null
@@ -57,10 +60,10 @@ export const usersRepository = {
 	mapDbUserToServiceUser(DbUser: WithId<DBTypes.User>): UserServiceModel {
 		return {
 			id: DbUser._id.toString(),
-			login: DbUser.login,
-			email: DbUser.email,
-			password: DbUser.password,
-			createdAt: DbUser.createdAt,
+			login: DbUser.account.login,
+			email: DbUser.account.email,
+			password: DbUser.account.password,
+			createdAt: DbUser.account.createdAt,
 		}
 	},
 }
