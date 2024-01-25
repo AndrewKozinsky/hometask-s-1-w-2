@@ -1,13 +1,13 @@
 import { emailAdapter } from '../adapters/email.adapter'
 
 export const emailManager = {
-	async sendEmailConfirmationMessage(userEmail: string) {
+	async sendEmailConfirmationMessage(userEmail: string, confirmationCode: string) {
 		// Send an email
 		await emailAdapter.sendEmail(
 			userEmail,
-			'Тема письма',
-			'Текст письма',
-			'<p>Текст письма</p>',
+			'Registration',
+			'Registration at out web-site',
+			`<p><a href="https://localhost:3000?code=${confirmationCode}">Registration at out web-site</a></p>`,
 		)
 	},
 }

@@ -31,7 +31,7 @@ export const commentsRepository = {
 			content: commentDto.content,
 			commentatorInfo: {
 				userId: user.id,
-				userLogin: user.login,
+				userLogin: user.account.login,
 			},
 			createdAt: new Date().toISOString(),
 		}

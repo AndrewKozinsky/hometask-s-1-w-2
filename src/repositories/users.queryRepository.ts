@@ -60,9 +60,9 @@ export const usersQueryRepository = {
 	mapDbUserToOutputUser(DbUser: WithId<DBTypes.User>): UserOutModel {
 		return {
 			id: DbUser._id.toString(),
-			email: DbUser.email,
-			login: DbUser.login,
-			createdAt: DbUser.createdAt,
+			email: DbUser.account.email,
+			login: DbUser.account.login,
+			createdAt: DbUser.account.createdAt,
 		}
 	},
 }

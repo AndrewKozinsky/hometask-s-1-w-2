@@ -20,6 +20,15 @@ export const usersRepository = {
 
 		return this.mapDbUserToServiceUser(getUserRes)
 	},
+	async getUserByEmail(email: string) {
+		const getUserRes = await db
+			.collection<DBTypes.User>(DbNames.users)
+			.findOne({ 'account.email': email })
+
+		if (!getUserRes) return null
+
+		return this.mapDbUserToServiceUser(getUserRes)
+	},
 
 	async getUserByLoginAndPassword(loginDto: AuthLoginDtoModel) {
 		const getUserRes = await db
@@ -42,9 +51,39 @@ export const usersRepository = {
 		return this.mapDbUserToServiceUser(getUserRes)
 	},
 
+	async getUserByConfirmationCode(confirmationCode: string) {
+		const getUserRes = await db
+			.collection<DBTypes.User>(DbNames.users)
+			.findOne({ 'emailConfirmation.confirmationCode': confirmationCode })
+
+		if (!getUserRes) {
+			return null
+		}
+
+		return this.mapDbUserToServiceUser(getUserRes)
+	},
+
 	async createUser(dto: DBTypes.User) {
 		const userRes = await db.collection(DbNames.users).insertOne(dto)
 		return userRes.insertedId.toString()
+	},
+
+	async updateUser(userId: string, updateUserDto: Partial<DBTypes.User>) {
+		const updateUserRes = await db
+			.collection(DbNames.users)
+			.updateOne({ _id: new ObjectId(userId) }, { $set: updateUserDto })
+		return updateUserRes.modifiedCount === 1
+	},
+
+	async makeUserEmailConfirmed(userId: string) {
+		const updateUserRes = await db
+			.collection(DbNames.users)
+			.updateOne(
+				{ _id: new ObjectId(userId) },
+				{ $set: { 'emailConfirmation.isConfirmed': true } },
+			)
+
+		return updateUserRes.modifiedCount === 1
 	},
 
 	async deleteUser(userId: string): Promise<boolean> {
@@ -60,10 +99,17 @@ export const usersRepository = {
 	mapDbUserToServiceUser(DbUser: WithId<DBTypes.User>): UserServiceModel {
 		return {
 			id: DbUser._id.toString(),
-			login: DbUser.account.login,
-			email: DbUser.account.email,
-			password: DbUser.account.password,
-			createdAt: DbUser.account.createdAt,
+			account: {
+				login: DbUser.account.login,
+				email: DbUser.account.email,
+				password: DbUser.account.password,
+				createdAt: DbUser.account.createdAt,
+			},
+			emailConfirmation: {
+				confirmationCode: DbUser.emailConfirmation.confirmationCode,
+				expirationDate: DbUser.emailConfirmation.expirationDate,
+				isConfirmed: DbUser.emailConfirmation.isConfirmed,
+			},
 		}
 	},
 }

@@ -1,5 +1,3 @@
-import { Request } from 'express'
-import nodemailer from 'nodemailer'
 const sendpulse = require('sendpulse-api')
 
 export const emailAdapter = {

@@ -59,6 +59,8 @@ function getAuthRouter() {
 		'/registration-email-resending',
 		authRegistrationEmailResending(),
 		async (req: ReqWithBody<AuthRegistrationEmailResendingDtoModel>, res: Response) => {
+			const resendingStatus = await authService.resendEmailConfirmationCode(req.body)
+
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 		},
 	)
@@ -68,7 +70,7 @@ function getAuthRouter() {
 		'/registration-confirmation',
 		authRegistrationConfirmationValidation(),
 		async (req: ReqWithBody<AuthRegistrationConfirmationDtoModel>, res: Response) => {
-			const confirmationStatus = await authService.confirmEmail(req.user!, req.body)
+			const confirmationStatus = await authService.confirmEmail(req.body)
 
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 		},
