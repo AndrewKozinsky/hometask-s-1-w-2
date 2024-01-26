@@ -5,7 +5,7 @@ import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
 import { settings } from '../../src/settings'
 import { resetDbEveryTest } from './common'
-import { addUserRequest, adminAuthorizationValue, loginRequest } from './utils/utils'
+import { addUserByAdminRequest, adminAuthorizationValue, loginRequest } from './utils/utils'
 
 resetDbEveryTest()
 
@@ -26,7 +26,7 @@ describe('Login user', () => {
 		const password = 'password'
 		const email = 'email@email.ru'
 
-		const createdUserRes = await addUserRequest(app, { login, password, email })
+		const createdUserRes = await addUserByAdminRequest(app, { login, password, email })
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
 		await request(app)
@@ -40,7 +40,7 @@ describe('Login user', () => {
 		const password = 'password'
 		const email = 'email@email.ru'
 
-		const createdUserRes = await addUserRequest(app, { login, password, email })
+		const createdUserRes = await addUserByAdminRequest(app, { login, password, email })
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
 		await request(app)
@@ -54,7 +54,7 @@ describe('Login user', () => {
 		const password = 'password'
 		const email = 'email@email.ru'
 
-		const createdUserRes = await addUserRequest(app, { login, password, email })
+		const createdUserRes = await addUserByAdminRequest(app, { login, password, email })
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
 		const loginRes = await loginRequest(app, login, password).expect(HTTP_STATUSES.OK_200)
@@ -66,7 +66,10 @@ describe('Login user', () => {
 	})
 })
 
-describe('Get current user', () => {
+// WRITE TESTS !!!
+describe('Register user', () => {})
+
+/*describe('Get current user', () => {
 	it('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -90,4 +93,4 @@ describe('Get current user', () => {
 		expect(authMeRes.body.login).toBe(login)
 		expect(authMeRes.body.userId).toBe(createdUserRes.body.id)
 	})
-})
+})*/

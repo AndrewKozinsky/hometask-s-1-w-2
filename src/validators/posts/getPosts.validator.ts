@@ -1,5 +1,5 @@
 import { query } from 'express-validator'
-import { inputValidation } from '../middlewares/input.validation'
+import { inputValidation } from '../../middlewares/input.validation'
 
 export const sortByValidation = query('sortBy')
 	.optional()
@@ -21,7 +21,7 @@ export const pageSizeValidation = query('pageSize')
 	.isInt()
 	.withMessage('PageSize must be a number')
 
-export function getPostCommentsValidation() {
+export function getPostsValidation() {
 	return [
 		sortByValidation,
 		sortDirectionValidation,

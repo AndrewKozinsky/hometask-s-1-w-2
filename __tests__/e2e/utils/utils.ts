@@ -111,8 +111,12 @@ export function checkPostObj(postObj: any) {
 	)
 }
 
-export async function addUserRequest(app: Express, userDto: Partial<CreateUserDtoModel> = {}) {
-	return request(app)
+export async function addUserByAdminRequest(
+	app: Express,
+	userDto: Partial<CreateUserDtoModel> = {},
+) {
+	// Register user
+	return await request(app)
 		.post(RouteNames.users)
 		.send(createDtoAddUser(userDto))
 		.set('Content-Type', 'application/json')

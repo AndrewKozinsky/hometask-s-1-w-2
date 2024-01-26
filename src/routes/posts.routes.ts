@@ -20,10 +20,10 @@ import {
 	UpdatePostDtoModel,
 } from '../models/input/posts.input.model'
 import { postsQueryRepository } from '../repositories/posts.queryRepository'
-import { createPostCommentValidation } from '../validators/createPostComment.validator'
-import { getPostCommentsValidation } from '../validators/getPostComments.validator'
-import { getPostsValidation } from '../validators/getPosts.validator'
-import { postValidation } from '../validators/post.validator'
+import { createPostCommentValidation } from '../validators/posts/createPostComment.validator'
+import { getPostCommentsValidation } from '../validators/posts/getPostComments.validator'
+import { getPostsValidation } from '../validators/posts/getPosts.validator'
+import { postValidation } from '../validators/posts/post.validator'
 
 function getPostsRouter() {
 	const router = express.Router()

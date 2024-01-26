@@ -1,7 +1,7 @@
 import { body, param } from 'express-validator'
-import { inputValidation } from '../middlewares/input.validation'
-import { blogsRepository } from '../repositories/blogs.repository'
-import { postsRepository } from '../repositories/posts.repository'
+import { inputValidation } from '../../middlewares/input.validation'
+import { blogsRepository } from '../../repositories/blogs.repository'
+import { postsRepository } from '../../repositories/posts.repository'
 
 export const contentValidation = body('content')
 	.isString()

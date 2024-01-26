@@ -5,12 +5,13 @@ import { AuthRegistrationConfirmationDtoModel } from '../models/input/authRegist
 import { AuthRegistrationEmailResendingDtoModel } from '../models/input/authRegistrationEmailResending.input.model'
 import { MeOutModel } from '../models/output/auth.output.model'
 import { UserServiceModel } from '../models/service/users.service.model'
-import { usersRepository } from '../repositories/users.repository'
+import { authRepository } from '../repositories/auth.repository'
+import { commonService } from './common'
 import { usersService } from './users.service'
 
 export const authService = {
 	async getUserByLoginOrEmailAndPassword(dto: AuthLoginDtoModel) {
-		const user = await usersRepository.getUserByLoginAndPassword(dto)
+		const user = await authRepository.getUserByLoginAndPassword(dto)
 
 		if (!user || !user.emailConfirmation.isConfirmed) {
 			return null
@@ -20,7 +21,9 @@ export const authService = {
 	},
 
 	async registration(dto: AuthRegistrationDtoModel) {
-		const userId = await usersService.createUser(dto)
+		const newUserDto = await commonService.getCreateUserDto(dto, false)
+
+		const userId = await authRepository.createUser(newUserDto)
 
 		const user = await usersService.getUser(userId)
 		if (!user) {
@@ -39,7 +42,7 @@ export const authService = {
 			}
 		} catch (err: unknown) {
 			console.log(err)
-			await usersRepository.deleteUser(userId)
+			await authRepository.deleteUser(userId)
 
 			return {
 				status: 'userNotDeletedAfterConfirmEmailNotSend',
@@ -48,7 +51,7 @@ export const authService = {
 	},
 
 	async confirmEmail(dto: AuthRegistrationConfirmationDtoModel) {
-		const user = await usersRepository.getUserByConfirmationCode(dto.code)
+		const user = await authRepository.getUserByConfirmationCode(dto.code)
 		if (!user || user.emailConfirmation.isConfirmed) {
 			return {
 				status: 'fail',
@@ -64,7 +67,7 @@ export const authService = {
 			}
 		}
 
-		await usersRepository.makeUserEmailConfirmed(user.id)
+		await authRepository.makeUserEmailConfirmed(user.id)
 
 		return {
 			status: 'success',
@@ -74,7 +77,7 @@ export const authService = {
 	async resendEmailConfirmationCode(dto: AuthRegistrationEmailResendingDtoModel) {
 		const { email } = dto
 
-		const user = await usersRepository.getUserByEmail(email)
+		const user = await authRepository.getUserByEmail(email)
 
 		if (!user || user.emailConfirmation.isConfirmed) {
 			return {

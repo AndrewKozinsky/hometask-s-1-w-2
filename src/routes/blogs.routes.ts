@@ -20,10 +20,10 @@ import {
 	UpdateBlogDtoModel,
 } from '../models/input/blogs.input.model'
 import { blogsQueryRepository } from '../repositories/blogs.queryRepository'
-import { blogValidation } from '../validators/blog.validator'
-import { createBlogPostsValidation } from '../validators/createBlogPost.validator'
-import { getBlogPostsValidation } from '../validators/getBlogPosts.validator'
-import { getBlogsValidation } from '../validators/getBlogs.validator'
+import { blogValidation } from '../validators/blogs/blog.validator'
+import { createBlogPostsValidation } from '../validators/blogs/createBlogPost.validator'
+import { getBlogPostsValidation } from '../validators/blogs/getBlogPosts.validator'
+import { getBlogsValidation } from '../validators/blogs/getBlogs.validator'
 
 function getBlogsRouter() {
 	const router = express.Router()

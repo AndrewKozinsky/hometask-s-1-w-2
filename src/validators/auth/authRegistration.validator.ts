@@ -1,6 +1,5 @@
-import { body } from 'express-validator'
-import { inputValidation } from '../middlewares/input.validation'
-import { blogsRepository } from '../repositories/blogs.repository'
+import { body, query } from 'express-validator'
+import { inputValidation } from '../../middlewares/input.validation'
 
 export const loginValidation = body('login')
 	.isString()
@@ -20,10 +19,9 @@ export const passwordValidation = body('password')
 export const emailValidation = body('email')
 	.isString()
 	.withMessage('Email must be a string')
-	.trim()
 	.matches('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')
 	.withMessage('Incorrect email')
 
-export function userValidation() {
+export function authRegistrationValidation() {
 	return [loginValidation, passwordValidation, emailValidation, inputValidation]
 }

@@ -1,10 +1,5 @@
 import { query } from 'express-validator'
-import { inputValidation } from '../middlewares/input.validation'
-
-export const searchNameTermValidation = query('searchNameTerm')
-	.optional()
-	.isString()
-	.withMessage('SearchNameTerm must be a string')
+import { inputValidation } from '../../middlewares/input.validation'
 
 export const sortByValidation = query('sortBy')
 	.optional()
@@ -26,13 +21,24 @@ export const pageSizeValidation = query('pageSize')
 	.isInt()
 	.withMessage('PageSize must be a number')
 
-export function getBlogsValidation() {
+export const searchLoginTermValidation = query('searchLoginTerm')
+	.optional()
+	.isString()
+	.withMessage('SearchLoginTerm must be a string')
+
+export const searchEmailTermValidation = query('searchEmailTerm')
+	.optional()
+	.isString()
+	.withMessage('SearchEmailTerm must be a string')
+
+export function getUsersValidation() {
 	return [
-		searchNameTermValidation,
 		sortByValidation,
 		sortDirectionValidation,
 		pageNumberValidation,
 		pageSizeValidation,
+		searchLoginTermValidation,
+		searchEmailTermValidation,
 		inputValidation,
 	]
 }

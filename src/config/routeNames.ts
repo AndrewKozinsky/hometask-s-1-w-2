@@ -17,9 +17,14 @@ const RouteNames = {
 	user(id: string) {
 		return '/users/' + id
 	},
+
 	auth: '/auth',
 	authLogin: '/auth/login',
+	authRegistration: '/auth/registration',
+	authRegistrationEmailResending: '/auth/registration-email-resending',
+	authRegistrationConfirmation: '/auth/registration-confirmation',
 	authMe: '/auth/me',
+
 	comments: '/comments',
 	comment(commentId: string) {
 		return '/comments/' + commentId

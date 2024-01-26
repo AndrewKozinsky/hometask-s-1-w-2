@@ -5,6 +5,7 @@ import { DBTypes } from '../models/db'
 import { AuthLoginDtoModel } from '../models/input/authLogin.input.model'
 import { UserServiceModel } from '../models/service/users.service.model'
 import { db, dbService } from '../db/dbService'
+import { commonService } from '../services/common'
 
 export const usersRepository = {
 	async getUserById(userId: string) {
@@ -20,96 +21,16 @@ export const usersRepository = {
 
 		return this.mapDbUserToServiceUser(getUserRes)
 	},
-	async getUserByEmail(email: string) {
-		const getUserRes = await db
-			.collection<DBTypes.User>(DbNames.users)
-			.findOne({ 'account.email': email })
-
-		if (!getUserRes) return null
-
-		return this.mapDbUserToServiceUser(getUserRes)
-	},
-
-	async getUserByLoginAndPassword(loginDto: AuthLoginDtoModel) {
-		const getUserRes = await db
-			.collection<DBTypes.User>(DbNames.users)
-			.findOne({ $or: [{ login: loginDto.loginOrEmail }, { email: loginDto.loginOrEmail }] })
-
-		if (!getUserRes) {
-			return null
-		}
-
-		const isPasswordMath = await hashService.compare(
-			loginDto.password,
-			getUserRes.account.password,
-		)
-
-		if (!isPasswordMath) {
-			return null
-		}
-
-		return this.mapDbUserToServiceUser(getUserRes)
-	},
-
-	async getUserByConfirmationCode(confirmationCode: string) {
-		const getUserRes = await db
-			.collection<DBTypes.User>(DbNames.users)
-			.findOne({ 'emailConfirmation.confirmationCode': confirmationCode })
-
-		if (!getUserRes) {
-			return null
-		}
-
-		return this.mapDbUserToServiceUser(getUserRes)
-	},
 
 	async createUser(dto: DBTypes.User) {
-		const userRes = await db.collection(DbNames.users).insertOne(dto)
-		return userRes.insertedId.toString()
-	},
-
-	async updateUser(userId: string, updateUserDto: Partial<DBTypes.User>) {
-		const updateUserRes = await db
-			.collection(DbNames.users)
-			.updateOne({ _id: new ObjectId(userId) }, { $set: updateUserDto })
-		return updateUserRes.modifiedCount === 1
-	},
-
-	async makeUserEmailConfirmed(userId: string) {
-		const updateUserRes = await db
-			.collection(DbNames.users)
-			.updateOne(
-				{ _id: new ObjectId(userId) },
-				{ $set: { 'emailConfirmation.isConfirmed': true } },
-			)
-
-		return updateUserRes.modifiedCount === 1
+		return commonService.createUser(dto)
 	},
 
 	async deleteUser(userId: string): Promise<boolean> {
-		if (!ObjectId.isValid(userId)) {
-			return false
-		}
-
-		const result = await db.collection(DbNames.users).deleteOne({ _id: new ObjectId(userId) })
-
-		return result.deletedCount === 1
+		return commonService.deleteUser(userId)
 	},
 
-	mapDbUserToServiceUser(DbUser: WithId<DBTypes.User>): UserServiceModel {
-		return {
-			id: DbUser._id.toString(),
-			account: {
-				login: DbUser.account.login,
-				email: DbUser.account.email,
-				password: DbUser.account.password,
-				createdAt: DbUser.account.createdAt,
-			},
-			emailConfirmation: {
-				confirmationCode: DbUser.emailConfirmation.confirmationCode,
-				expirationDate: DbUser.emailConfirmation.expirationDate,
-				isConfirmed: DbUser.emailConfirmation.isConfirmed,
-			},
-		}
+	mapDbUserToServiceUser(dbUser: WithId<DBTypes.User>): UserServiceModel {
+		return commonService.mapDbUserToServiceUser(dbUser)
 	},
 }

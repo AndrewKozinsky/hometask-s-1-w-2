@@ -8,10 +8,10 @@ import { AuthRegistrationConfirmationDtoModel } from '../models/input/authRegist
 import { AuthRegistrationEmailResendingDtoModel } from '../models/input/authRegistrationEmailResending.input.model'
 import { authService } from '../services/auth.service'
 import { jwtService } from '../application/jwt.service'
-import { authLoginValidation } from '../validators/authLogin.validator'
-import { authRegistrationValidation } from '../validators/authRegistration.validator'
-import { authRegistrationConfirmationValidation } from '../validators/authRegistrationConfirmation.validator'
-import { authRegistrationEmailResending } from '../validators/authRegistrationEmailResending.validator'
+import { authLoginValidation } from '../validators/auth/authLogin.validator'
+import { authRegistrationValidation } from '../validators/auth/authRegistration.validator'
+import { authRegistrationConfirmationValidation } from '../validators/auth/authRegistrationConfirmation.validator'
+import { authRegistrationEmailResending } from '../validators/auth/authRegistrationEmailResending.validator'
 
 function getAuthRouter() {
 	const router = express.Router()

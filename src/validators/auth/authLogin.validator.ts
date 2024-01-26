@@ -1,5 +1,5 @@
 import { body, query } from 'express-validator'
-import { inputValidation } from '../middlewares/input.validation'
+import { inputValidation } from '../../middlewares/input.validation'
 
 export const sortByValidation = body('loginOrEmail')
 	.isString()

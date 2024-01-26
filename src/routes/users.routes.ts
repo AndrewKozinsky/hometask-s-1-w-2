@@ -6,8 +6,8 @@ import { userAuthMiddleware } from '../middlewares/userAuth.middleware'
 import { ReqWithBody, ReqWithParams, ReqWithParamsAndBody, ReqWithQuery } from '../models/common'
 import { usersQueryRepository } from '../repositories/users.queryRepository'
 import { usersService } from '../services/users.service'
-import { getUsersValidation } from '../validators/getUsers.validator'
-import { userValidation } from '../validators/user.validator'
+import { getUsersValidation } from '../validators/users/getUsers.validator'
+import { userValidation } from '../validators/users/user.validator'
 
 function getUsersRouter() {
 	const router = express.Router()
@@ -23,13 +23,13 @@ function getUsersRouter() {
 		},
 	)
 
-	// Create new user
+	// Create new user by the admin
 	router.post(
 		'/',
 		adminAuthMiddleware,
 		userValidation(),
 		async (req: ReqWithBody<CreateUserDtoModel>, res: Response) => {
-			const createdUserId = await usersService.createUser(req.body)
+			const createdUserId = await usersService.createUserByAdmin(req.body)
 
 			const getUserRes = await usersQueryRepository.getUser(createdUserId)
 

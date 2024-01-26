@@ -1,5 +1,10 @@
 import { query } from 'express-validator'
-import { inputValidation } from '../middlewares/input.validation'
+import { inputValidation } from '../../middlewares/input.validation'
+
+export const searchNameTermValidation = query('searchNameTerm')
+	.optional()
+	.isString()
+	.withMessage('SearchNameTerm must be a string')
 
 export const sortByValidation = query('sortBy')
 	.optional()
@@ -21,8 +26,9 @@ export const pageSizeValidation = query('pageSize')
 	.isInt()
 	.withMessage('PageSize must be a number')
 
-export function getPostsValidation() {
+export function getBlogsValidation() {
 	return [
+		searchNameTermValidation,
 		sortByValidation,
 		sortDirectionValidation,
 		pageNumberValidation,

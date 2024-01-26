@@ -1,5 +1,5 @@
 import { body } from 'express-validator'
-import { inputValidation } from '../middlewares/input.validation'
+import { inputValidation } from '../../middlewares/input.validation'
 
 export const nameValidation = body('name')
 	.isString()

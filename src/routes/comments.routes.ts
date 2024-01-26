@@ -5,7 +5,7 @@ import { commentsQueryRepository } from '../repositories/comments.queryRepositor
 import { commentsService } from '../services/comments.service'
 import { userAuthMiddleware } from '../middlewares/userAuth.middleware'
 import { ReqWithParams, ReqWithParamsAndBody } from '../models/common'
-import { updateCommentValidation } from '../validators/updateComment.validator'
+import { updateCommentValidation } from '../validators/comments/updateComment.validator'
 
 function getCommentsRouter() {
 	const router = express.Router()
