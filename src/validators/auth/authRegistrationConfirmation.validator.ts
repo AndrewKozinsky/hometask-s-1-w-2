@@ -7,7 +7,7 @@ export const codeValidation = body('code')
 	.isLength({ min: 1, max: 100 })
 	.withMessage('Code must be a string')
 	.custom(async (value) => {
-		const user = await authRepository.getUserByEmail(value)
+		const user = await authRepository.getUserByLoginOrEmail(value)
 
 		if (user?.emailConfirmation.isConfirmed) {
 			throw new Error('Email exists already')

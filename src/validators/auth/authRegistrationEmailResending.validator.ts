@@ -7,7 +7,7 @@ export const emailValidation = body('email')
 	.matches('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')
 	.withMessage('Incorrect email')
 	.custom(async (value) => {
-		const user = await authRepository.getUserByEmail(value)
+		const user = await authRepository.getUserByLoginOrEmail(value)
 
 		if (user?.emailConfirmation.isConfirmed) {
 			throw new Error('Email exists already')

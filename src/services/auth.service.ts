@@ -11,7 +11,7 @@ import { usersService } from './users.service'
 
 export const authService = {
 	async getUserByLoginOrEmailAndPassword(dto: AuthLoginDtoModel) {
-		const user = await authRepository.getUserByLoginAndPassword(dto)
+		const user = await authRepository.getUserByLoginOrEmailAndPassword(dto)
 
 		if (!user || !user.emailConfirmation.isConfirmed) {
 			return null
@@ -21,7 +21,7 @@ export const authService = {
 	},
 
 	async registration(dto: AuthRegistrationDtoModel): Promise<{ status: 'fail' | 'success' }> {
-		const userByEmail = await authRepository.getUserByEmail(dto.email)
+		const userByEmail = await authRepository.getUserByLoginOrEmail(dto.email)
 		if (userByEmail) {
 			return { status: 'fail' }
 		}
@@ -81,7 +81,7 @@ export const authService = {
 	): Promise<{ status: 'fail' | 'success' }> {
 		const { email } = dto
 
-		const user = await authRepository.getUserByEmail(email)
+		const user = await authRepository.getUserByLoginOrEmail(email)
 
 		if (!user || user.emailConfirmation.isConfirmed) {
 			return {

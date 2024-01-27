@@ -20,7 +20,7 @@ it.skip('123', async () => {
 	expect(2).toBe(2)
 })
 
-/*describe('Getting a comment', () => {
+describe('Getting a comment', () => {
 	it.skip('should return 404 if a comment does not exists', async () => {
 		const getCommentRes = await request(app).get(RouteNames.comment('999'))
 
@@ -36,7 +36,7 @@ it.skip('123', async () => {
 		expect(createdPostRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const postId = createdPostRes.body.id
 
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -50,15 +50,15 @@ it.skip('123', async () => {
 
 		checkCommentObj(getCommentRes.body, createdUserRes.body.id, createdUserRes.body.login)
 	})
-})*/
+})
 
-/*describe('Updating a comment', () => {
+describe('Updating a comment', () => {
 	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).put(RouteNames.comment('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
 	it.skip('should not update a non existing comment', async () => {
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -79,13 +79,13 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User one will create a comment
-		const createdUserOneRes = await addUserRequest(app)
+		const createdUserOneRes = await addUserByAdminRequest(app)
 		expect(createdUserOneRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserOneRes = await loginRequest(app, userEmail, userPassword)
 		const userOneToken = loginUserOneRes.body.accessToken
 
 		// User two will try to update the comment
-		const createdUserTwoRes = await addUserRequest(app, {
+		const createdUserTwoRes = await addUserByAdminRequest(app, {
 			login: 'login-2',
 			password: 'password-2',
 			email: 'email-2@mail.com',
@@ -118,7 +118,7 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User will create a comment
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -146,7 +146,7 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User will create a comment
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -163,16 +163,16 @@ it.skip('123', async () => {
 			.set('authorization', 'Bearer ' + userToken)
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
 	})
-})*/
+})
 
-/*describe('Deleting a comment', () => {
+describe('Deleting a comment', () => {
 	it.skip('should forbid a request from an unauthorized user', async () => {
 		return request(app).put(RouteNames.comment(''))
 	})
 
 	it.skip('should not delete a non existing comment', async () => {
 		// User will create a comment
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -193,13 +193,13 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User one will create a comment
-		const createdUserOneRes = await addUserRequest(app)
+		const createdUserOneRes = await addUserByAdminRequest(app)
 		expect(createdUserOneRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserOneRes = await loginRequest(app, userEmail, userPassword)
 		const userOneToken = loginUserOneRes.body.accessToken
 
 		// User two will try to delete the comment
-		const createdUserTwoRes = await addUserRequest(app, {
+		const createdUserTwoRes = await addUserByAdminRequest(app, {
 			login: 'login-2',
 			password: 'password-2',
 			email: 'email-2@mail.com',
@@ -229,7 +229,7 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User will create a comment
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -243,4 +243,4 @@ it.skip('123', async () => {
 			.set('authorization', 'Bearer ' + userToken)
 			.expect(HTTP_STATUSES.NO_CONTENT_204)
 	})
-})*/
+})

@@ -25,7 +25,7 @@ it.skip('123', async () => {
 	expect(2).toBe(2)
 })
 
-/*describe('Getting post comments', () => {
+describe('Getting post comments', () => {
 	it.skip('should return an object with property items contains an empty array', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
@@ -60,7 +60,7 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User on whose behalf comments will be created
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -104,7 +104,7 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User on whose behalf comments will be created
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -131,7 +131,7 @@ it.skip('123', async () => {
 
 		expect(getPostCommentsRes.body.items.length).toBe(2)
 	})
-})*/
+})
 
 /*describe('Creating a comment', () => {
 	it.skip('should forbid a request from an unauthorized user', async () => {
@@ -152,7 +152,7 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User on whose behalf comments will be created
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
@@ -180,7 +180,7 @@ it.skip('123', async () => {
 		const postId = createdPostRes.body.id
 
 		// User on whose behalf comments will be created
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
 		const userToken = loginUserRes.body.accessToken
