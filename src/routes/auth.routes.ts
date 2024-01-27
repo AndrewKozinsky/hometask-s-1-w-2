@@ -43,7 +43,7 @@ function getAuthRouter() {
 			const regStatus = await authService.registration(req.body)
 
 			if (regStatus.status === 'fail') {
-				res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
+				res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
 				return
 			}
 

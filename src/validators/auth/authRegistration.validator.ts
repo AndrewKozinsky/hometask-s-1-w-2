@@ -33,7 +33,7 @@ export const emailValidation = body('email')
 
 		return true
 	})
-	.withMessage('Incorrect blogId')
+	.withMessage('Email exists already')
 
 export function authRegistrationValidation() {
 	return [loginValidation, passwordValidation, emailValidation, inputValidation]

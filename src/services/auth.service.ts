@@ -21,6 +21,11 @@ export const authService = {
 	},
 
 	async registration(dto: AuthRegistrationDtoModel): Promise<{ status: 'fail' | 'success' }> {
+		const userByEmail = await authRepository.getUserByEmail(dto.email)
+		if (userByEmail) {
+			return { status: 'fail' }
+		}
+
 		const newUserDto = await commonService.getCreateUserDto(dto, false)
 
 		const userId = await authRepository.createUser(newUserDto)
