@@ -1,4 +1,5 @@
 import { ObjectId, WithId } from 'mongodb'
+import { uuid } from 'uuidv4'
 import { hashService } from '../adapters/hash.adapter'
 import DbNames from '../config/dbNames'
 import { DBTypes } from '../models/db'
@@ -81,6 +82,19 @@ export const authRepository = {
 			)
 
 		return updateUserRes.modifiedCount === 1
+	},
+
+	async setNewEmailConfirmationCode(userId: string) {
+		const confirmationCode = uuid()
+
+		await db
+			.collection(DbNames.users)
+			.updateOne(
+				{ _id: new ObjectId(userId) },
+				{ $set: { 'emailConfirmation.confirmationCode': confirmationCode } },
+			)
+
+		return confirmationCode
 	},
 
 	async deleteUser(userId: string): Promise<boolean> {
