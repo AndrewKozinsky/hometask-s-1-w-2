@@ -28,7 +28,7 @@ export const emailAdapter = {
 
 				try {
 					sendpulse.smtpSendMail(() => {
-						console.log('Sent')
+						console.log('Message was sent')
 						resolve(null)
 					}, emailOptions)
 				} catch (err) {

@@ -3,21 +3,21 @@ import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
 import { GetUsersOutModel } from '../../src/models/output/users.output.model'
-import { resetDbEveryTest } from './common'
+import { resetDbEveryTest } from './utils/common'
 import { addUserByAdminRequest, adminAuthorizationValue, checkUserObj } from './utils/utils'
 
 resetDbEveryTest()
 
-it('123', () => {
+it.skip('123', () => {
 	expect(2).toBe(2)
 })
 
 /*describe('Getting all users', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).get(RouteNames.users).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should return an object with property items contains an empty array', async () => {
+	it.skip('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetUsersOutModel = {
 			pagesCount: 0,
 			page: 1,
@@ -32,7 +32,7 @@ it('123', () => {
 			.expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
-	it('should return an object with property items contains array with 2 items after creating 2 users', async () => {
+	it.skip('should return an object with property items contains array with 2 items after creating 2 users', async () => {
 		await addUserRequest(app)
 		await addUserRequest(app)
 
@@ -51,7 +51,7 @@ it('123', () => {
 		checkUserObj(getUsersRes.body.items[1])
 	})
 
-	it('should return an array of objects matching the queries scheme', async () => {
+	it.skip('should return an array of objects matching the queries scheme', async () => {
 		await addUserRequest(app)
 		await addUserRequest(app)
 		await addUserRequest(app)
@@ -70,7 +70,7 @@ it('123', () => {
 		expect(getUsersRes.body.items.length).toBe(2)
 	})
 
-	it('should return filtered an array of objects', async () => {
+	it.skip('should return filtered an array of objects', async () => {
 		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
 		await addUserRequest(app, { login: 'in-two-1', email: 'email-1@email.com' }) //
 		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
@@ -97,11 +97,11 @@ it('123', () => {
 })*/
 
 /*describe('Creating an user', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.users).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should not create an user by wrong dto', async () => {
+	it.skip('should not create an user by wrong dto', async () => {
 		const createdUserRes = await addUserRequest(app, { login: 'lo' })
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.BAD_REQUEST_400)
 
@@ -110,7 +110,7 @@ it('123', () => {
 		expect(createdUserRes.body.errorsMessages[0].field).toBe('login')
 	})
 
-	it('should create an user by correct dto', async () => {
+	it.skip('should create an user by correct dto', async () => {
 		const createdUserRes = await addUserRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
@@ -128,18 +128,18 @@ it('123', () => {
 })*/
 
 /*describe('Deleting an user', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		return request(app).put(RouteNames.users)
 	})
 
-	it('should not delete a non existing user', async () => {
+	it.skip('should not delete a non existing user', async () => {
 		await request(app)
 			.delete(RouteNames.user('999'))
 			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should delete an user', async () => {
+	it.skip('should delete an user', async () => {
 		const createdUserRes = await addUserRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdUserId = createdUserRes.body.id

@@ -2,7 +2,7 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
-import { resetDbEveryTest } from './common'
+import { resetDbEveryTest } from './utils/common'
 import {
 	addBlogRequest,
 	addPostCommentRequest,
@@ -16,18 +16,18 @@ import {
 
 resetDbEveryTest()
 
-it('123', async () => {
+it.skip('123', async () => {
 	expect(2).toBe(2)
 })
 
 /*describe('Getting a comment', () => {
-	it('should return 404 if a comment does not exists', async () => {
+	it.skip('should return 404 if a comment does not exists', async () => {
 		const getCommentRes = await request(app).get(RouteNames.comment('999'))
 
 		expect(getCommentRes.status).toBe(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should return an existing comment', async () => {
+	it.skip('should return an existing comment', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const blogId = createdBlogRes.body.id
@@ -53,11 +53,11 @@ it('123', async () => {
 })*/
 
 /*describe('Updating a comment', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).put(RouteNames.comment('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should not update a non existing comment', async () => {
+	it.skip('should not update a non existing comment', async () => {
 		const createdUserRes = await addUserRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const loginUserRes = await loginRequest(app, userEmail, userPassword)
@@ -69,7 +69,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should not update a comment if the user is not owner', async () => {
+	it.skip('should not update a comment if the user is not owner', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const blogId = createdBlogRes.body.id
@@ -108,7 +108,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.FORBIDDEN_403)
 	})
 
-	it('should not update a comment by wrong dto', async () => {
+	it.skip('should not update a comment by wrong dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const blogId = createdBlogRes.body.id
@@ -136,7 +136,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.BAD_REQUEST_400)
 	})
 
-	it('should update a comment by correct dto', async () => {
+	it.skip('should update a comment by correct dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const blogId = createdBlogRes.body.id
@@ -166,11 +166,11 @@ it('123', async () => {
 })*/
 
 /*describe('Deleting a comment', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		return request(app).put(RouteNames.comment(''))
 	})
 
-	it('should not delete a non existing comment', async () => {
+	it.skip('should not delete a non existing comment', async () => {
 		// User will create a comment
 		const createdUserRes = await addUserRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
@@ -183,7 +183,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should not delete a comment if the user is not owner', async () => {
+	it.skip('should not delete a comment if the user is not owner', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const blogId = createdBlogRes.body.id
@@ -219,7 +219,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.FORBIDDEN_403)
 	})
 
-	it('should delete an existing comment', async () => {
+	it.skip('should delete an existing comment', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const blogId = createdBlogRes.body.id

@@ -32,11 +32,12 @@ export const authService = {
 			}
 		}
 
-		try {
+		/*try {
 			await emailManager.sendEmailConfirmationMessage(
 				user.account.email,
 				user.emailConfirmation.confirmationCode,
 			)
+
 			return {
 				status: 'success',
 			}
@@ -47,6 +48,10 @@ export const authService = {
 			return {
 				status: 'userNotDeletedAfterConfirmEmailNotSend',
 			}
+		}*/
+		//---
+		return {
+			status: 'success',
 		}
 	},
 

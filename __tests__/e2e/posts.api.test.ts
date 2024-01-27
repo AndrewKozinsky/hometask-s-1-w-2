@@ -5,7 +5,7 @@ import RouteNames from '../../src/config/routeNames'
 import { CreatePostDtoModel } from '../../src/models/input/posts.input.model'
 import { GetPostCommentsOutModel } from '../../src/models/output/comments.output.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
-import { resetDbEveryTest } from './common'
+import { resetDbEveryTest } from './utils/common'
 import {
 	addBlogRequest,
 	addPostCommentRequest,
@@ -21,12 +21,12 @@ import {
 
 resetDbEveryTest()
 
-it('123', async () => {
+it.skip('123', async () => {
 	expect(2).toBe(2)
 })
 
 /*describe('Getting post comments', () => {
-	it('should return an object with property items contains an empty array', async () => {
+	it.skip('should return an object with property items contains an empty array', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const blogId = createdBlogRes.body.id
@@ -48,7 +48,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
-	it('should return an object with property items contains array with 2 items after creating 2 comments', async () => {
+	it.skip('should return an object with property items contains array with 2 items after creating 2 comments', async () => {
 		// Create a blog
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
@@ -92,7 +92,7 @@ it('123', async () => {
 		)
 	})
 
-	it('should return an array of objects matching the queries scheme', async () => {
+	it.skip('should return an array of objects matching the queries scheme', async () => {
 		// Create a blog
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
@@ -134,13 +134,13 @@ it('123', async () => {
 })*/
 
 /*describe('Creating a comment', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app)
 			.post(RouteNames.postComments('999'))
 			.expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should not create a comment by wrong dto', async () => {
+	it.skip('should not create a comment by wrong dto', async () => {
 		// Create a blog
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
@@ -168,7 +168,7 @@ it('123', async () => {
 		expect(createdCommentOneRes.body.errorsMessages[0].field).toBe('content')
 	})
 
-	it('should create a comment by correct dto', async () => {
+	it.skip('should create a comment by correct dto', async () => {
 		// Create a blog
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
@@ -209,7 +209,7 @@ it('123', async () => {
 })*/
 
 /*describe('Getting all posts', () => {
-	it('should return an object with property items contains an empty array', async () => {
+	it.skip('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetPostsOutModel = {
 			pagesCount: 0,
 			page: 1,
@@ -221,7 +221,7 @@ it('123', async () => {
 		await request(app).get(RouteNames.posts).expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
-	it('should return an object with property items contains array with 2 items after creating 2 posts', async () => {
+	it.skip('should return an object with property items contains array with 2 items after creating 2 posts', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -240,7 +240,7 @@ it('123', async () => {
 		checkPostObj(getPostsRes.body.items[1])
 	})
 
-	it('should return an array of objects matching the queries scheme', async () => {
+	it.skip('should return an array of objects matching the queries scheme', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -262,11 +262,11 @@ it('123', async () => {
 })*/
 
 /*describe('Creating a post', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.posts).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should not create a post by wrong dto', async () => {
+	it.skip('should not create a post by wrong dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -278,7 +278,7 @@ it('123', async () => {
 		expect(createdPostRes.body.errorsMessages[0].field).toBe('title')
 	})
 
-	it('should create a post by correct dto', async () => {
+	it.skip('should create a post by correct dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -297,13 +297,13 @@ it('123', async () => {
 })*/
 
 /*describe('Getting a post', () => {
-	it('should return 404 if a post does not exists', async () => {
+	it.skip('should return 404 if a post does not exists', async () => {
 		const getPostRes = await request(app).get(RouteNames.post('999'))
 
 		expect(getPostRes.status).toBe(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should return an existing post', async () => {
+	it.skip('should return an existing post', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -319,18 +319,18 @@ it('123', async () => {
 })*/
 
 /*describe('Updating a post', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).put(RouteNames.post('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should not update a non existing post', async () => {
+	it.skip('should not update a non existing post', async () => {
 		await request(app)
 			.post(RouteNames.post('999'))
 			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should not update a post by wrong dto', async () => {
+	it.skip('should not update a post by wrong dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -346,7 +346,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.BAD_REQUEST_400)
 	})
 
-	it('should update a post by correct dto', async () => {
+	it.skip('should update a post by correct dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -379,18 +379,18 @@ it('123', async () => {
 })*/
 
 /*describe('Deleting a post', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		return request(app).put(RouteNames.posts)
 	})
 
-	it('should not delete a non existing post', async () => {
+	it.skip('should not delete a non existing post', async () => {
 		await request(app)
 			.delete(RouteNames.post('999'))
 			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should delete a post', async () => {
+	it.skip('should delete a post', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 

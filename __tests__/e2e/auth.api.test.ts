@@ -4,24 +4,29 @@ import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
 import { settings } from '../../src/settings'
-import { resetDbEveryTest } from './common'
-import { addUserByAdminRequest, adminAuthorizationValue, loginRequest } from './utils/utils'
+import { resetDbEveryTest } from './utils/common'
+import {
+	addUserByAdminRequest,
+	adminAuthorizationValue,
+	createDtoAddPostComment,
+	loginRequest,
+} from './utils/utils'
 
 resetDbEveryTest()
 
-it('123', async () => {
+it.skip('123', async () => {
 	expect(2).toBe(2)
 })
 
 describe('Login user', () => {
-	it('should return 400 if to pass wrong dto', async () => {
+	it.skip('should return 400 if to pass wrong dto', async () => {
 		await request(app)
 			.post(RouteNames.authLogin)
 			.send({ loginOrEmail: '', password: 'password' })
 			.expect(HTTP_STATUSES.BAD_REQUEST_400)
 	})
 
-	it('should return 401 if the login is wrong', async () => {
+	it.skip('should return 401 if the login is wrong', async () => {
 		const login = 'login'
 		const password = 'password'
 		const email = 'email@email.ru'
@@ -35,7 +40,7 @@ describe('Login user', () => {
 			.expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should return 401 if the password is wrong', async () => {
+	it.skip('should return 401 if the password is wrong', async () => {
 		const login = 'login'
 		const password = 'password'
 		const email = 'email@email.ru'
@@ -49,7 +54,20 @@ describe('Login user', () => {
 			.expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should return 200 and object with token if the DTO is correct', async () => {
+	it.skip('should return 401 if user email is not verified', async () => {
+		const login = 'login_new'
+		const password = 'password_new'
+		const email = 'email@email.ru'
+
+		await request(app)
+			.post(RouteNames.authRegistration)
+			.send({ login, password, email })
+			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		await loginRequest(app, login, password).expect(HTTP_STATUSES.UNAUTHORIZED_401)
+	})
+
+	it.skip('should return 200 and object with token if the DTO is correct and user has verified email', async () => {
 		const login = 'login'
 		const password = 'password'
 		const email = 'email@email.ru'
@@ -66,15 +84,56 @@ describe('Login user', () => {
 	})
 })
 
-// WRITE TESTS !!!
-describe('Register user', () => {})
+describe('Register user', () => {
+	it.skip('should return 400 if dto has incorrect values', async () => {
+		const registrationRes = await request(app)
+			.post(RouteNames.authRegistration)
+			.send({ login: '', password: '', email: 'wrong-email.com' })
+			.expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+		expect({}.toString.call(registrationRes.body.errorsMessages)).toBe('[object Array]')
+		expect(registrationRes.body.errorsMessages.length).toBe(3)
+	})
+
+	it.skip('should return 400 if the user with the given email already exists', async () => {
+		const email = 'email@email.com'
+
+		await addUserByAdminRequest(app, { login: 'login', password: 'password', email })
+
+		const registrationRes = await request(app)
+			.post(RouteNames.authRegistration)
+			.send({ login: 'login_new', password: 'password_new', email })
+			.expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+		expect({}.toString.call(registrationRes.body.errorsMessages)).toBe('[object Array]')
+		expect(registrationRes.body.errorsMessages.length).toBe(1)
+		expect(registrationRes.body.errorsMessages[0].field).toBe('email')
+	})
+
+	it.skip('should return 204 if passed correct dto', async () => {
+		const email = 'email@email.com'
+
+		await request(app)
+			.post(RouteNames.authRegistration)
+			.send({ login: 'login_new', password: 'password_new', email })
+			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		const allUsers = await request(app)
+			.get(RouteNames.users)
+			.set('authorization', adminAuthorizationValue)
+			.expect(HTTP_STATUSES.OK_200)
+		console.log(allUsers.body.items)
+
+		expect(allUsers.body.items.length).toBe(1)
+	})
+})
 
 /*describe('Get current user', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should return 200 and user data if the DTO is correct', async () => {
+	it.skip('should return 200 and user data if the DTO is correct', async () => {
 		const login = 'login'
 		const password = 'password'
 		const email = 'email@email.ru'

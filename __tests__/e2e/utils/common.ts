@@ -1,6 +1,6 @@
-import { app } from '../../src/app'
-import { dbService } from '../../src/db/dbService'
-import { clearAllDB } from './utils/db'
+import { app } from '../../../src/app'
+import { dbService } from '../../../src/db/dbService'
+import { clearAllDB } from './db'
 
 export function resetDbEveryTest() {
 	beforeAll(async () => {

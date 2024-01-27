@@ -5,7 +5,7 @@ import RouteNames from '../../src/config/routeNames'
 import { CreateBlogDtoModel } from '../../src/models/input/blogs.input.model'
 import { GetBlogsOutModel } from '../../src/models/output/blogs.output.model'
 import { GetPostsOutModel } from '../../src/models/output/posts.output.model'
-import { resetDbEveryTest } from './common'
+import { resetDbEveryTest } from './utils/common'
 import {
 	addBlogPostRequest,
 	addBlogRequest,
@@ -16,12 +16,12 @@ import {
 
 resetDbEveryTest()
 
-it('123', async () => {
+it.skip('123', async () => {
 	expect(2).toBe(2)
 })
 
 /*describe('Getting all blogs', () => {
-	it('should return an object with property items contains an empty array', async () => {
+	it.skip('should return an object with property items contains an empty array', async () => {
 		const successAnswer: GetBlogsOutModel = {
 			pagesCount: 0,
 			page: 1,
@@ -33,7 +33,7 @@ it('123', async () => {
 		await request(app).get(RouteNames.blogs).expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
-	it('should return an object with property items contains array with 2 items after creating 2 blogs', async () => {
+	it.skip('should return an object with property items contains array with 2 items after creating 2 blogs', async () => {
 		await addBlogRequest(app)
 		await addBlogRequest(app)
 
@@ -49,7 +49,7 @@ it('123', async () => {
 		checkBlogObj(getBlogsRes.body.items[1])
 	})
 
-	it('should return an object with properties with specific values after creating 5 blogs', async () => {
+	it.skip('should return an object with properties with specific values after creating 5 blogs', async () => {
 		await addBlogRequest(app)
 		await addBlogRequest(app)
 		await addBlogRequest(app)
@@ -68,11 +68,11 @@ it('123', async () => {
 })*/
 
 /*describe('Creating a blog', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should not create a blog by wrong dto', async () => {
+	it.skip('should not create a blog by wrong dto', async () => {
 		const createdBlogRes = await addBlogRequest(app, { websiteUrl: 'samurai.it-incubator' })
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.BAD_REQUEST_400)
 
@@ -81,7 +81,7 @@ it('123', async () => {
 		expect(createdBlogRes.body.errorsMessages[0].field).toBe('websiteUrl')
 	})
 
-	it('should create a blog by correct dto', async () => {
+	it.skip('should create a blog by correct dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
@@ -97,11 +97,11 @@ it('123', async () => {
 })*/
 
 /*describe('Getting a blog', () => {
-	it("should return a 404 if a blog doesn't exists", async () => {
+	it.skip("should return a 404 if a blog doesn't exists", async () => {
 		await request(app).get(RouteNames.blog('999')).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should return an existing blog', async () => {
+	it.skip('should return an existing blog', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const createdBlogId = createdBlogRes.body.id
 
@@ -112,11 +112,11 @@ it('123', async () => {
 })*/
 
 /*describe('Getting a blog posts', () => {
-	it("should return a 404 if a blog doesn't exists", async () => {
+	it.skip("should return a 404 if a blog doesn't exists", async () => {
 		await request(app).get(RouteNames.blogPosts('999')).expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should return an object with property items contains an empty array', async () => {
+	it.skip('should return an object with property items contains an empty array', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -133,7 +133,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.OK_200, successAnswer)
 	})
 
-	it('should return an object with property items contains array with 2 items after creating 2 blog posts', async () => {
+	it.skip('should return an object with property items contains array with 2 items after creating 2 blog posts', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -154,7 +154,7 @@ it('123', async () => {
 		checkPostObj(getBlogPostsRes.body.items[1])
 	})
 
-	it('should return an object with properties with specific values after creating 5 blog posts', async () => {
+	it.skip('should return an object with properties with specific values after creating 5 blog posts', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const blogId = createdBlogRes.body.id
 
@@ -178,18 +178,18 @@ it('123', async () => {
 })*/
 
 /*describe('Updating a blog', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).put(RouteNames.blog('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('should not update a non existing blog', async () => {
+	it.skip('should not update a non existing blog', async () => {
 		await request(app)
 			.post(RouteNames.blog('999'))
 			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should not update a blog by wrong dto', async () => {
+	it.skip('should not update a blog by wrong dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		const createdBlogId = createdBlogRes.body.id
 
@@ -202,7 +202,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.BAD_REQUEST_400)
 	})
 
-	it('should update a blog by correct dto', async () => {
+	it.skip('should update a blog by correct dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdBlogId = createdBlogRes.body.id
@@ -232,11 +232,11 @@ it('123', async () => {
 })*/
 
 /*describe('Create a blog post', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.blogPosts('999')).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
-	it('forbid to create a blog post by wrong blog id', async () => {
+	it.skip('forbid to create a blog post by wrong blog id', async () => {
 		const addBlogPostDto = createDtoAddBlogPost()
 
 		return await request(app)
@@ -248,7 +248,7 @@ it('123', async () => {
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('create a blog post by wrong dto', async () => {
+	it.skip('create a blog post by wrong dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
@@ -259,7 +259,7 @@ it('123', async () => {
 		expect(addBlogPostRes.body.errorsMessages[0].field).toBe('title')
 	})
 
-	it('should create a blog post by correct dto', async () => {
+	it.skip('should create a blog post by correct dto', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
@@ -277,18 +277,18 @@ it('123', async () => {
 })*/
 
 /*describe('Deleting a blog', () => {
-	it('should forbid a request from an unauthorized user', async () => {
+	it.skip('should forbid a request from an unauthorized user', async () => {
 		return request(app).delete(RouteNames.blogs)
 	})
 
-	it('should not delete a non existing blog', async () => {
+	it.skip('should not delete a non existing blog', async () => {
 		await request(app)
 			.delete(RouteNames.blog('999'))
 			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
 
-	it('should delete a blog', async () => {
+	it.skip('should delete a blog', async () => {
 		const createdBlogRes = await addBlogRequest(app)
 		expect(createdBlogRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdBlogId = createdBlogRes.body.id

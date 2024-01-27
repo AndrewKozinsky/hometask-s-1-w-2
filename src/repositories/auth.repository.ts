@@ -19,9 +19,12 @@ export const authRepository = {
 	},
 
 	async getUserByLoginAndPassword(loginDto: AuthLoginDtoModel) {
-		const getUserRes = await db
-			.collection<DBTypes.User>(DbNames.users)
-			.findOne({ $or: [{ login: loginDto.loginOrEmail }, { email: loginDto.loginOrEmail }] })
+		const getUserRes = await db.collection<DBTypes.User>(DbNames.users).findOne({
+			$or: [
+				{ 'account.login': loginDto.loginOrEmail },
+				{ 'account.email': loginDto.loginOrEmail },
+			],
+		})
 
 		if (!getUserRes) {
 			return null
