@@ -10,7 +10,7 @@ export const emailValidation = body('email')
 		const user = await authRepository.getUserByLoginOrEmail(value)
 
 		if (user?.emailConfirmation.isConfirmed) {
-			throw new Error('Email exists already')
+			throw new Error('Email is already confirmed')
 		}
 
 		return true
