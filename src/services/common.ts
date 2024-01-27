@@ -25,7 +25,7 @@ export const commonService = {
 			},
 			emailConfirmation: {
 				confirmationCode: uuid(),
-				expirationDate: add(new Date(), { hours: 1, minutes: 3 }),
+				expirationDate: add(new Date(), { hours: 0, minutes: 5 }),
 				isConfirmed: isEmailConfirmed,
 			},
 		}
