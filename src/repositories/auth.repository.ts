@@ -2,6 +2,7 @@ import { ObjectId, WithId } from 'mongodb'
 import { uuid } from 'uuidv4'
 import { hashService } from '../adapters/hash.adapter'
 import DbNames from '../config/dbNames'
+import { emailManager } from '../managers/email.manager'
 import { DBTypes } from '../models/db'
 import { AuthLoginDtoModel } from '../models/input/authLogin.input.model'
 import { UserServiceModel } from '../models/service/users.service.model'
@@ -85,7 +86,7 @@ export const authRepository = {
 	},
 
 	async setNewEmailConfirmationCode(userId: string) {
-		const confirmationCode = uuid()
+		const confirmationCode = emailManager.createEmailConfirmationCode()
 
 		await db
 			.collection(DbNames.users)

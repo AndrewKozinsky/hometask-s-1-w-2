@@ -1,7 +1,6 @@
 import { emailManager } from '../managers/email.manager'
 import { AuthLoginDtoModel } from '../models/input/authLogin.input.model'
 import { AuthRegistrationDtoModel } from '../models/input/authRegistration.input.model'
-import { AuthRegistrationConfirmationDtoModel } from '../models/input/authRegistrationConfirmation.input.model'
 import { AuthRegistrationEmailResendingDtoModel } from '../models/input/authRegistrationEmailResending.input.model'
 import { MeOutModel } from '../models/output/auth.output.model'
 import { UserServiceModel } from '../models/service/users.service.model'

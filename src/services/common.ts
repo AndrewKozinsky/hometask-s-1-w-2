@@ -4,6 +4,7 @@ import { uuid } from 'uuidv4'
 import { hashService } from '../adapters/hash.adapter'
 import DbNames from '../config/dbNames'
 import { db } from '../db/dbService'
+import { emailManager } from '../managers/email.manager'
 import { DBTypes } from '../models/db'
 import { UserServiceModel } from '../models/service/users.service.model'
 
@@ -24,7 +25,7 @@ export const commonService = {
 				createdAt: new Date().toISOString(),
 			},
 			emailConfirmation: {
-				confirmationCode: uuid(),
+				confirmationCode: emailManager.createEmailConfirmationCode(),
 				expirationDate: add(new Date(), { hours: 0, minutes: 5 }),
 				isConfirmed: isEmailConfirmed,
 			},

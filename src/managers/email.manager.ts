@@ -1,3 +1,4 @@
+import { uuid } from 'uuidv4'
 import { emailAdapter } from '../adapters/email.adapter'
 
 export const emailManager = {
@@ -15,5 +16,8 @@ export const emailManager = {
 
 		// Send an email
 		await emailAdapter.sendEmail(userEmail, subject, textMessage, htmlMessage)
+	},
+	createEmailConfirmationCode() {
+		return uuid()
 	},
 }
