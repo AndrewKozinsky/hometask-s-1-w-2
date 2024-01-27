@@ -58,6 +58,11 @@ function getAuthRouter() {
 		async (req: ReqWithBody<AuthRegistrationEmailResendingDtoModel>, res: Response) => {
 			const resendingStatus = await authService.resendEmailConfirmationCode(req.body)
 
+			if (resendingStatus.status === 'fail') {
+				res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+				return
+			}
+
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 		},
 	)

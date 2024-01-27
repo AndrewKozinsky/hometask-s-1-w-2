@@ -169,7 +169,40 @@ describe('Registration confirmation', () => {
 	})
 })
 
-/*describe('Get current user', () => {
+describe('Resending email confirmation code', () => {
+	it.skip('should return 400 if dto has incorrect values', async () => {
+		const registrationRes = await request(app)
+			.post(RouteNames.authRegistrationEmailResending)
+			.send({ email: 'wrong-email.com' })
+			.expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+		expect({}.toString.call(registrationRes.body.errorsMessages)).toBe('[object Array]')
+		expect(registrationRes.body.errorsMessages.length).toBe(1)
+	})
+
+	it.skip('should return 400 if email in dto is not exists', async () => {
+		await request(app)
+			.post(RouteNames.authRegistrationEmailResending)
+			.send({ email: 'my@email.com' })
+			.expect(HTTP_STATUSES.BAD_REQUEST_400)
+	})
+
+	it.skip('should return 204 if passed correct dto', async () => {
+		const email = 'email@email.com'
+
+		await request(app)
+			.post(RouteNames.authRegistration)
+			.send({ login: 'login_new', password: 'password_new', email })
+			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		await request(app)
+			.post(RouteNames.authRegistrationEmailResending)
+			.send({ email })
+			.expect(HTTP_STATUSES.NO_CONTENT_204)
+	})
+})
+
+describe('Get current user', () => {
 	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.blogs).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -179,7 +212,7 @@ describe('Registration confirmation', () => {
 		const password = 'password'
 		const email = 'email@email.ru'
 
-		const createdUserRes = await addUserRequest(app, { login, password, email })
+		const createdUserRes = await addUserByAdminRequest(app, { login, password, email })
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
 		const loginRes = await loginRequest(app, login, password).expect(HTTP_STATUSES.OK_200)
@@ -193,4 +226,4 @@ describe('Registration confirmation', () => {
 		expect(authMeRes.body.login).toBe(login)
 		expect(authMeRes.body.userId).toBe(createdUserRes.body.id)
 	})
-})*/
+})

@@ -71,14 +71,16 @@ export const authService = {
 		}
 	},
 
-	async resendEmailConfirmationCode(dto: AuthRegistrationEmailResendingDtoModel) {
+	async resendEmailConfirmationCode(
+		dto: AuthRegistrationEmailResendingDtoModel,
+	): Promise<{ status: 'fail' | 'success' }> {
 		const { email } = dto
 
 		const user = await authRepository.getUserByEmail(email)
 
 		if (!user || user.emailConfirmation.isConfirmed) {
 			return {
-				status: 'userNotFoundOrEmailConfirmed',
+				status: 'fail',
 			}
 		}
 
@@ -94,7 +96,7 @@ export const authService = {
 			console.log(err)
 
 			return {
-				status: 'confirmEmailNotSend',
+				status: 'fail',
 			}
 		}
 	},
