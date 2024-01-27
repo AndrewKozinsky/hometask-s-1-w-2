@@ -42,11 +42,8 @@ function getAuthRouter() {
 		async (req: ReqWithBody<AuthRegistrationDtoModel>, res: Response) => {
 			const regStatus = await authService.registration(req.body)
 
-			if (
-				regStatus.status === 'userNotCreated' ||
-				regStatus.status === 'userNotDeletedAfterConfirmEmailNotSend'
-			) {
-				res.sendStatus(HTTP_STATUSES.SERVER_ERROR)
+			if (regStatus.status === 'fail') {
+				res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500)
 				return
 			}
 
@@ -70,7 +67,12 @@ function getAuthRouter() {
 		'/registration-confirmation',
 		authRegistrationConfirmationValidation(),
 		async (req: ReqWithBody<AuthRegistrationConfirmationDtoModel>, res: Response) => {
-			const confirmationStatus = await authService.confirmEmail(req.body)
+			const confirmationStatus = await authService.confirmEmail(req.body.code)
+
+			if (confirmationStatus.status === 'fail') {
+				res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+				return
+			}
 
 			res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 		},

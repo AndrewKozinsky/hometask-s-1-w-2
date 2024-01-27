@@ -3,6 +3,7 @@ import request from 'supertest'
 import { app } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/config/config'
 import RouteNames from '../../src/config/routeNames'
+import { usersRepository } from '../../src/repositories/users.repository'
 import { settings } from '../../src/settings'
 import { resetDbEveryTest } from './utils/common'
 import {
@@ -125,6 +126,46 @@ describe('Register user', () => {
 		console.log(allUsers.body.items)
 
 		expect(allUsers.body.items.length).toBe(1)
+	})
+})
+
+describe('Registration confirmation', () => {
+	it.skip('should return 400 if the request has wrong dto', async () => {
+		const regConfirmRes = await request(app)
+			.post(RouteNames.authRegistrationConfirmation)
+			.send({ code: '' })
+			.expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+		expect({}.toString.call(regConfirmRes.body.errorsMessages)).toBe('[object Array]')
+		expect(regConfirmRes.body.errorsMessages.length).toBe(1)
+	})
+
+	it.skip('should return 400 if there is not user with given confirmation code', async () => {
+		await request(app)
+			.post(RouteNames.authRegistrationConfirmation)
+			.send({ code: 'e18ad1ac-18ad-4dc9-80d9-28d60390e224' })
+			.expect(HTTP_STATUSES.BAD_REQUEST_400)
+	})
+
+	it.skip('should return 204 if passed right confirmation code', async () => {
+		await request(app)
+			.post(RouteNames.authRegistration)
+			.send({ login: 'login_new', password: 'password_new', email: 'email@email.com' })
+			.expect(HTTP_STATUSES.NO_CONTENT_204)
+
+		const allUsers = await request(app)
+			.get(RouteNames.users)
+			.set('authorization', adminAuthorizationValue)
+			.expect(HTTP_STATUSES.OK_200)
+		const userId = allUsers.body.items[0].id
+
+		const fullUserData = await usersRepository.getUserById(userId)
+		const confirmationCode = fullUserData!.emailConfirmation.confirmationCode
+
+		await request(app)
+			.post(RouteNames.authRegistrationConfirmation)
+			.send({ code: confirmationCode })
+			.expect(HTTP_STATUSES.NO_CONTENT_204)
 	})
 })
 

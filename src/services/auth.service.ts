@@ -20,19 +20,17 @@ export const authService = {
 		return user
 	},
 
-	async registration(dto: AuthRegistrationDtoModel) {
+	async registration(dto: AuthRegistrationDtoModel): Promise<{ status: 'fail' | 'success' }> {
 		const newUserDto = await commonService.getCreateUserDto(dto, false)
 
 		const userId = await authRepository.createUser(newUserDto)
 
 		const user = await usersService.getUser(userId)
 		if (!user) {
-			return {
-				status: 'userNotCreated',
-			}
+			return { status: 'fail' }
 		}
 
-		/*try {
+		try {
 			await emailManager.sendEmailConfirmationMessage(
 				user.account.email,
 				user.emailConfirmation.confirmationCode,
@@ -45,18 +43,12 @@ export const authService = {
 			console.log(err)
 			await authRepository.deleteUser(userId)
 
-			return {
-				status: 'userNotDeletedAfterConfirmEmailNotSend',
-			}
-		}*/
-		//---
-		return {
-			status: 'success',
+			return { status: 'fail' }
 		}
 	},
 
-	async confirmEmail(dto: AuthRegistrationConfirmationDtoModel) {
-		const user = await authRepository.getUserByConfirmationCode(dto.code)
+	async confirmEmail(confirmationCode: string): Promise<{ status: 'fail' | 'success' }> {
+		const user = await authRepository.getUserByConfirmationCode(confirmationCode)
 		if (!user || user.emailConfirmation.isConfirmed) {
 			return {
 				status: 'fail',
@@ -64,7 +56,7 @@ export const authService = {
 		}
 
 		if (
-			user.emailConfirmation.confirmationCode !== dto.code ||
+			user.emailConfirmation.confirmationCode !== confirmationCode ||
 			user.emailConfirmation.expirationDate < new Date()
 		) {
 			return {

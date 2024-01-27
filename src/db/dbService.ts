@@ -1,6 +1,5 @@
 import dotenv from 'dotenv'
 import { MongoClient } from 'mongodb'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 dotenv.config()
 
