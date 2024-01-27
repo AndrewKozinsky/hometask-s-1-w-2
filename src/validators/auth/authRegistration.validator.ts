@@ -11,6 +11,16 @@ export const loginValidation = body('login')
 	.isLength({ min: 3, max: 10 })
 	.matches('^[a-zA-Z0-9_-]*$')
 	.withMessage('Incorrect login')
+	.custom(async (value) => {
+		const user = await authRepository.getUserByLoginOrEmail(value)
+
+		if (user) {
+			throw new Error('Login exists already')
+		}
+
+		return true
+	})
+	.withMessage('Login exists already')
 
 export const passwordValidation = body('password')
 	.isString()

@@ -12,7 +12,7 @@ it.skip('123', () => {
 	expect(2).toBe(2)
 })
 
-/*describe('Getting all users', () => {
+describe('Getting all users', () => {
 	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).get(RouteNames.users).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
@@ -33,8 +33,8 @@ it.skip('123', () => {
 	})
 
 	it.skip('should return an object with property items contains array with 2 items after creating 2 users', async () => {
-		await addUserRequest(app)
-		await addUserRequest(app)
+		await addUserByAdminRequest(app)
+		await addUserByAdminRequest(app)
 
 		const getUsersRes = await request(app)
 			.get(RouteNames.users)
@@ -52,13 +52,13 @@ it.skip('123', () => {
 	})
 
 	it.skip('should return an array of objects matching the queries scheme', async () => {
-		await addUserRequest(app)
-		await addUserRequest(app)
-		await addUserRequest(app)
-		await addUserRequest(app)
-		await addUserRequest(app)
-		await addUserRequest(app)
-		await addUserRequest(app)
+		await addUserByAdminRequest(app)
+		await addUserByAdminRequest(app)
+		await addUserByAdminRequest(app)
+		await addUserByAdminRequest(app)
+		await addUserByAdminRequest(app)
+		await addUserByAdminRequest(app)
+		await addUserByAdminRequest(app)
 
 		const getUsersRes = await request(app)
 			.get(RouteNames.users + '?pageNumber=2&pageSize=2')
@@ -71,16 +71,16 @@ it.skip('123', () => {
 	})
 
 	it.skip('should return filtered an array of objects', async () => {
-		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
-		await addUserRequest(app, { login: 'in-two-1', email: 'email-1@email.com' }) //
-		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
-		await addUserRequest(app, { login: 'in-two-1', email: 'email-1@email.com' }) //
-		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.jp' }) //
-		await addUserRequest(app, { login: 'in-three-1', email: 'email-1@email.us' })
-		await addUserRequest(app, { login: 'in-one-1', email: 'email-1@email.ru' }) //
-		await addUserRequest(app, { login: 'in-one-2', email: 'email-3@email.com' }) //
-		await addUserRequest(app, { login: 'in-one-3', email: 'email-4@email.com' }) //
-		await addUserRequest(app, { login: 'in-one-4', email: 'email-5@email.com' }) //
+		await addUserByAdminRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
+		await addUserByAdminRequest(app, { login: 'in-two-1', email: 'email-1@email.com' }) //
+		await addUserByAdminRequest(app, { login: 'in-one-1', email: 'email-1@email.com' }) //
+		await addUserByAdminRequest(app, { login: 'in-two-1', email: 'email-1@email.com' }) //
+		await addUserByAdminRequest(app, { login: 'in-one-1', email: 'email-1@email.jp' }) //
+		await addUserByAdminRequest(app, { login: 'in-three-1', email: 'email-1@email.us' })
+		await addUserByAdminRequest(app, { login: 'in-one-1', email: 'email-1@email.ru' }) //
+		await addUserByAdminRequest(app, { login: 'in-one-2', email: 'email-3@email.com' }) //
+		await addUserByAdminRequest(app, { login: 'in-one-3', email: 'email-4@email.com' }) //
+		await addUserByAdminRequest(app, { login: 'in-one-4', email: 'email-5@email.com' }) //
 
 		const getUsersRes = await request(app)
 			.get(
@@ -94,15 +94,15 @@ it.skip('123', () => {
 		expect(getUsersRes.body.totalCount).toBe(9)
 		expect(getUsersRes.body.items.length).toBe(2)
 	})
-})*/
+})
 
-/*describe('Creating an user', () => {
+describe('Creating an user', () => {
 	it.skip('should forbid a request from an unauthorized user', async () => {
 		await request(app).post(RouteNames.users).expect(HTTP_STATUSES.UNAUTHORIZED_401)
 	})
 
 	it.skip('should not create an user by wrong dto', async () => {
-		const createdUserRes = await addUserRequest(app, { login: 'lo' })
+		const createdUserRes = await addUserByAdminRequest(app, { login: 'lo' })
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.BAD_REQUEST_400)
 
 		expect({}.toString.call(createdUserRes.body.errorsMessages)).toBe('[object Array]')
@@ -111,13 +111,13 @@ it.skip('123', () => {
 	})
 
 	it.skip('should create an user by correct dto', async () => {
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 
 		checkUserObj(createdUserRes.body)
 
 		// Check if there are 2 users after adding another one
-		const createdUser2Res = await addUserRequest(app)
+		const createdUser2Res = await addUserByAdminRequest(app)
 		expect(createdUser2Res.status).toBe(HTTP_STATUSES.CREATED_201)
 
 		const allUsersRes = await request(app)
@@ -125,9 +125,9 @@ it.skip('123', () => {
 			.set('authorization', adminAuthorizationValue)
 		expect(allUsersRes.body.items.length).toBe(2)
 	})
-})*/
+})
 
-/*describe('Deleting an user', () => {
+describe('Deleting an user', () => {
 	it.skip('should forbid a request from an unauthorized user', async () => {
 		return request(app).put(RouteNames.users)
 	})
@@ -140,7 +140,7 @@ it.skip('123', () => {
 	})
 
 	it.skip('should delete an user', async () => {
-		const createdUserRes = await addUserRequest(app)
+		const createdUserRes = await addUserByAdminRequest(app)
 		expect(createdUserRes.status).toBe(HTTP_STATUSES.CREATED_201)
 		const createdUserId = createdUserRes.body.id
 
@@ -154,4 +154,4 @@ it.skip('123', () => {
 			.set('authorization', adminAuthorizationValue)
 			.expect(HTTP_STATUSES.NOT_FOUNT_404)
 	})
-})*/
+})
