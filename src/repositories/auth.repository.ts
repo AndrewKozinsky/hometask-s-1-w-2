@@ -8,6 +8,18 @@ import { db, dbService } from '../db/dbService'
 import { commonService } from '../services/common'
 
 export const authRepository = {
+	async getUserByEmail(loginOrEmail: string) {
+		const getUserRes = await db.collection<DBTypes.User>(DbNames.users).findOne({
+			'account.email': loginOrEmail,
+		})
+
+		if (!getUserRes) {
+			return null
+		}
+
+		return this.mapDbUserToServiceUser(getUserRes)
+	},
+
 	async getUserByLoginOrEmail(loginOrEmail: string) {
 		const getUserRes = await db.collection<DBTypes.User>(DbNames.users).findOne({
 			$or: [{ 'account.login': loginOrEmail }, { 'account.email': loginOrEmail }],
