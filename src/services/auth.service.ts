@@ -81,7 +81,7 @@ export const authService = {
 	): Promise<{ status: 'fail' | 'success' }> {
 		const { email } = dto
 
-		const user = await authRepository.getUserByLoginOrEmail(email)
+		const user = await authRepository.getUserByEmail(email)
 
 		if (!user || user.emailConfirmation.isConfirmed) {
 			return {
